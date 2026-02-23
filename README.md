@@ -41,10 +41,10 @@ hyprland-configs/
     ├── clipboard.sh         cliphist | rofi picker → wl-copy
     ├── power.sh             rofi power menu (lock/suspend/reboot/shutdown)
     ├── wallpaper.sh         live wallpaper swap (also exposed as `wallpaper` in PATH)
-    ├── terminal.sh          Super+E toggle: CWD-aware float terminal (tmux-aware)
+    ├── terminal.sh          Super+T toggle: CWD-aware float terminal (tmux-aware)
     ├── yazi-toggle.sh       Super+Y toggle: yazi scratchpad (create-or-toggle)
     ├── yazi-loop.sh         yazi loop runner (keeps scratchpad alive after quit)
-    ├── btop-toggle.sh       Super+T toggle: btop scratchpad (create-or-toggle)
+    ├── btop-toggle.sh       Super+M toggle: btop scratchpad (create-or-toggle)
     └── cheatsheet.sh        Super+Shift+/ floating keybind reference
 ```
 
@@ -57,7 +57,7 @@ hyprland-configs/
 | Key | Action |
 |---|---|
 | `Super+Return` | terminal (alacritty, `$HOME`) |
-| `Super+E` | float terminal at active window's CWD — toggle |
+| `Super+T` | float terminal at active window's CWD — toggle |
 | `Super+Space` | app launcher (rofi drun) |
 | `Super+W` | window switcher (rofi) |
 | `Super+D` | show desktop (go to next empty workspace) |
@@ -68,7 +68,7 @@ hyprland-configs/
 |---|---|
 | `Super+\`` | general scratchpad terminal |
 | `Super+Y` | yazi file manager |
-| `Super+T` | btop system monitor |
+| `Super+M` | btop system monitor |
 
 ### Windows
 

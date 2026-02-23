@@ -49,4 +49,4 @@ if [[ -n "$APID" ]]; then
 fi
 
 [[ -d "$CWD" ]] || CWD="$HOME"
-exec alacritty --class float-term --working-directory "$CWD"
+exec env TERM_FLOAT=1 alacritty --class float-term --working-directory "$CWD"
