@@ -1,0 +1,178 @@
+/* Rose Pine palette
+   base      #191724   surface   #1f1d2e   overlay   #26233a
+   muted     #6e6a86   subtle    #908caa   text      #e0def4
+   love      #eb6f92   gold      #f6c177   rose      #ebbcba
+   pine      #31748f   foam      #9ccfd8   iris      #c4a7e7
+   highlight #403d52
+*/
+
+* {
+    font-family: "BerkeleyMono Nerd Font Mono", monospace;
+    font-size: 12px;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: #1f1d2e;
+    color: #e0def4;
+}
+
+/* ── Workspaces ─────────────────────────────────────────────────────── */
+
+#workspaces {
+    margin: 0 4px;
+    padding: 0;
+}
+
+#workspaces button {
+    padding: 0 6px;
+    color: #6e6a86;
+    background: transparent;
+    border-radius: 4px;
+    margin: 4px 2px;
+    transition: all 0.15s ease;
+}
+
+#workspaces button:hover {
+    background: #26233a;
+    color: #e0def4;
+}
+
+#workspaces button.active {
+    background: #26233a;
+    color: #c4a7e7;
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    background: #26233a;
+    color: #eb6f92;
+    font-weight: bold;
+}
+
+/* ── Window title ───────────────────────────────────────────────────── */
+
+#window {
+    color: #908caa;
+    padding: 0 8px;
+    margin: 4px 0;
+}
+
+/* ── Clock ──────────────────────────────────────────────────────────── */
+
+#clock {
+    color: #e0def4;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+/* ── Right modules — shared base ────────────────────────────────────── */
+
+#cpu,
+#memory,
+#pulseaudio,
+#network,
+#battery,
+#custom-swaync,
+#tray {
+    padding: 0 8px;
+    margin: 4px 2px;
+    border-radius: 4px;
+    background: #26233a;
+}
+
+/* ── CPU ────────────────────────────────────────────────────────────── */
+
+#cpu {
+    color: #9ccfd8;
+}
+
+#cpu.warning {
+    color: #f6c177;
+}
+
+#cpu.critical {
+    color: #eb6f92;
+}
+
+/* ── Memory ─────────────────────────────────────────────────────────── */
+
+#memory {
+    color: #31748f;
+}
+
+#memory.warning {
+    color: #f6c177;
+}
+
+#memory.critical {
+    color: #eb6f92;
+}
+
+/* ── Audio ──────────────────────────────────────────────────────────── */
+
+#pulseaudio {
+    color: #c4a7e7;
+}
+
+#pulseaudio.muted {
+    color: #6e6a86;
+}
+
+/* ── Network ────────────────────────────────────────────────────────── */
+
+#network {
+    color: #9ccfd8;
+}
+
+#network.disconnected {
+    color: #6e6a86;
+}
+
+/* ── Battery ────────────────────────────────────────────────────────── */
+
+#battery {
+    color: #9ccfd8;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: #31748f;
+}
+
+#battery.warning:not(.charging) {
+    color: #f6c177;
+}
+
+#battery.critical:not(.charging) {
+    color: #eb6f92;
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    to { color: #e0def4; }
+}
+
+/* ── swaync ─────────────────────────────────────────────────────────── */
+
+#custom-swaync {
+    color: #c4a7e7;
+    padding: 0 10px;
+}
+
+/* ── Tray ───────────────────────────────────────────────────────────── */
+
+#tray {
+    padding: 0 6px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #26233a;
+}

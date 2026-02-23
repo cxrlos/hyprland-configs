@@ -1,0 +1,153 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "spacing": 4,
+    "exclusive": true,
+    "passthrough": false,
+    "gtk-layer-shell": true,
+
+    "modules-left": [
+        "hyprland/workspaces",
+        "hyprland/window"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "cpu",
+        "memory",
+        "pulseaudio",
+        "network",
+        "battery",
+        "custom/swaync",
+        "tray"
+    ],
+
+    // ── Workspaces ────────────────────────────────────────────────────────
+    "hyprland/workspaces": {
+        "format": "{id} {windows}",
+        "window-rewrite-default": "󰖲",
+        "window-rewrite": {
+            "title<.*[Nn]vim.*>":       "󰈙",
+            "class<Alacritty>":         "󰆍",
+            "class<yazi-float>":        "󰉋",
+            "class<firefox>":           "󰈹",
+            "class<chromium>":          "󰊯",
+            "class<google-chrome>":     "󰊯",
+            "class<discord>":           "󰙯",
+            "class<Spotify>":           "󰓇",
+            "class<Slack>":             "󰒱",
+            "class<telegram-desktop>":  "󰔁",
+            "class<obs>":               "󰐻",
+            "class<pavucontrol>":       "󰕾"
+        },
+        "on-click": "activate",
+        "on-scroll-up": "hyprctl dispatch workspace e+1",
+        "on-scroll-down": "hyprctl dispatch workspace e-1"
+    },
+
+    // ── Window title ──────────────────────────────────────────────────────
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 60,
+        "separate-outputs": true
+    },
+
+    // ── Clock ─────────────────────────────────────────────────────────────
+    "clock": {
+        "format": " {:%H:%M}",
+        "format-alt": " {:%a, %b %d  %H:%M}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "on-scroll": 1,
+            "format": {
+                "months":   "<span color='#e0def4'><b>{}</b></span>",
+                "days":     "<span color='#908caa'>{}</span>",
+                "weeks":    "<span color='#9ccfd8'><b>W{}</b></span>",
+                "weekdays": "<span color='#c4a7e7'><b>{}</b></span>",
+                "today":    "<span color='#eb6f92'><b><u>{}</u></b></span>"
+            }
+        }
+    },
+
+    // ── CPU ───────────────────────────────────────────────────────────────
+    "cpu": {
+        "format": " {usage}%",
+        "interval": 2,
+        "tooltip": false
+    },
+
+    // ── Memory ───────────────────────────────────────────────────────────
+    "memory": {
+        "format": " {percentage}%",
+        "interval": 5,
+        "tooltip-format": "{used:0.1f}G / {total:0.1f}G"
+    },
+
+    // ── Audio ─────────────────────────────────────────────────────────────
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": " muted",
+        "format-icons": {
+            "headphone": "",
+            "headset": "",
+            "default": ["", "", ""]
+        },
+        "scroll-step": 5,
+        "on-click": "pavucontrol",
+        "tooltip-format": "{desc} — {volume}%"
+    },
+
+    // ── Network ───────────────────────────────────────────────────────────
+    "network": {
+        "format-wifi": " {essid} ({signalStrength}%)",
+        "format-ethernet": " {ipaddr}",
+        "format-disconnected": "󰌙 disconnected",
+        "tooltip-format-wifi": "{ifname}  {ipaddr}\n{signalStrength}% — {bandwidthUpBits}  {bandwidthDownBits} ",
+        "tooltip-format-ethernet": "{ifname}  {ipaddr}",
+        "interval": 5
+    },
+
+    // ── Battery ───────────────────────────────────────────────────────────
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "tooltip-format": "{timeTo}\n{power:.1f}W"
+    },
+
+    // ── swaync toggle ─────────────────────────────────────────────────────
+    "custom/swaync": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "<span foreground='#eb6f92'><sup></sup></span>",
+            "none": "",
+            "dnd-notification": "<span foreground='#eb6f92'><sup></sup></span>",
+            "dnd-none": "",
+            "inhibited-notification": "<span foreground='#eb6f92'><sup></sup></span>",
+            "inhibited-none": "",
+            "dnd-inhibited-notification": "<span foreground='#eb6f92'><sup></sup></span>",
+            "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+
+    // ── Tray ──────────────────────────────────────────────────────────────
+    "tray": {
+        "icon-size": 14,
+        "spacing": 8
+    }
+}

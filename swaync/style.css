@@ -1,0 +1,202 @@
+/* Rose Pine — swaync style
+   Matches waybar surface/overlay palette
+*/
+
+* {
+    font-family: "BerkeleyMono Nerd Font Mono", monospace;
+    font-size: 12px;
+}
+
+/* ── Control center ─────────────────────────────────────────────────── */
+
+.control-center {
+    background: #1f1d2e;
+    border-radius: 10px;
+    border: 1px solid #26233a;
+    padding: 8px;
+    color: #e0def4;
+}
+
+/* ── Title / header ─────────────────────────────────────────────────── */
+
+.widget-title {
+    color: #e0def4;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 12px 4px;
+}
+
+.widget-title > button {
+    font-size: 11px;
+    color: #908caa;
+    background: #26233a;
+    border-radius: 6px;
+    border: none;
+    padding: 4px 10px;
+}
+
+.widget-title > button:hover {
+    background: #403d52;
+    color: #e0def4;
+}
+
+/* ── DND toggle ─────────────────────────────────────────────────────── */
+
+.widget-dnd {
+    padding: 4px 12px 8px;
+    color: #908caa;
+    font-size: 12px;
+}
+
+.widget-dnd > switch {
+    background: #26233a;
+    border-radius: 10px;
+    border: 1px solid #403d52;
+}
+
+.widget-dnd > switch:checked {
+    background: #c4a7e7;
+    color: #191724;
+}
+
+.widget-dnd > switch slider {
+    background: #908caa;
+    border-radius: 10px;
+    min-width: 14px;
+    min-height: 14px;
+}
+
+/* ── Inhibitors ─────────────────────────────────────────────────────── */
+
+.widget-inhibitors {
+    padding: 4px 12px;
+    color: #908caa;
+}
+
+.widget-inhibitors > button {
+    font-size: 11px;
+    color: #908caa;
+    background: #26233a;
+    border-radius: 6px;
+    border: none;
+    padding: 4px 10px;
+}
+
+/* ── Notification list ──────────────────────────────────────────────── */
+
+.notification-row {
+    background: transparent;
+    padding: 4px 0;
+}
+
+.notification-row:hover {
+    background: transparent;
+}
+
+.notification {
+    background: #26233a;
+    border-radius: 8px;
+    border: 1px solid #403d52;
+    padding: 10px 12px;
+    margin: 2px 0;
+    color: #e0def4;
+}
+
+.notification.critical {
+    border-color: #eb6f92;
+}
+
+.notification.low {
+    border-color: #403d52;
+}
+
+/* ── Notification body ──────────────────────────────────────────────── */
+
+.notification-content {
+    background: transparent;
+    padding: 0;
+}
+
+.notification-default-action {
+    background: transparent;
+    border-radius: 8px;
+    padding: 0;
+    color: #e0def4;
+}
+
+.notification-default-action:hover {
+    background: #403d52;
+}
+
+.summary {
+    font-size: 12px;
+    font-weight: bold;
+    color: #e0def4;
+}
+
+.time {
+    font-size: 11px;
+    color: #6e6a86;
+}
+
+.body {
+    font-size: 12px;
+    color: #908caa;
+}
+
+/* ── Action buttons ─────────────────────────────────────────────────── */
+
+.notification-action {
+    font-size: 11px;
+    color: #9ccfd8;
+    background: #1f1d2e;
+    border-radius: 6px;
+    border: 1px solid #403d52;
+    padding: 4px 10px;
+    margin: 4px 2px 0;
+}
+
+.notification-action:hover {
+    background: #403d52;
+    color: #e0def4;
+}
+
+/* ── Close button ───────────────────────────────────────────────────── */
+
+.close-button {
+    background: transparent;
+    color: #6e6a86;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 11px;
+}
+
+.close-button:hover {
+    background: #403d52;
+    color: #eb6f92;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────── */
+
+scrollbar {
+    background: transparent;
+}
+
+scrollbar slider {
+    background: #403d52;
+    border-radius: 4px;
+    min-width: 4px;
+}
+
+/* ── Popup notifications ────────────────────────────────────────────── */
+
+.floating-notifications {
+    background: transparent;
+}
+
+.floating-notifications > box > .notification-row > .notification {
+    background: #1f1d2e;
+    border: 1px solid #26233a;
+    box-shadow: 0 4px 16px rgba(19, 17, 26, 0.6);
+}

@@ -1,0 +1,109 @@
+/* Rose Pine theme for rofi */
+
+* {
+    base:       #191724ff;
+    surface:    #1f1d2eff;
+    overlay:    #26233aff;
+    muted:      #6e6a86ff;
+    subtle:     #908caaff;
+    text:       #e0def4ff;
+    love:       #eb6f92ff;
+    gold:       #f6c177ff;
+    pine:       #31748fff;
+    foam:       #9ccfd8ff;
+    iris:       #c4a7e7ff;
+    highlight:  #403d52ff;
+
+    background-color:   @base;
+    text-color:         @text;
+    border-color:       @iris;
+    separatorcolor:     @overlay;
+}
+
+configuration {
+    modi:                "drun,run,window";
+    font:                "BerkeleyMono Nerd Font Mono 12";
+    show-icons:          true;
+    icon-theme:          "Papirus-Dark";
+    drun-display-format: "{name}";
+    window-format:       "{w}  {c}  {t}";
+    display-drun:        "  Apps";
+    display-run:         "  Run";
+    display-window:      "  Windows";
+    kb-cancel:           "Escape,Super+space";
+}
+
+window {
+    width:            480px;
+    border:           1px solid;
+    border-color:     @iris;
+    border-radius:    10px;
+    background-color: @base;
+    padding:          0px;
+}
+
+mainbox {
+    background-color: transparent;
+    children:         [inputbar, listview];
+    spacing:          0px;
+    padding:          0px;
+}
+
+inputbar {
+    background-color: @surface;
+    border-radius:    10px 10px 0px 0px;
+    padding:          10px 12px;
+    spacing:          8px;
+    children:         [prompt, entry];
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @foam;
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @text;
+    placeholder:      "Search...";
+    placeholder-color: @muted;
+}
+
+listview {
+    background-color: @base;
+    border-radius:    0px 0px 10px 10px;
+    padding:          4px;
+    spacing:          0px;
+    scrollbar:        false;
+    lines:            8;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @text;
+    border-radius:    6px;
+    padding:          8px 12px;
+    spacing:          8px;
+    orientation:      horizontal;
+}
+
+element selected {
+    background-color: @overlay;
+    text-color:       @iris;
+}
+
+element alternate {
+    background-color: transparent;
+    text-color:       @subtle;
+}
+
+element-icon {
+    background-color: transparent;
+    size:             20px;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
