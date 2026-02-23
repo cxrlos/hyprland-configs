@@ -51,7 +51,7 @@ _install_deps() {
     sudo pacman -Sy --noconfirm
 
     local pacman_deps=(
-        hyprland hyprlock hypridle hyprpaper
+        hyprland hyprlock hypridle swww
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
         waybar swaync
         rofi-wayland wl-clipboard cliphist
@@ -77,6 +77,7 @@ _install_deps() {
     local aur_deps=(
         grimblast-git
         hyprpicker
+        waypaper
         tuigreet
         bluetui
         rose-pine-gtk-theme
@@ -148,13 +149,12 @@ _link "$REPO_DIR/hypr"                         "$HOME/.config/hypr"
 _link "$REPO_DIR/waybar"                       "$HOME/.config/waybar"
 _link "$REPO_DIR/rofi"                         "$HOME/.config/rofi"
 _link "$REPO_DIR/swaync"                       "$HOME/.config/swaync"
-_link "$REPO_DIR/hyprpaper"                    "$HOME/.config/hyprpaper"
+_link "$REPO_DIR/waypaper"                     "$HOME/.config/waypaper"
 _link "$REPO_DIR/scripts"                      "$HOME/.config/scripts"
 
-# screenshot and wallpaper exposed in PATH
+# screenshot exposed in PATH
 mkdir -p "$HOME/.local/bin"
 _link "$REPO_DIR/scripts/screenshot.sh"        "$HOME/.local/bin/screenshot"
-_link "$REPO_DIR/scripts/wallpaper.sh"         "$HOME/.local/bin/wallpaper"
 
 # ── Script permissions ─────────────────────────────────────────────────────────
 
@@ -186,29 +186,8 @@ _write_gtk_settings 4
 # ── Wallpaper ──────────────────────────────────────────────────────────────────
 
 printf "\n%s\n" "${BOLD}Wallpaper setup:${NC}"
-DEFAULT_WP="$HOME/Pictures/juventus-wallpaper-navy-gold-8k.png"
-read -r -p "  Wallpaper path [${DEFAULT_WP}]: " wp_input
-wp="${wp_input:-$DEFAULT_WP}"
-wp="${wp/#\~/$HOME}"
-if [[ -f "$wp" ]]; then
-    wp_real="$(realpath "$wp")"
-    monitors=$(hyprctl monitors -j 2>/dev/null | grep -oP '"name":\s*"\K[^"]+' || true)
-    {
-        printf 'preload = %s\n' "$wp_real"
-        if [[ -n "$monitors" ]]; then
-            while IFS= read -r mon; do
-                printf 'wallpaper = %s,%s\n' "$mon" "$wp_real"
-            done <<< "$monitors"
-        else
-            printf 'wallpaper = ,%s\n' "$wp_real"
-        fi
-        printf 'ipc = off\nsplash = false\n'
-    } > "$REPO_DIR/hyprpaper/hyprpaper.conf"
-    success "Wallpaper → $wp_real"
-else
-    warn "File not found: $wp"
-    warn "  Set it later with: wallpaper /path/to/image"
-fi
+info "waypaper manages wallpaper — run 'waypaper' (or Super+Shift+I) to pick one"
+info "Config: ~/.config/waypaper/config.ini  (default folder: ~/Pictures)"
 
 # ── greetd (optional — requires sudo + systemd) ────────────────────────────────
 
