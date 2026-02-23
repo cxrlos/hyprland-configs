@@ -15,7 +15,7 @@
 }
 
 window#waybar {
-    background-color: #1f1d2e;
+    background-color: rgba(31, 29, 46, 0);
     color: #e0def4;
 }
 

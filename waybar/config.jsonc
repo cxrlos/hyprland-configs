@@ -29,6 +29,8 @@
         "format": "{id} {windows}",
         "window-rewrite-default": "󰖲",
         "window-rewrite": {
+            "title<.*[Cc]laude.*>":         "✻",
+            "title<OC |.*>":                 "󰧤",
             "title<.*[Nn]vim.*>":       "󰈙",
             "class<Alacritty>":         "󰆍",
             "class<yazi-float>":        "󰉋",
