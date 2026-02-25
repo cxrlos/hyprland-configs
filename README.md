@@ -59,7 +59,8 @@ hyprland-configs/
 | `Super+Return` | terminal (alacritty, `$HOME`) |
 | `Super+T` | float terminal at active window's CWD — toggle |
 | `Super+Space` | app launcher (rofi drun) |
-| `Super+W` | window switcher (rofi) |
+| `Super+W` | browser (`$browser`) |
+| `Super+Shift+W` | window switcher (rofi) |
 | `Super+D` | show desktop (go to next empty workspace) |
 
 ### Scratchpads

@@ -12,7 +12,8 @@ rofi -dmenu \
   Super + Return         Terminal (alacritty)
   Super + E              File manager (yazi — q quits, not :q)
   Super + Space          App launcher (rofi)
-  Super + W              Window switcher (rofi)
+  Super + W              Browser ($browser)
+  Super+Shift+W          Window switcher (rofi)
 <b><span foreground='#c4a7e7'>  WINDOWS</span></b>
   Super + Q              Close window
   Super + F              Fullscreen toggle
