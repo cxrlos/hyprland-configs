@@ -55,7 +55,7 @@ _install_deps() {
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
         waybar swaync
         rofi-wayland wl-clipboard cliphist
-        yazi
+        thunar
         grim slurp
         bat libnotify
         pipewire wireplumber
@@ -150,6 +150,7 @@ _link "$REPO_DIR/waybar"                       "$HOME/.config/waybar"
 _link "$REPO_DIR/rofi"                         "$HOME/.config/rofi"
 _link "$REPO_DIR/swaync"                       "$HOME/.config/swaync"
 _link "$REPO_DIR/waypaper"                     "$HOME/.config/waypaper"
+_link "$REPO_DIR/thunar"                       "$HOME/.config/Thunar"
 _link "$REPO_DIR/scripts"                      "$HOME/.config/scripts"
 
 # screenshot exposed in PATH
@@ -170,7 +171,7 @@ _write_gtk_settings() {
     mkdir -p "$dir"
     cat >"$dir/settings.ini" <<EOF
 [Settings]
-gtk-theme-name=rose-pine
+gtk-theme-name=rose-pine-gtk
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=BerkeleyMono Nerd Font Mono 12
 gtk-cursor-theme-name=Catppuccin-Mocha-Dark-Cursors
@@ -182,6 +183,25 @@ EOF
 
 _write_gtk_settings 3
 _write_gtk_settings 4
+
+# ── Thunar GTK CSS overrides (Rose Pine) ───────────────────────────────────────
+
+_merge_thunar_css() {
+    local gtk_css="$HOME/.config/gtk-3.0/gtk.css"
+    local thunar_css="$REPO_DIR/thunar/gtk.css"
+    if [[ -f "$thunar_css" ]]; then
+        if [[ -f "$gtk_css" ]] && grep -q "Thunar — Rose Pine" "$gtk_css" 2>/dev/null; then
+            skip "Thunar CSS already in gtk.css"
+        else
+            mkdir -p "$(dirname "$gtk_css")"
+            [[ -f "$gtk_css" ]] || touch "$gtk_css"
+            printf "\n/* Appended by hyprland-configs install.sh — Thunar Rose Pine */\n" >>"$gtk_css"
+            cat "$thunar_css" >>"$gtk_css"
+            success "Appended Thunar Rose Pine CSS to gtk-3.0/gtk.css"
+        fi
+    fi
+}
+_merge_thunar_css
 
 # ── Wallpaper ──────────────────────────────────────────────────────────────────
 

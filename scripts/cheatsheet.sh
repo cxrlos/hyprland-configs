@@ -10,7 +10,7 @@ rofi -dmenu \
     << 'EOF'
 <b><span foreground='#c4a7e7'>  APPLICATIONS</span></b>
   Super + Return         Terminal (alacritty)
-  Super + E              File manager (yazi — q quits, not :q)
+  Super + Y              File manager (Thunar)
   Super + Space          App launcher (rofi)
   Super + W              Browser ($browser)
   Super+Shift+W          Window switcher (rofi)

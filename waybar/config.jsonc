@@ -11,17 +11,14 @@
         "hyprland/workspaces",
         "hyprland/window"
     ],
-    "modules-center": [
-        "clock"
-    ],
+    "modules-center": [],
     "modules-right": [
-        "cpu",
-        "memory",
         "pulseaudio",
         "network",
-        "battery",
         "custom/swaync",
-        "tray"
+        "tray",
+        "clock",
+        "custom/power"
     ],
 
     // ── Workspaces ────────────────────────────────────────────────────────
@@ -30,22 +27,95 @@
         "window-rewrite-default": "󰖲",
         "window-rewrite": {
             "title<.*[Cc]laude.*>":         "✻",
-            "title<.*[Nn]vim.*>":       "󰈙",
-            "class<Alacritty>":         "󰆍",
-            "class<yazi-float>":        "󰉋",
-            "class<firefox>":           "󰈹",
-            "class<chromium>":          "󰊯",
-            "class<google-chrome>":     "󰊯",
-            "class<discord>":           "󰙯",
-            "class<Spotify>":           "󰓇",
-            "class<Slack>":             "󰒱",
-            "class<telegram-desktop>":  "󰔁",
-            "class<obs>":               "󰐻",
-            "class<pavucontrol>":       "󰕾"
+            "title<.*[Cc]ursor.*>":         "✻",
+            "title<.*[Nn]vim.*>":           "󰈙",
+            "class<Alacritty>":             "󰆍",
+            "class<kitty>":                 "󰆍",
+            "class<foot>":                  "󰆍",
+            "class<wezterm>":               "󰆍",
+            "class<Thunar>":             "󰉋",
+            "class<firefox>":               "󰈹",
+            "class<firefox-esr>":           "󰈹",
+            "class<chromium>":              "󰊯",
+            "class<google-chrome>":         "󰊯",
+            "class<chromium-browser>":      "󰊯",
+            "class<discord>":               "󰙯",
+            "class<Spotify>":               "󰓇",
+            "class<Slack>":                 "󰒱",
+            "class<telegram-desktop>":      "󰔁",
+            "class<obs>":                   "󰐻",
+            "class<pavucontrol>":           "󰕾",
+            "class<code>":                  "󰨞",
+            "class<Code>":                  "󰨞",
+            "class<cursor>":                "󰨞",
+            "class<Cursor>":                "󰨞",
+            "class<Thunderbird>":           "󰇯",
+            "class<thunderbird>":           "󰇯",
+            "class<libreoffice-writer>":    "󰈙",
+            "class<libreoffice-calc>":      "󰈚",
+            "class<libreoffice-impress>":   "󰈛",
+            "class<LibreOffice>":           "󰈙",
+            "class<gimp>":                  "󰈡",
+            "class<Gimp>":                  "󰈡",
+            "class<inkscape>":              "󰈡",
+            "class<vlc>":                   "󰕼",
+            "class<Vlc>":                   "󰕼",
+            "class<mpv>":                   "󰕼",
+            "class<zoom>":                  "󰕄",
+            "class<Zoom>":                  "󰕄",
+            "class<teams>":                 "󰒢",
+            "class<Teams>":                  "󰒢",
+            "class<Element>":               "󰒱",
+            "class<element-desktop>":       "󰒱",
+            "class<signal-desktop>":        "󰒙",
+            "class<Signal>":                "󰒙",
+            "class<keepassxc>":             "󰌋",
+            "class<KeePassXC>":             "󰌋",
+            "class<bitwarden>":             "󰌋",
+            "class<Bitwarden>":             "󰌋",
+            "class<obsidian>":              "󰈙",
+            "class<Obsidian>":              "󰈙",
+            "class<zathura>":               "󰈙",
+            "class<evince>":                "󰈙",
+            "class<org.gnome.Evince>":      "󰈙",
+            "class<nautilus>":              "󰉋",
+            "class<org.gnome.Nautilus>":    "󰉋",
+            "class<thunar>":                "󰉋",
+            "class<Thunar>":                "󰉋",
+            "class<pcmanfm>":               "󰉋",
+            "class<Pcmanfm>":               "󰉋",
+            "class<dolphin>":               "󰉋",
+            "class<Dolphin>":               "󰉋",
+            "class<blueman-manager>":       "󰂯",
+            "class<Blueman-manager>":       "󰂯",
+            "class<ark>":                   "󰆓",
+            "class<Ark>":                   "󰆓",
+            "class<file-roller>":           "󰆓",
+            "class<transmission-gtk>":       "󰶚",
+            "class<Transmission-gtk>":       "󰶚",
+            "class<qBittorrent>":           "󰶚",
+            "class<qbittorrent>":           "󰶚",
+            "class<steam>":                 "󰓇",
+            "class<Steam>":                 "󰓇",
+            "class<lutris>":                "󰓇",
+            "class<Lutris>":                "󰓇",
+            "class<virt-manager>":           "󰒋",
+            "class<Virtual Machine Manager>": "󰒋",
+            "class<gnome-boxes>":            "󰒋",
+            "class<org.gnome.Boxes>":       "󰒋",
+            "class<zeal>":                  "󰗂",
+            "class<Zeal>":                  "󰗂",
+            "class<okular>":                "󰈙",
+            "class<Okular>":                "󰈙",
+            "class<feh>":                   "󰈟",
+            "class<imv>":                   "󰈟",
+            "class<gwenview>":              "󰈟",
+            "class<Gwenview>":              "󰈟",
+            "class<Todoist>":               "󰒲",
+            "class<todoist>":               "󰒲",
+            "title<.*[Tt]odoist.*>":        "󰒲"
         },
-        "on-click": "activate",
-        "on-scroll-up": "hyprctl dispatch workspace e+1",
-        "on-scroll-down": "hyprctl dispatch workspace e-1"
+        "on-click": "activate"
     },
 
     // ── Window title ──────────────────────────────────────────────────────
@@ -57,8 +127,8 @@
 
     // ── Clock ─────────────────────────────────────────────────────────────
     "clock": {
-        "format": " {:%H:%M}",
-        "format-alt": " {:%a, %b %d  %H:%M}",
+        "format": "{:%H:%M}",
+        "format-alt": "{:%a, %b %d  %H:%M}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",
@@ -73,70 +143,44 @@
         }
     },
 
-    // ── CPU ───────────────────────────────────────────────────────────────
-    "cpu": {
-        "format": " {usage}%",
-        "interval": 2,
-        "tooltip": false
-    },
-
-    // ── Memory ───────────────────────────────────────────────────────────
-    "memory": {
-        "format": " {percentage}%",
-        "interval": 5,
-        "tooltip-format": "{used:0.1f}G / {total:0.1f}G"
-    },
-
     // ── Audio ─────────────────────────────────────────────────────────────
     "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": " muted",
-        "format-icons": {
-            "headphone": "",
-            "headset": "",
-            "default": ["", "", ""]
-        },
+        "format": "{volume}%",
+        "format-muted": "muted",
         "scroll-step": 5,
         "on-click": "pavucontrol",
         "tooltip-format": "{desc} — {volume}%"
     },
 
-    // ── Network ───────────────────────────────────────────────────────────
+    // ── Network (wifi bars) ───────────────────────────────────────────────
     "network": {
-        "format-wifi": " {essid} ({signalStrength}%)",
+        "format-wifi": "{icon} {essid}",
         "format-ethernet": " {ipaddr}",
-        "format-disconnected": "󰌙 disconnected",
-        "tooltip-format-wifi": "{ifname}  {ipaddr}\n{signalStrength}% — {bandwidthUpBits}  {bandwidthDownBits} ",
+        "format-disconnected": " disconnected",
+        "format-icons": ["󰤯", "󰤟", "󰤢", "󰤨"],
+        "tooltip-format-wifi": "{ifname}  {ipaddr}\n{signalStrength}% — {bandwidthUpBits}  {bandwidthDownBits}",
         "tooltip-format-ethernet": "{ifname}  {ipaddr}",
         "interval": 5
     },
 
-    // ── Battery ───────────────────────────────────────────────────────────
-    "battery": {
-        "states": {
-            "warning": 30,
-            "critical": 15
-        },
-        "format": "{icon} {capacity}%",
-        "format-charging": "󰂄 {capacity}%",
-        "format-plugged": " {capacity}%",
-        "format-icons": ["", "", "", "", ""],
-        "tooltip-format": "{timeTo}\n{power:.1f}W"
+    // ── Power (same as Super+Shift+M) ────────────────────────────────────
+    "custom/power": {
+        "format": "󰐥",
+        "tooltip": false,
+        "on-click": "bash -c '~/.config/scripts/power.sh'"
     },
-
-    // ── swaync toggle ─────────────────────────────────────────────────────
     "custom/swaync": {
         "tooltip": false,
         "format": "{icon}",
         "format-icons": {
-            "notification": "<span foreground='#eb6f92'><sup></sup></span>",
-            "none": "",
-            "dnd-notification": "<span foreground='#eb6f92'><sup></sup></span>",
-            "dnd-none": "",
-            "inhibited-notification": "<span foreground='#eb6f92'><sup></sup></span>",
-            "inhibited-none": "",
-            "dnd-inhibited-notification": "<span foreground='#eb6f92'><sup></sup></span>",
-            "dnd-inhibited-none": ""
+            "notification": "󰂚",
+            "none": "󰂛",
+            "dnd-notification": "󰂚",
+            "dnd-none": "󰂛",
+            "inhibited-notification": "󰂚",
+            "inhibited-none": "󰂛",
+            "dnd-inhibited-notification": "󰂚",
+            "dnd-inhibited-none": "󰂛"
         },
         "return-type": "json",
         "exec-if": "which swaync-client",

@@ -33,8 +33,12 @@ hyprland-configs/
 ├── swaync/
 │   ├── config.json         notification center config
 │   └── style.css           Rose Pine CSS
-├── hyprpaper/
-│   └── hyprpaper.conf      wallpaper (written by install.sh / wallpaper script)
+├── thunar/
+│   ├── thunarrc            file manager defaults (details view, tree pane)
+│   ├── gtk.css             Thunar-only Rose Pine GTK overrides
+│   └── README.md           usage and xfconf notes
+├── waypaper/
+│   └── config.ini          waypaper config (wallpaper restore)
 └── scripts/
     ├── install.sh           → install.sh (symlinked)
     ├── screenshot.sh        area/screen capture → rofi picker (copy/save/both)
@@ -42,8 +46,7 @@ hyprland-configs/
     ├── power.sh             rofi power menu (lock/suspend/reboot/shutdown)
     ├── wallpaper.sh         live wallpaper swap (also exposed as `wallpaper` in PATH)
     ├── terminal.sh          Super+T toggle: CWD-aware float terminal (tmux-aware)
-    ├── yazi-toggle.sh       Super+Y toggle: yazi scratchpad (create-or-toggle)
-    ├── yazi-loop.sh         yazi loop runner (keeps scratchpad alive after quit)
+    ├── thunar-launch.sh      Launches Thunar with Rose Pine GTK theme env
     ├── btop-toggle.sh       Super+M toggle: btop scratchpad (create-or-toggle)
     └── cheatsheet.sh        Super+Shift+/ floating keybind reference
 ```
@@ -68,7 +71,7 @@ hyprland-configs/
 | Key | Action |
 |---|---|
 | `Super+\`` | general scratchpad terminal |
-| `Super+Y` | yazi file manager |
+| `Super+Y` | Thunar file manager |
 | `Super+M` | btop system monitor |
 
 ### Windows
@@ -149,7 +152,7 @@ wallpaper /path/to/image.png
 | Idle | hypridle |
 | Screenshot | grimblast (grim+slurp fallback) |
 | Clipboard | wl-clipboard + cliphist |
-| File manager | yazi |
+| File manager | Thunar (Super+Y) |
 | Bluetooth | bluetui |
 | System monitor | btop |
 | Greeter | greetd + tuigreet |

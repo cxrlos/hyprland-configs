@@ -29,7 +29,7 @@ window#waybar {
 #workspaces button {
     padding: 0 6px;
     color: #6e6a86;
-    background: transparent;
+    background: #26233a;
     border-radius: 4px;
     margin: 4px 2px;
     transition: all 0.15s ease;
@@ -57,7 +57,9 @@ window#waybar {
 #window {
     color: #908caa;
     padding: 0 8px;
-    margin: 4px 0;
+    margin: 4px 2px;
+    border-radius: 4px;
+    background: #26233a;
 }
 
 /* ── Clock ──────────────────────────────────────────────────────────── */
@@ -70,45 +72,16 @@ window#waybar {
 
 /* ── Right modules — shared base ────────────────────────────────────── */
 
-#cpu,
-#memory,
 #pulseaudio,
 #network,
-#battery,
 #custom-swaync,
-#tray {
+#custom-power,
+#tray,
+#clock {
     padding: 0 8px;
     margin: 4px 2px;
     border-radius: 4px;
     background: #26233a;
-}
-
-/* ── CPU ────────────────────────────────────────────────────────────── */
-
-#cpu {
-    color: #9ccfd8;
-}
-
-#cpu.warning {
-    color: #f6c177;
-}
-
-#cpu.critical {
-    color: #eb6f92;
-}
-
-/* ── Memory ─────────────────────────────────────────────────────────── */
-
-#memory {
-    color: #31748f;
-}
-
-#memory.warning {
-    color: #f6c177;
-}
-
-#memory.critical {
-    color: #eb6f92;
 }
 
 /* ── Audio ──────────────────────────────────────────────────────────── */
@@ -131,28 +104,11 @@ window#waybar {
     color: #6e6a86;
 }
 
-/* ── Battery ────────────────────────────────────────────────────────── */
+/* ── Power ──────────────────────────────────────────────────────────── */
 
-#battery {
-    color: #9ccfd8;
-}
-
-#battery.charging,
-#battery.plugged {
-    color: #31748f;
-}
-
-#battery.warning:not(.charging) {
-    color: #f6c177;
-}
-
-#battery.critical:not(.charging) {
-    color: #eb6f92;
-    animation: blink 1s linear infinite;
-}
-
-@keyframes blink {
-    to { color: #e0def4; }
+#custom-power {
+    color: #e0def4;
+    padding: 0 10px;
 }
 
 /* ── swaync ─────────────────────────────────────────────────────────── */
