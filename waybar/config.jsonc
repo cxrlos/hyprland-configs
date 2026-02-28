@@ -148,7 +148,7 @@
         "format": "{volume}%",
         "format-muted": "muted",
         "scroll-step": 5,
-        "on-click": "pavucontrol",
+        "on-click": "bash -c '~/.config/scripts/wiremix-toggle.sh'",
         "tooltip-format": "{desc} — {volume}%"
     },
 
