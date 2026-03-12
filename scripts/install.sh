@@ -153,9 +153,10 @@ _link "$REPO_DIR/waypaper"                     "$HOME/.config/waypaper"
 _link "$REPO_DIR/thunar"                       "$HOME/.config/Thunar"
 _link "$REPO_DIR/scripts"                      "$HOME/.config/scripts"
 
-# screenshot exposed in PATH
+# screenshot + steam (resolution fix) exposed in PATH
 mkdir -p "$HOME/.local/bin"
 _link "$REPO_DIR/scripts/screenshot.sh"        "$HOME/.local/bin/screenshot"
+_link "$REPO_DIR/scripts/steam.sh"             "$HOME/.local/bin/steam"
 
 # ── Script permissions ─────────────────────────────────────────────────────────
 
