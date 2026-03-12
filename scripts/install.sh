@@ -102,15 +102,15 @@ _install_deps() {
 # ── Font check ─────────────────────────────────────────────────────────────────
 
 _check_font() {
-    fc-list 2>/dev/null | grep -qi "Ioskeley" && return 0
+    fc-list 2>/dev/null | grep -qi "ProFont IIx Nerd Font" && return 0
     return 1
 }
 
 if _check_font; then
-    success "IoskeleyMono Nerd Font"
+    success "ProFont IIx Nerd Font Mono"
 else
-    warn "IoskeleyMono Nerd Font not found"
-    warn "  Install via: yay -S ttf-ioskevley-mono-nerd"
+    warn "ProFont IIx Nerd Font Mono not found"
+    warn "  Install via: sudo pacman -S ttf-profont-nerd"
 fi
 
 _install_deps

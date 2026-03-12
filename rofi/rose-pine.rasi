@@ -22,7 +22,7 @@
 
 configuration {
     modi:                "drun,run,window";
-    font:                "Ioskeley Mono Nerd Font 12";
+    font:                "ProFont IIx Nerd Font Mono 10";
     show-icons:          true;
     icon-theme:          "Papirus-Dark";
     drun-display-format: "{name}";

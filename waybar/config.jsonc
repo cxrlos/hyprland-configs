@@ -23,7 +23,8 @@
 
     // ── Workspaces ────────────────────────────────────────────────────────
     "hyprland/workspaces": {
-        "format": "{id} {windows}",
+        "format": "{id}  {windows}",
+        "format-window-separator": " ",
         "window-rewrite-default": "󰖲",
         "window-rewrite": {
             "title<.*[Cc]laude.*>":         "✻",
