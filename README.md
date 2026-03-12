@@ -136,9 +136,7 @@ sleep   → lock before suspend, restore DPMS on wake
 wallpaper /path/to/image.png
 ```
 
-**Fonts** — BerkeleyMono Nerd Font is commercial. Place the patched variant in
-`~/.local/share/fonts/` before running install.sh.
-
+**Fonts** — Install IoskeleyMono Nerd Font via `yay -S ttf-ioskevley-mono-nerd` before running install.sh.
 ## Stack
 
 | Role | Tool |

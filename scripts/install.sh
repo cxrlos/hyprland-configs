@@ -102,17 +102,15 @@ _install_deps() {
 # ── Font check ─────────────────────────────────────────────────────────────────
 
 _check_font() {
-    ls "$HOME/.local/share/fonts"/BerkeleyMono* &>/dev/null && return 0
-    fc-list 2>/dev/null | grep -qi "BerkeleyMono\|Berkeley Mono" && return 0
+    fc-list 2>/dev/null | grep -qi "Ioskeley" && return 0
     return 1
 }
 
 if _check_font; then
-    success "BerkeleyMono Nerd Font"
+    success "IoskeleyMono Nerd Font"
 else
-    warn "BerkeleyMono Nerd Font not found"
-    warn "  Berkeley Mono is commercial — https://berkeleygraphics.com/typefaces/berkeley-mono/"
-    warn "  Install the Nerd Font patched variant then re-run."
+    warn "IoskeleyMono Nerd Font not found"
+    warn "  Install via: yay -S ttf-ioskevley-mono-nerd"
 fi
 
 _install_deps
@@ -174,7 +172,7 @@ _write_gtk_settings() {
 [Settings]
 gtk-theme-name=rose-pine-gtk
 gtk-icon-theme-name=Papirus-Dark
-gtk-font-name=BerkeleyMono Nerd Font Mono 12
+gtk-font-name=Ioskeley Mono Nerd Font 12
 gtk-cursor-theme-name=Catppuccin-Mocha-Dark-Cursors
 gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=1
