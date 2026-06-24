@@ -1,26 +1,26 @@
-/* Rose Pine — swaync style
-   Matches waybar surface/overlay palette
+/* Catppuccin Mocha — swaync style
+   Matches the waybar palette (surface0 panels, sky accent)
 */
 
 * {
-    font-family: "ProFont IIx Nerd Font Mono", monospace;
-    font-size: 10px;
+    font-family: "MonaspiceNe Nerd Font", monospace;
+    font-size: 11px;
 }
 
 /* ── Control center ─────────────────────────────────────────────────── */
 
 .control-center {
-    background: #1f1d2e;
-    border-radius: 10px;
-    border: 1px solid #26233a;
+    background: rgba(24, 24, 37, 0.85);
+    border-radius: 12px;
+    border: 1px solid rgba(137, 220, 235, 0.18);
     padding: 8px;
-    color: #e0def4;
+    color: #cdd6f4;
 }
 
 /* ── Title / header ─────────────────────────────────────────────────── */
 
 .widget-title {
-    color: #e0def4;
+    color: #cdd6f4;
     font-size: 14px;
     font-weight: bold;
     padding: 8px 12px 4px;
@@ -28,39 +28,39 @@
 
 .widget-title > button {
     font-size: 11px;
-    color: #908caa;
-    background: #26233a;
+    color: #a6adc8;
+    background: #313244;
     border-radius: 6px;
     border: none;
     padding: 4px 10px;
 }
 
 .widget-title > button:hover {
-    background: #403d52;
-    color: #e0def4;
+    background: #45475a;
+    color: #cdd6f4;
 }
 
 /* ── DND toggle ─────────────────────────────────────────────────────── */
 
 .widget-dnd {
     padding: 4px 12px 8px;
-    color: #908caa;
+    color: #a6adc8;
     font-size: 12px;
 }
 
 .widget-dnd > switch {
-    background: #26233a;
+    background: #313244;
     border-radius: 10px;
-    border: 1px solid #403d52;
+    border: 1px solid #45475a;
 }
 
 .widget-dnd > switch:checked {
-    background: #c4a7e7;
-    color: #191724;
+    background: #89dceb;
+    color: #1e1e2e;
 }
 
 .widget-dnd > switch slider {
-    background: #908caa;
+    background: #a6adc8;
     border-radius: 10px;
     min-width: 14px;
     min-height: 14px;
@@ -70,13 +70,13 @@
 
 .widget-inhibitors {
     padding: 4px 12px;
-    color: #908caa;
+    color: #a6adc8;
 }
 
 .widget-inhibitors > button {
     font-size: 11px;
-    color: #908caa;
-    background: #26233a;
+    color: #a6adc8;
+    background: #313244;
     border-radius: 6px;
     border: none;
     padding: 4px 10px;
@@ -94,20 +94,20 @@
 }
 
 .notification {
-    background: #26233a;
+    background: #313244;
     border-radius: 8px;
-    border: 1px solid #403d52;
+    border: 1px solid #45475a;
     padding: 10px 12px;
     margin: 2px 0;
-    color: #e0def4;
+    color: #cdd6f4;
 }
 
 .notification.critical {
-    border-color: #eb6f92;
+    border-color: #f38ba8;
 }
 
 .notification.low {
-    border-color: #403d52;
+    border-color: #45475a;
 }
 
 /* ── Notification body ──────────────────────────────────────────────── */
@@ -121,51 +121,51 @@
     background: transparent;
     border-radius: 8px;
     padding: 0;
-    color: #e0def4;
+    color: #cdd6f4;
 }
 
 .notification-default-action:hover {
-    background: #403d52;
+    background: #45475a;
 }
 
 .summary {
     font-size: 12px;
     font-weight: bold;
-    color: #e0def4;
+    color: #cdd6f4;
 }
 
 .time {
     font-size: 11px;
-    color: #6e6a86;
+    color: #6c7086;
 }
 
 .body {
     font-size: 12px;
-    color: #908caa;
+    color: #a6adc8;
 }
 
 /* ── Action buttons ─────────────────────────────────────────────────── */
 
 .notification-action {
     font-size: 11px;
-    color: #9ccfd8;
-    background: #1f1d2e;
+    color: #89dceb;
+    background: #181825;
     border-radius: 6px;
-    border: 1px solid #403d52;
+    border: 1px solid #45475a;
     padding: 4px 10px;
     margin: 4px 2px 0;
 }
 
 .notification-action:hover {
-    background: #403d52;
-    color: #e0def4;
+    background: #45475a;
+    color: #cdd6f4;
 }
 
 /* ── Close button ───────────────────────────────────────────────────── */
 
 .close-button {
     background: transparent;
-    color: #6e6a86;
+    color: #6c7086;
     border: none;
     border-radius: 4px;
     padding: 2px 6px;
@@ -173,8 +173,8 @@
 }
 
 .close-button:hover {
-    background: #403d52;
-    color: #eb6f92;
+    background: #45475a;
+    color: #f38ba8;
 }
 
 /* ── Scrollbar ──────────────────────────────────────────────────────── */
@@ -184,7 +184,7 @@ scrollbar {
 }
 
 scrollbar slider {
-    background: #403d52;
+    background: #45475a;
     border-radius: 4px;
     min-width: 4px;
 }
@@ -196,7 +196,7 @@ scrollbar slider {
 }
 
 .floating-notifications > box > .notification-row > .notification {
-    background: #1f1d2e;
-    border: 1px solid #26233a;
-    box-shadow: 0 4px 16px rgba(19, 17, 26, 0.6);
+    background: rgba(24, 24, 37, 0.85);
+    border: 1px solid rgba(137, 220, 235, 0.18);
+    box-shadow: 0 4px 16px rgba(17, 17, 27, 0.6);
 }

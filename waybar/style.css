@@ -1,134 +1,115 @@
-/* Rose Pine palette
-   base      #191724   surface   #1f1d2e   overlay   #26233a
-   muted     #6e6a86   subtle    #908caa   text      #e0def4
-   love      #eb6f92   gold      #f6c177   rose      #ebbcba
-   pine      #31748f   foam      #9ccfd8   iris      #c4a7e7
-   highlight #403d52
+/* Catppuccin Mocha — floating islands, 4-color palette
+   base #1e1e2e (island bg)   text #cdd6f4   muted #6c7086   sky #89dceb (accent)
 */
 
 * {
-    font-family: "ProFont IIx Nerd Font Mono", monospace;
-    font-size: 10px;
+    font-family: "MonaspiceNe Nerd Font Mono", monospace;
+    /* 13px, not 11px: at 11px the hinter snaps '1' a pixel taller than '0'; 13 grid-fits clean */
+    font-size: 13px;
     border: none;
     border-radius: 0;
     min-height: 0;
 }
 
 window#waybar {
-    background-color: rgba(31, 29, 46, 0);
-    color: #e0def4;
+    background: transparent;
+    color: #cdd6f4;
+}
+
+/* Three frosted islands: left (workspaces + window), center (clock), right (status).
+   Blur behind them comes from the waybar layerrule. */
+.modules-left,
+.modules-center,
+.modules-right {
+    background: rgba(30, 30, 46, 0.85);
+    border: 1px solid rgba(137, 220, 235, 0.18);
+    border-radius: 12px;
+    margin: 6px 8px;
+    padding: 0 4px;
+}
+
+#workspaces,
+#window,
+#custom-scores,
+#pulseaudio,
+#network,
+#custom-caffeine,
+#custom-swaync,
+#custom-power,
+#clock,
+#tray {
+    background: transparent;
+    padding: 0 8px;
+    color: #cdd6f4;
 }
 
 /* ── Workspaces ─────────────────────────────────────────────────────── */
-
 #workspaces {
-    margin: 0 4px;
-    padding: 0;
+    padding: 0 2px;
 }
 
 #workspaces button {
-    padding: 0 6px;
-    color: #6e6a86;
-    background: #26233a;
-    border-radius: 4px;
-    margin: 4px 2px;
+    padding: 0 8px;
+    margin: 5px 2px;
+    color: #6c7086;
+    background: transparent;
+    border-radius: 8px;
     transition: all 0.15s ease;
 }
 
 #workspaces button:hover {
-    background: #26233a;
-    color: #e0def4;
+    color: #cdd6f4;
+    background: transparent;
 }
 
-#workspaces button.active {
-    background: #26233a;
-    color: #c4a7e7;
-    font-weight: bold;
-}
-
+#workspaces button.active,
 #workspaces button.urgent {
-    background: #26233a;
-    color: #eb6f92;
+    color: #1e1e2e;
+    background: #89dceb;
     font-weight: bold;
 }
 
-/* ── Window title ───────────────────────────────────────────────────── */
-
+/* ── Secondary text ─────────────────────────────────────────────────── */
 #window {
-    color: #908caa;
-    padding: 0 8px;
-    margin: 4px 2px;
-    border-radius: 4px;
-    background: #26233a;
+    color: #6c7086;
 }
 
-/* ── Clock ──────────────────────────────────────────────────────────── */
-
 #clock {
-    color: #e0def4;
     font-weight: bold;
-    padding: 0 10px;
 }
 
-/* ── Right modules — shared base ────────────────────────────────────── */
+/* ── Dim / inactive states ──────────────────────────────────────────── */
+#pulseaudio.muted,
+#network.disconnected,
+#custom-caffeine {
+    color: #6c7086;
+}
 
-#pulseaudio,
-#network,
-#custom-swaync,
-#custom-power,
-#tray,
-#clock {
-    padding: 0 8px;
+/* ── Accent (the only non-grey) ─────────────────────────────────────── */
+#custom-caffeine.active {
+    color: #89dceb;
+}
+
+/* ── Scores: a pill on the left of the right island; red outline when live ── */
+#custom-scores {
+    border: 1px solid transparent;   /* reserve space so .live doesn't shift layout */
+    border-radius: 10px;
     margin: 4px 2px;
-    border-radius: 4px;
-    background: #26233a;
+}
+#custom-scores.live {
+    border-color: #f38ba8;
 }
 
-/* ── Audio ──────────────────────────────────────────────────────────── */
-
-#pulseaudio {
-    color: #c4a7e7;
-}
-
-#pulseaudio.muted {
-    color: #6e6a86;
-}
-
-/* ── Network ────────────────────────────────────────────────────────── */
-
-#network {
-    color: #9ccfd8;
-}
-
-#network.disconnected {
-    color: #6e6a86;
-}
-
-/* ── Power ──────────────────────────────────────────────────────────── */
-
+/* ── Power (red = danger) ───────────────────────────────────────────── */
 #custom-power {
-    color: #e0def4;
-    padding: 0 10px;
-}
-
-/* ── swaync ─────────────────────────────────────────────────────────── */
-
-#custom-swaync {
-    color: #c4a7e7;
-    padding: 0 10px;
+    color: #f38ba8;
 }
 
 /* ── Tray ───────────────────────────────────────────────────────────── */
-
-#tray {
-    padding: 0 6px;
-}
-
 #tray > .passive {
     -gtk-icon-effect: dim;
 }
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: #26233a;
 }

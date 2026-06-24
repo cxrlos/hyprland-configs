@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROFI_THEME="$HOME/.config/rofi/rose-pine.rasi"
+ROFI_THEME="$HOME/.config/rofi/catppuccin.rasi"
 
 choice=$(printf "  Lock\n  Suspend\n  Reboot\n  Shutdown" \
     | rofi -dmenu -p " " -theme "$ROFI_THEME" -lines 4 -width 20)

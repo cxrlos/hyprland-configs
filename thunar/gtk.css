@@ -1,6 +1,6 @@
-/* Thunar — Rose Pine overrides (same palette as waybar/swaync/rofi)
-   base #191724  surface #1f1d2e  overlay #26233a  highlight #403d52
-   muted #6e6a86  subtle #908caa  text #e0def4  iris #c4a7e7  foam #9ccfd8
+/* Thunar — Catppuccin Mocha overrides (same palette as waybar/swaync/rofi)
+   base #1e1e2e  mantle #181825  surface0 #313244  surface1 #45475a
+   overlay0 #6c7086  subtext0 #a6adc8  text #cdd6f4  sky #89dceb
    Use: append this file to ~/.config/gtk-3.0/gtk.css (or ensure it's loaded).
    Restart Thunar after changes: thunar -q; thunar
 */
@@ -8,61 +8,61 @@
 /* Side pane (places / tree) — surface background */
 .thunar .sidebar,
 .thunar .sidebar view {
-    background-color: #1f1d2e;
+    background-color: #181825;
 }
 
 .thunar .sidebar row:selected,
 .thunar .sidebar row:selected label {
-    background-color: #26233a;
-    color: #c4a7e7;
+    background-color: #313244;
+    color: #89dceb;
 }
 
 .thunar .sidebar row:hover {
-    background-color: #26233a;
+    background-color: #313244;
 }
 
 /* Main list view — base/surface */
 .thunar .view {
-    background-color: #191724;
-    color: #e0def4;
+    background-color: #1e1e2e;
+    color: #cdd6f4;
 }
 
 .thunar .view:selected,
 .thunar .view:selected:focus {
-    background-color: #26233a;
-    color: #c4a7e7;
+    background-color: #313244;
+    color: #89dceb;
 }
 
 .thunar .view:hover {
-    background-color: #26233a;
+    background-color: #313244;
 }
 
 /* Toolbar */
 .thunar .toolbar {
-    background-color: #1f1d2e;
-    border-bottom: 1px solid #26233a;
+    background-color: #181825;
+    border-bottom: 1px solid #313244;
 }
 
 .thunar .toolbar button {
-    color: #908caa;
+    color: #a6adc8;
 }
 
 .thunar .toolbar button:hover {
-    background-color: #26233a;
-    color: #e0def4;
+    background-color: #313244;
+    color: #cdd6f4;
 }
 
 /* Location bar / path bar */
 .thunar .path-bar {
-    background-color: #26233a;
+    background-color: #313244;
     border-radius: 4px;
 }
 
 /* Status bar */
 .thunar .statusbar {
-    background-color: #1f1d2e;
-    color: #908caa;
-    border-top: 1px solid #26233a;
+    background-color: #181825;
+    color: #a6adc8;
+    border-top: 1px solid #313244;
 }
 
 /* Disk usage bars in shortcuts pane (Thunar 4.21+) */
@@ -72,15 +72,15 @@
 }
 
 .thunar .disk-space-usage-bar--normal {
-    background-color: #31748f;
+    background-color: #89b4fa;
 }
 
 .thunar .disk-space-usage-bar--warning {
-    background-color: #f6c177;
+    background-color: #f9e2af;
 }
 
 .thunar .disk-space-usage-bar--error {
-    background-color: #eb6f92;
+    background-color: #f38ba8;
 }
 
 /* Compact spacing for list feel */

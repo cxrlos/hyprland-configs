@@ -1,28 +1,23 @@
-/* Rose Pine theme for rofi */
+/* Catppuccin Mocha theme for rofi */
 
 * {
-    base:       #191724ff;
-    surface:    #1f1d2eff;
-    overlay:    #26233aff;
-    muted:      #6e6a86ff;
-    subtle:     #908caaff;
-    text:       #e0def4ff;
-    love:       #eb6f92ff;
-    gold:       #f6c177ff;
-    pine:       #31748fff;
-    foam:       #9ccfd8ff;
-    iris:       #c4a7e7ff;
-    highlight:  #403d52ff;
+    base:       #1e1e2ed9;
+    mantle:     #181825d9;
+    surface0:   #313244ff;
+    overlay0:   #6c7086ff;
+    subtext0:   #a6adc8ff;
+    text:       #cdd6f4ff;
+    sky:        #89dcebff;
 
     background-color:   @base;
     text-color:         @text;
-    border-color:       @iris;
-    separatorcolor:     @overlay;
+    border-color:       @sky;
+    separatorcolor:     @surface0;
 }
 
 configuration {
     modi:                "drun,run,window";
-    font:                "ProFont IIx Nerd Font Mono 10";
+    font:                "MonaspiceNe Nerd Font 11";
     show-icons:          true;
     icon-theme:          "Papirus-Dark";
     drun-display-format: "{name}";
@@ -36,8 +31,8 @@ configuration {
 window {
     width:            480px;
     border:           1px solid;
-    border-color:     @iris;
-    border-radius:    10px;
+    border-color:     @sky;
+    border-radius:    12px;
     background-color: @base;
     padding:          0px;
 }
@@ -50,8 +45,8 @@ mainbox {
 }
 
 inputbar {
-    background-color: @surface;
-    border-radius:    10px 10px 0px 0px;
+    background-color: @mantle;
+    border-radius:    12px 12px 0px 0px;
     padding:          10px 12px;
     spacing:          8px;
     children:         [prompt, entry];
@@ -59,19 +54,19 @@ inputbar {
 
 prompt {
     background-color: transparent;
-    text-color:       @foam;
+    text-color:       @sky;
 }
 
 entry {
     background-color: transparent;
     text-color:       @text;
     placeholder:      "Search...";
-    placeholder-color: @muted;
+    placeholder-color: @overlay0;
 }
 
 listview {
     background-color: @base;
-    border-radius:    0px 0px 10px 10px;
+    border-radius:    0px 0px 12px 12px;
     padding:          4px;
     spacing:          0px;
     scrollbar:        false;
@@ -81,20 +76,20 @@ listview {
 element {
     background-color: transparent;
     text-color:       @text;
-    border-radius:    6px;
+    border-radius:    8px;
     padding:          8px 12px;
     spacing:          8px;
     orientation:      horizontal;
 }
 
 element selected {
-    background-color: @overlay;
-    text-color:       @iris;
+    background-color: @surface0;
+    text-color:       @sky;
 }
 
 element alternate {
     background-color: transparent;
-    text-color:       @subtle;
+    text-color:       @subtext0;
 }
 
 element-icon {

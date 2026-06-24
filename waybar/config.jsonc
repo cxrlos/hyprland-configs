@@ -1,7 +1,7 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 32,
+    "height": 38,
     "spacing": 4,
     "exclusive": true,
     "passthrough": false,
@@ -11,13 +11,16 @@
         "hyprland/workspaces",
         "hyprland/window"
     ],
-    "modules-center": [],
+    "modules-center": [
+        "clock"
+    ],
     "modules-right": [
+        "custom/scores",
         "pulseaudio",
         "network",
+        "custom/caffeine",
         "custom/swaync",
         "tray",
-        "clock",
         "custom/power"
     ],
 
@@ -27,94 +30,20 @@
         "format-window-separator": " ",
         "window-rewrite-default": "󰖲",
         "window-rewrite": {
-            "title<.*[Cc]laude.*>":         "✻",
-            "title<.*[Cc]ursor.*>":         "✻",
-            "title<.*[Nn]vim.*>":           "󰈙",
-            "class<Alacritty>":             "󰆍",
-            "class<kitty>":                 "󰆍",
-            "class<foot>":                  "󰆍",
-            "class<wezterm>":               "󰆍",
-            "class<Thunar>":             "󰉋",
-            "class<firefox>":               "󰈹",
-            "class<firefox-esr>":           "󰈹",
-            "class<chromium>":              "󰊯",
-            "class<google-chrome>":         "󰊯",
-            "class<chromium-browser>":      "󰊯",
-            "class<discord>":               "󰙯",
-            "class<Spotify>":               "󰓇",
-            "class<Slack>":                 "󰒱",
-            "class<telegram-desktop>":      "󰔁",
-            "class<obs>":                   "󰐻",
-            "class<pavucontrol>":           "󰕾",
-            "class<code>":                  "󰨞",
-            "class<Code>":                  "󰨞",
-            "class<cursor>":                "󰨞",
-            "class<Cursor>":                "󰨞",
-            "class<Thunderbird>":           "󰇯",
-            "class<thunderbird>":           "󰇯",
-            "class<libreoffice-writer>":    "󰈙",
-            "class<libreoffice-calc>":      "󰈚",
-            "class<libreoffice-impress>":   "󰈛",
-            "class<LibreOffice>":           "󰈙",
-            "class<gimp>":                  "󰈡",
-            "class<Gimp>":                  "󰈡",
-            "class<inkscape>":              "󰈡",
-            "class<vlc>":                   "󰕼",
-            "class<Vlc>":                   "󰕼",
-            "class<mpv>":                   "󰕼",
-            "class<zoom>":                  "󰕄",
-            "class<Zoom>":                  "󰕄",
-            "class<teams>":                 "󰒢",
-            "class<Teams>":                  "󰒢",
-            "class<Element>":               "󰒱",
-            "class<element-desktop>":       "󰒱",
-            "class<signal-desktop>":        "󰒙",
-            "class<Signal>":                "󰒙",
-            "class<keepassxc>":             "󰌋",
-            "class<KeePassXC>":             "󰌋",
-            "class<bitwarden>":             "󰌋",
-            "class<Bitwarden>":             "󰌋",
-            "class<obsidian>":              "󰈙",
-            "class<Obsidian>":              "󰈙",
-            "class<zathura>":               "󰈙",
-            "class<evince>":                "󰈙",
-            "class<org.gnome.Evince>":      "󰈙",
-            "class<nautilus>":              "󰉋",
-            "class<org.gnome.Nautilus>":    "󰉋",
-            "class<thunar>":                "󰉋",
-            "class<Thunar>":                "󰉋",
-            "class<pcmanfm>":               "󰉋",
-            "class<Pcmanfm>":               "󰉋",
-            "class<dolphin>":               "󰉋",
-            "class<Dolphin>":               "󰉋",
-            "class<blueman-manager>":       "󰂯",
-            "class<Blueman-manager>":       "󰂯",
-            "class<ark>":                   "󰆓",
-            "class<Ark>":                   "󰆓",
-            "class<file-roller>":           "󰆓",
-            "class<transmission-gtk>":       "󰶚",
-            "class<Transmission-gtk>":       "󰶚",
-            "class<qBittorrent>":           "󰶚",
-            "class<qbittorrent>":           "󰶚",
-            "class<steam>":                 "󰓇",
-            "class<Steam>":                 "󰓇",
-            "class<lutris>":                "󰓇",
-            "class<Lutris>":                "󰓇",
-            "class<virt-manager>":           "󰒋",
-            "class<Virtual Machine Manager>": "󰒋",
-            "class<gnome-boxes>":            "󰒋",
-            "class<org.gnome.Boxes>":       "󰒋",
-            "class<zeal>":                  "󰗂",
-            "class<Zeal>":                  "󰗂",
-            "class<okular>":                "󰈙",
-            "class<Okular>":                "󰈙",
-            "class<feh>":                   "󰈟",
-            "class<imv>":                   "󰈟",
-            "class<gwenview>":              "󰈟",
-            "class<Gwenview>":              "󰈟",
-            "class<Todoist>":               "󰒲",
-            "class<todoist>":               "󰒲",
-            "title<.*[Tt]odoist.*>":        "󰒲"
+            "title<.*[Cc]laude.*>":   "✻",
+            "title<.*[Cc]ursor.*>":   "✻",
+            "title<.*[Nn]vim.*>":     "󰈙",
+            "class<Alacritty>":       "󰆍",
+            "class<zen>":             "󰈹",
+            "class<zen-browser>":     "󰈹",
+            "class<zen-alpha>":       "󰈹",
+            "class<Thunar>":          "󰉋",
+            "class<thunar>":          "󰉋",
+            "class<discord>":         "󰙯",
+            "class<Spotify>":         "󰓇",
+            "class<Slack>":           "󰒱",
+            "class<obsidian>":        "󰠮",
+            "class<Obsidian>":        "󰠮"
         },
         "on-click": "activate"
     },
@@ -128,32 +57,45 @@
 
     // ── Clock ─────────────────────────────────────────────────────────────
     "clock": {
-        "format": "{:%H:%M}",
-        "format-alt": "{:%a, %b %d  %H:%M}",
+        "format": "{:%A, %B %d    %H:%M}",
+        "format-alt": "{:%H:%M}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",
             "on-scroll": 1,
             "format": {
-                "months":   "<span color='#e0def4'><b>{}</b></span>",
-                "days":     "<span color='#908caa'>{}</span>",
-                "weeks":    "<span color='#9ccfd8'><b>W{}</b></span>",
-                "weekdays": "<span color='#c4a7e7'><b>{}</b></span>",
-                "today":    "<span color='#eb6f92'><b><u>{}</u></b></span>"
+                "months":   "<span color='#cdd6f4'><b>{}</b></span>",
+                "days":     "<span color='#a6adc8'>{}</span>",
+                "weeks":    "<span color='#89dceb'><b>W{}</b></span>",
+                "weekdays": "<span color='#89dceb'><b>{}</b></span>",
+                "today":    "<span color='#f38ba8'><b><u>{}</u></b></span>"
             }
         }
     },
 
+    // ── Sports (live/next matches; hidden when idle) ─────────────────────
+    "custom/scores": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/scripts/scores.py",
+        "interval": 10,
+        "tooltip": false
+    },
+
     // ── Audio ─────────────────────────────────────────────────────────────
     "pulseaudio": {
-        "format": "{volume}%",
-        "format-muted": "muted",
+        "format": "{icon}",
+        "format-muted": "󰝟",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
         "scroll-step": 5,
-        "on-click": "bash -c '~/.config/scripts/wiremix-toggle.sh'",
+        "max-volume": 100,
+        "on-click": "~/.config/scripts/scratch.sh wiremix wiremix-scratch wiremix",
         "tooltip-format": "{desc} — {volume}%"
     },
 
-    // ── Network (wifi bars) ───────────────────────────────────────────────
+    // ── Network ───────────────────────────────────────────────────────────
     "network": {
         "format-wifi": "{icon} {essid}",
         "format-ethernet": " {ipaddr}",
@@ -161,14 +103,25 @@
         "format-icons": ["󰤯", "󰤟", "󰤢", "󰤨"],
         "tooltip-format-wifi": "{ifname}  {ipaddr}\n{signalStrength}% — {bandwidthUpBits}  {bandwidthDownBits}",
         "tooltip-format-ethernet": "{ifname}  {ipaddr}",
+        "on-click": "~/.config/scripts/scratch.sh nmtui nmtui-float nmtui",
         "interval": 5
+    },
+
+    // ── Caffeine (idle inhibitor) ────────────────────────────────────────
+    "custom/caffeine": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/scripts/caffeine.sh status",
+        "on-click": "~/.config/scripts/caffeine.sh toggle",
+        "signal": 8,
+        "tooltip": true
     },
 
     // ── Power (same as Super+Shift+M) ────────────────────────────────────
     "custom/power": {
         "format": "󰐥",
         "tooltip": false,
-        "on-click": "bash -c '~/.config/scripts/power.sh'"
+        "on-click": "~/.config/scripts/power.sh"
     },
     "custom/swaync": {
         "tooltip": false,

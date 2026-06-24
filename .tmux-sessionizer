@@ -1,8 +1,24 @@
 #!/usr/bin/env bash
+#
+# Tmux layout for the hyprland-configs project.
+# Invoked by the sessionizer, which exports $TMUX_SESSION and $PROJECT_DIR.
+# PROJECT_DIR falls back to this script's own directory so the layout stays
+# portable across machines without a hardcoded path.
 
-tmux rename-window -t "${TMUX_SESSION}:1" editor
-tmux send-keys -t "${TMUX_SESSION}:editor" 'nvim .' Enter
+set -euo pipefail
 
-tmux new-window -t "${TMUX_SESSION}" -n shell
+PROJECT_DIR="${PROJECT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+TMUX_SESSION="${TMUX_SESSION:-$(basename "$PROJECT_DIR")}"
 
-tmux select-window -t "${TMUX_SESSION}:editor"
+tmux rename-window -t "$TMUX_SESSION" editor
+tmux send-keys -t "$TMUX_SESSION:editor" 'nvim .' Enter
+
+tmux new-window -t "$TMUX_SESSION" -n claude -c "$PROJECT_DIR"
+tmux send-keys -t "$TMUX_SESSION:claude" 'claude' Enter
+
+tmux new-window -t "$TMUX_SESSION" -n shell -c "$PROJECT_DIR"
+
+tmux new-window -t "$TMUX_SESSION" -n logs -c "$PROJECT_DIR"
+tmux send-keys -t "$TMUX_SESSION:logs" 'log="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/hyprland.log"; [ -f "$log" ] && tail -f "$log" || echo "no hyprland log (not in a Hyprland session)"' Enter
+
+tmux select-window -t "$TMUX_SESSION:editor"

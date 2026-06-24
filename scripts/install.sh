@@ -47,11 +47,13 @@ _ensure_yay() {
 # ── Dependencies ───────────────────────────────────────────────────────────────
 
 _install_deps() {
-    info "Syncing package database..."
-    sudo pacman -Sy --noconfirm
+    # Full upgrade, not a bare -Sy: partial upgrades are unsupported on Arch and
+    # can break dependency resolution.
+    info "Updating system and syncing package database..."
+    sudo pacman -Syu --noconfirm
 
     local pacman_deps=(
-        hyprland hyprlock hypridle swww
+        hyprland hyprlock hypridle hyprpaper
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
         waybar swaync
         rofi-wayland wl-clipboard cliphist
@@ -60,7 +62,8 @@ _install_deps() {
         bat libnotify
         pipewire wireplumber
         bluez bluez-utils btop
-        polkit-gnome greetd brightnessctl playerctl pavucontrol
+        networkmanager
+        polkit-gnome greetd playerctl pavucontrol
         papirus-icon-theme
         qt5-wayland qt6-wayland
     )
@@ -78,9 +81,16 @@ _install_deps() {
         grimblast-git
         hyprpicker
         waypaper
-        tuigreet
+        greetd-regreet
+        cage
         bluetui
-        rose-pine-gtk-theme
+        zen-browser-bin
+        obsidian
+        catppuccin-gtk-theme-mocha
+        catppuccin-cursors
+        ttf-monaspace-nerd
+        ttf-apple-emoji
+        nwg-displays
         nwg-look
     )
 
@@ -102,15 +112,15 @@ _install_deps() {
 # ── Font check ─────────────────────────────────────────────────────────────────
 
 _check_font() {
-    fc-list 2>/dev/null | grep -qi "ProFont IIx Nerd Font" && return 0
+    # Nerd-patched family is "Monaspice…"; non-patched is "Monaspace". Match both.
+    fc-list 2>/dev/null | grep -qi "monasp" && return 0
     return 1
 }
 
 if _check_font; then
-    success "ProFont IIx Nerd Font Mono"
+    success "Monaspace Nerd Font (Neon)"
 else
-    warn "ProFont IIx Nerd Font Mono not found"
-    warn "  Install via: sudo pacman -S ttf-profont-nerd"
+    warn "Monaspace Nerd Font not found — installing ttf-monaspace-nerd from AUR below"
 fi
 
 _install_deps
@@ -150,6 +160,7 @@ _link "$REPO_DIR/swaync"                       "$HOME/.config/swaync"
 _link "$REPO_DIR/waypaper"                     "$HOME/.config/waypaper"
 _link "$REPO_DIR/thunar"                       "$HOME/.config/Thunar"
 _link "$REPO_DIR/scripts"                      "$HOME/.config/scripts"
+_link "$REPO_DIR/fontconfig"                   "$HOME/.config/fontconfig"
 
 # screenshot + steam (resolution fix) exposed in PATH
 mkdir -p "$HOME/.local/bin"
@@ -158,21 +169,35 @@ _link "$REPO_DIR/scripts/steam.sh"             "$HOME/.local/bin/steam"
 
 # ── Script permissions ─────────────────────────────────────────────────────────
 
-for script in "$REPO_DIR"/scripts/*.sh; do
+for script in "$REPO_DIR"/scripts/*; do
     [[ -f "$script" ]] && chmod +x "$script"
 done
 success "Scripts marked executable"
 
+# ── Dark-mode preference (so Zen / GTK / portal apps render dark) ───────────────
+
+if command -v gsettings &>/dev/null; then
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null \
+        && success "Dark mode preference set (color-scheme = prefer-dark)"
+fi
+
+# ── Font cache (picks up Apple emoji + fontconfig prefs) ───────────────────────
+
+if command -v fc-cache &>/dev/null; then
+    fc-cache -f >/dev/null 2>&1 && success "Font cache refreshed"
+fi
+
 # ── GTK theme — written directly, not symlinked ────────────────────────────────
 
 _write_gtk_settings() {
-    local v="$1" dir="$HOME/.config/gtk-${v}.0"
+    local v="$1"
+    local dir="$HOME/.config/gtk-${v}.0"
     mkdir -p "$dir"
     cat >"$dir/settings.ini" <<EOF
 [Settings]
-gtk-theme-name=rose-pine-gtk
+gtk-theme-name=catppuccin-mocha-sky-standard+default
 gtk-icon-theme-name=Papirus-Dark
-gtk-font-name=Ioskeley Mono Nerd Font 12
+gtk-font-name=MonaspiceNe Nerd Font 11
 gtk-cursor-theme-name=Catppuccin-Mocha-Dark-Cursors
 gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=1
@@ -183,20 +208,41 @@ EOF
 _write_gtk_settings 3
 _write_gtk_settings 4
 
-# ── Thunar GTK CSS overrides (Rose Pine) ───────────────────────────────────────
+# ── Verify the Catppuccin GTK theme name (varies by package version) ────────────
+
+_verify_gtk_theme() {
+    local theme="catppuccin-mocha-sky-standard+default"
+    if [[ -d "$HOME/.local/share/themes/$theme" || -d "/usr/share/themes/$theme" ]]; then
+        success "GTK theme present: $theme"
+        return 0
+    fi
+    warn "GTK theme '$theme' not found — the package may name it differently"
+    local found
+    found=$(ls -d "$HOME/.local/share/themes/"*[Cc]atppuccin* /usr/share/themes/*[Cc]atppuccin* 2>/dev/null || true)
+    if [[ -n "$found" ]]; then
+        warn "  Installed Catppuccin themes:"
+        printf '    %s\n' $found
+    else
+        warn "  No Catppuccin GTK theme installed (expected catppuccin-gtk-theme-mocha)"
+    fi
+    warn "  Set the right name in: hypr/hyprland.conf (GTK_THEME), scripts/thunar-launch.sh, ~/.config/gtk-{3,4}.0/settings.ini"
+}
+_verify_gtk_theme
+
+# ── Thunar GTK CSS overrides (Catppuccin) ──────────────────────────────────────
 
 _merge_thunar_css() {
     local gtk_css="$HOME/.config/gtk-3.0/gtk.css"
     local thunar_css="$REPO_DIR/thunar/gtk.css"
     if [[ -f "$thunar_css" ]]; then
-        if [[ -f "$gtk_css" ]] && grep -q "Thunar — Rose Pine" "$gtk_css" 2>/dev/null; then
+        if [[ -f "$gtk_css" ]] && grep -q "Thunar — Catppuccin" "$gtk_css" 2>/dev/null; then
             skip "Thunar CSS already in gtk.css"
         else
             mkdir -p "$(dirname "$gtk_css")"
             [[ -f "$gtk_css" ]] || touch "$gtk_css"
-            printf "\n/* Appended by hyprland-configs install.sh — Thunar Rose Pine */\n" >>"$gtk_css"
+            printf "\n/* Appended by hyprland-configs install.sh — Thunar Catppuccin */\n" >>"$gtk_css"
             cat "$thunar_css" >>"$gtk_css"
-            success "Appended Thunar Rose Pine CSS to gtk-3.0/gtk.css"
+            success "Appended Thunar Catppuccin CSS to gtk-3.0/gtk.css"
         fi
     fi
 }
@@ -206,23 +252,64 @@ _merge_thunar_css
 
 printf "\n%s\n" "${BOLD}Wallpaper setup:${NC}"
 info "waypaper manages wallpaper — run 'waypaper' (or Super+Shift+I) to pick one"
-info "Config: ~/.config/waypaper/config.ini  (default folder: ~/Pictures)"
+info "Config: ~/.config/waypaper/config.ini  (default folder: ~/Pictures/backgrounds)"
 
 # ── greetd (optional — requires sudo + systemd) ────────────────────────────────
 
-printf "\n%s\n" "${BOLD}greetd / tuigreet setup (optional):${NC}"
+# ── Networking (NetworkManager; keep iwd from fighting over wifi) ──────────────
+
+if systemctl is-enabled NetworkManager &>/dev/null; then
+    success "NetworkManager enabled"
+else
+    sudo systemctl enable --now NetworkManager && success "NetworkManager enabled"
+fi
+if systemctl is-active iwd &>/dev/null; then
+    warn "iwd is active and conflicts with NetworkManager's wpa_supplicant backend — masking it"
+    sudo systemctl disable --now iwd 2>/dev/null || true
+    sudo systemctl mask iwd 2>/dev/null || true
+    success "iwd stopped + masked (NetworkManager now owns wifi)"
+fi
+
+printf "\n%s\n" "${BOLD}greetd / ReGreet setup (optional):${NC}"
 read -r -p "  Configure greetd as boot greeter? Requires sudo. [y/N] " yn
 if [[ "$yn" =~ ^[yY]$ ]]; then
     sudo mkdir -p /etc/greetd
+
+    # Greeter background — a dedicated repo asset. The greeter runs as the
+    # unprivileged 'greeter' user (can't read your home) and is intentionally
+    # independent of the waypaper desktop wallpaper, which you manage separately.
+    greeter_bg="/usr/share/backgrounds/greeter-bg.jpg"
+    if [[ -f "$REPO_DIR/assets/greeter-bg.jpg" ]]; then
+        sudo mkdir -p /usr/share/backgrounds
+        sudo cp "$REPO_DIR/assets/greeter-bg.jpg" "$greeter_bg"
+    fi
+
     sudo tee /etc/greetd/config.toml >/dev/null <<'TOML'
 [terminal]
 vt = 1
 
 [default_session]
-command = "tuigreet --cmd Hyprland --time --remember --asterisks --greeting 'Welcome back.' --width 60"
+command = "cage -s -- regreet"
 user = "greeter"
 TOML
-    success "Wrote /etc/greetd/config.toml"
+
+    sudo tee /etc/greetd/regreet.toml >/dev/null <<TOML
+[background]
+path = "$greeter_bg"
+fit = "Cover"
+
+[GTK]
+application_prefer_dark_theme = true
+cursor_theme_name = "Catppuccin-Mocha-Dark-Cursors"
+font_name = "MonaspiceNe Nerd Font 11"
+icon_theme_name = "Papirus-Dark"
+theme_name = "catppuccin-mocha-sky-standard+default"
+
+[commands]
+reboot = ["systemctl", "reboot"]
+poweroff = ["systemctl", "poweroff"]
+TOML
+    success "Wrote greetd config + regreet.toml (ReGreet · Catppuccin sky)"
 
     for dm in sddm lightdm gdm; do
         if systemctl is-enabled "$dm" &>/dev/null; then
@@ -233,6 +320,12 @@ TOML
 
     sudo systemctl enable greetd
     success "greetd enabled (active on next boot)"
+
+    # Keep only the plain Hyprland session (drop the uwsm "user management" entry)
+    if [[ -f /usr/share/wayland-sessions/hyprland-uwsm.desktop ]]; then
+        sudo rm -f /usr/share/wayland-sessions/hyprland-uwsm.desktop
+        success "Removed hyprland-uwsm.desktop — only plain Hyprland shows in the greeter"
+    fi
 else
     info "Skipping greetd — start Hyprland manually with: Hyprland"
 fi
@@ -258,6 +351,9 @@ printf "  To reload configs at any time:\n"
 printf "    %s\n"   "${BOLD}hyprctl reload${NC}"
 printf "    %s\n\n" "${BOLD}killall waybar && waybar &${NC}"
 printf "%s\n" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+printf "\n%s\n" "${BOLD}Next step:${NC}"
+info "Sign into Zen to sync your account (theme + settings are synced, not tracked here)"
 
 printf "\n%s  (all should be visible)\n" "${BOLD}Character check:${NC}"
 printf "  UI          ▶  ◀  ▸  …  ●\n"
