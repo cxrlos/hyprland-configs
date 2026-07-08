@@ -167,6 +167,38 @@ mkdir -p "$HOME/.local/bin"
 _link "$REPO_DIR/scripts/screenshot.sh"        "$HOME/.local/bin/screenshot"
 _link "$REPO_DIR/scripts/steam.sh"             "$HOME/.local/bin/steam"
 
+# ── Zen Browser (declarative prefs + chrome CSS) ───────────────────────────────
+#
+# Only the declarative layer is tracked: user.js (prefs, re-applied every launch)
+# and chrome/userChrome.css (UI font). The Catppuccin Mod, accent, extensions and
+# data stay in Zen's per-account sync. Profile paths are randomly hashed (and may
+# contain a space), so resolve the launched profile from profiles.ini.
+
+_zen_default_profile() {
+    local ini="$HOME/.config/zen/profiles.ini" rel
+    [[ -f "$ini" ]] || return 1
+    # The [Install*] section's Default= is the profile Zen actually launches.
+    rel=$(awk -F= '/^\[Install/{f=1} f&&/^Default=/{print $2; exit}' "$ini")
+    # Fallback: the [Profile*] flagged Default=1.
+    if [[ -z "$rel" ]]; then
+        rel=$(awk -F= '/^\[Profile/{path=""} /^Path=/{path=$2} /^Default=1/{print path; exit}' "$ini")
+    fi
+    [[ -n "$rel" ]] || return 1
+    printf "%s\n" "$HOME/.config/zen/$rel"
+}
+
+_link_zen() {
+    local profile
+    if ! profile=$(_zen_default_profile); then
+        skip "Zen profile (launch Zen once, then re-run install)"
+        return 0
+    fi
+    _link "$REPO_DIR/zen/user.js"               "$profile/user.js"
+    mkdir -p "$profile/chrome"                  # keep the Mod's zen-themes.css intact
+    _link "$REPO_DIR/zen/chrome/userChrome.css" "$profile/chrome/userChrome.css"
+}
+_link_zen
+
 # ── Script permissions ─────────────────────────────────────────────────────────
 
 for script in "$REPO_DIR"/scripts/*; do
@@ -353,7 +385,9 @@ printf "    %s\n\n" "${BOLD}killall waybar && waybar &${NC}"
 printf "%s\n" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 printf "\n%s\n" "${BOLD}Next step:${NC}"
-info "Sign into Zen to sync your account (theme + settings are synced, not tracked here)"
+info "Sign into Zen to sync account data (extensions, bookmarks, passwords)"
+info "Zen prefs (user.js) + chrome CSS are symlinked from the repo — restart Zen to apply"
+info "Theme: install the Catppuccin Mocha Zen Mod; accent is pinned to sky by user.js"
 
 printf "\n%s  (all should be visible)\n" "${BOLD}Character check:${NC}"
 printf "  UI          ▶  ◀  ▸  …  ●\n"

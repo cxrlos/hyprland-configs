@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Waybar sports module — today's matches for a fixed set of teams, shown inline
-(upcoming → kickoff time, live → score + minute with a red dot, finished → dimmed
-final). Pipe-divided; reports class "live" when any match is in progress (waybar
+(upcoming → kickoff time, live → score + status with a red dot, finished → dimmed
+final). Live status is ESPN's shortDetail, so it reads HT / ET / 90'+3' / FT-Pens
+rather than freezing on a minute. Pipe-divided; reports class "live" when any match
+is in progress (waybar
 draws the red outline). Empty output hides the whole module.
 
 Polling is self-gated so we don't hammer ESPN (waybar's interval is fixed):
@@ -33,6 +35,8 @@ WATCH = [
 API = "https://site.api.espn.com/apis/site/v2/sports/{}/scoreboard"
 CACHE = os.path.expanduser("~/.cache/waybar-scores.json")
 IDLE_REFRESH = 900          # seconds between fixture refreshes when nothing is live
+SHOW_WINDOW = 4 * 3600      # how long a match stays visible after kickoff — covers
+                            # 90' + ET + pens, so a late game survives local midnight
 RED, DIM, SEP = "#f38ba8", "#6c7086", "#45475a"
 DOT = "●"
 
@@ -54,20 +58,23 @@ def parse(ev, league, tf):
         if tf and tf.lower() not in names.lower():
             return None
         when = datetime.fromisoformat(ev["date"].replace("Z", "+00:00")).astimezone()
-        if when.date() != datetime.now().astimezone().date():
-            return None  # today only
+        ts, day = when.timestamp(), when.date().isoformat()
+        if not relevant(ts, day):
+            return None
         home = next(c for c in cs if c["homeAway"] == "home")
         away = next(c for c in cs if c["homeAway"] == "away")
         ab = lambda c: c["team"].get("abbreviation") or c["team"].get("shortDisplayName", "?")
         return {
             "league": league,
-            "ts": when.timestamp(),
-            "day": when.date().isoformat(),
+            "ts": ts,
+            "day": day,
             "hhmm": when.strftime("%H:%M"),
-            "state": ev["status"]["type"]["state"],   # pre | in | post
-            "clock": ev["status"].get("displayClock", ""),
+            "state": ev["status"]["type"]["state"],            # pre | in | post
+            "clock": (ev["status"]["type"].get("shortDetail")  # 67' · HT · ET · FT · FT-Pens
+                      or ev["status"].get("displayClock", "")),
             "home": ab(home), "away": ab(away),
             "hs": home.get("score", "0"), "as": away.get("score", "0"),
+            "hp": home.get("shootoutScore"), "ap": away.get("shootoutScore"),
         }
     except Exception:
         return None
@@ -107,17 +114,29 @@ def save_cache(full_ts, matches):
         pass
 
 
-def today(matches):
-    d = datetime.now().astimezone().date().isoformat()
-    return [m for m in matches if m.get("day") == d]
+def _today():
+    return datetime.now().astimezone().date().isoformat()
+
+
+def relevant(ts, day, now=None):
+    """Show a match while it's today, or kicked off within SHOW_WINDOW — so a late
+    game still on the pitch survives the local-midnight date rollover instead of
+    vanishing when the calendar date ticks over."""
+    now = now or time.time()
+    return day == _today() or ts >= now - SHOW_WINDOW
+
+
+def visible(matches, now=None):
+    now = now or time.time()
+    return [m for m in matches if relevant(m["ts"], m["day"], now)]
 
 
 def current_matches():
     now = time.time()
     full_ts, cached = load_cache()
-    cached = today(cached)
+    cached = visible(cached, now)
     # leagues with a match that should be live now (kicked off, not finalized)
-    live = {m["league"] for m in cached if m["ts"] <= now and m["state"] != "post"}
+    live = {m["league"] for m in cached if m["ts"] <= now and state_of(m) != "post"}
 
     if live:                                   # live window → fetch only those leagues
         new, ok = fetch_leagues(live)
@@ -129,16 +148,34 @@ def current_matches():
         if ok:
             cached = [m for m in cached if m["league"] not in ok] + new
             save_cache(now, cached)
-    return today(cached)
+    return visible(cached, now)
+
+
+def _final(clock):
+    """ESPN's shortDetail once play is over — full time, after extra time, penalties."""
+    c = (clock or "").upper()
+    return c.startswith("FT") or c.startswith("AET") or "FULL" in c or c == "FINAL"
+
+
+def state_of(m):
+    """Effective state. ESPN can lag flipping 'in'→'post' for minutes after the
+    whistle; a full-time clock label demotes the match so the red dot doesn't linger."""
+    if m["state"] == "in" and _final(m["clock"]):
+        return "post"
+    return m["state"]
 
 
 def fmt(m):
-    if m["state"] == "in":
+    hp, ap = m.get("hp"), m.get("ap")
+    pens = f" ({hp}-{ap}p)" if hp is not None and (hp or ap) else ""
+    st = state_of(m)
+    if st == "in":
         return (f"<span color='{RED}'>{DOT}</span> {m['home']} <b>{m['hs']}-{m['as']}</b> "
-                f"{m['away']} <span color='{RED}'>{m['clock']}</span>")
-    if m["state"] == "pre":
+                f"{m['away']}{pens} <span color='{RED}'>{m['clock'] or 'LIVE'}</span>")
+    if st == "pre":
         return f"{m['home']}-{m['away']} <span color='{DIM}'>{m['hhmm']}</span>"
-    return f"<span color='{DIM}'>{m['home']} {m['hs']}-{m['as']} {m['away']}</span>"
+    return (f"<span color='{DIM}'>{m['home']} {m['hs']}-{m['as']} {m['away']}{pens} "
+            f"{m['clock'] or 'FT'}</span>")
 
 
 def render(matches):
@@ -146,15 +183,17 @@ def render(matches):
         return {"text": ""}
     matches.sort(key=lambda m: m["ts"])
     text = f" <span color='{SEP}'>|</span> ".join(fmt(m) for m in matches)
-    cls = "live" if any(m["state"] == "in" for m in matches) else "idle"
+    cls = "live" if any(state_of(m) == "in" for m in matches) else "idle"
     return {"text": text, "class": cls}
 
 
 MOCK = [
-    {"state": "in",  "ts": 1, "hhmm": "13:00", "clock": "67'", "home": "PUM", "away": "AME", "hs": "2", "as": "1"},
-    {"state": "in",  "ts": 2, "hhmm": "13:00", "clock": "23'", "home": "JUV", "away": "MIL", "hs": "0", "as": "0"},
-    {"state": "pre", "ts": 3, "hhmm": "19:00", "clock": "",    "home": "BET", "away": "SEV", "hs": "0", "as": "0"},
-    {"state": "post","ts": 0, "hhmm": "11:00", "clock": "",    "home": "RMA", "away": "BAR", "hs": "3", "as": "2"},
+    {"state": "in",  "ts": 1, "hhmm": "13:00", "clock": "67'",     "home": "PUM", "away": "AME", "hs": "2", "as": "1"},
+    {"state": "in",  "ts": 2, "hhmm": "13:00", "clock": "HT",      "home": "JUV", "away": "MIL", "hs": "0", "as": "0"},
+    {"state": "in",  "ts": 3, "hhmm": "13:00", "clock": "",        "home": "BET", "away": "SEV", "hs": "1", "as": "1"},   # no clock → LIVE
+    {"state": "in",  "ts": 4, "hhmm": "13:00", "clock": "FT",      "home": "ARS", "away": "TOT", "hs": "2", "as": "0"},   # ESPN lag → demoted, no dot
+    {"state": "pre", "ts": 5, "hhmm": "19:00", "clock": "",        "home": "PSG", "away": "OM",  "hs": "0", "as": "0"},
+    {"state": "post","ts": 0, "hhmm": "11:00", "clock": "FT-Pens", "home": "RMA", "away": "BAR", "hs": "1", "as": "1", "hp": 4, "ap": 2},
 ]
 
 if __name__ == "__main__":

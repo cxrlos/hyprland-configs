@@ -196,7 +196,12 @@ scrollbar slider {
 }
 
 .floating-notifications > box > .notification-row > .notification {
-    background: rgba(24, 24, 37, 0.85);
-    border: 1px solid rgba(137, 220, 235, 0.18);
-    box-shadow: 0 4px 16px rgba(17, 17, 27, 0.6);
+    /* hold solid through the content, then dissolve the trailing edge fully into the
+       blur — border/shadow dropped so nothing outlines the fade */
+    background: linear-gradient(to right,
+        rgba(24, 24, 37, 0.95) 0%,
+        rgba(24, 24, 37, 0.95) 45%,
+        rgba(24, 24, 37, 0.0) 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(17, 17, 27, 0.35);
 }
