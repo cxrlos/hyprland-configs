@@ -23,7 +23,7 @@ hyprland-configs/
 │   ├── keybinds.conf       all keybindings
 │   ├── rules.conf          window + layer rules
 │   ├── animations.conf     bezier curves + animation config
-│   ├── hyprlock.conf       lockscreen (Rose Pine, blur, clock)
+│   ├── hyprlock.conf       lockscreen (Rose Pine, clock)
 │   └── hypridle.conf       idle chain: dim → lock → suspend
 ├── waybar/
 │   ├── config.jsonc        bar layout
@@ -33,15 +33,13 @@ hyprland-configs/
 ├── swaync/
 │   ├── config.json         notification center config
 │   └── style.css           Rose Pine CSS
-├── hyprpaper/
-│   └── hyprpaper.conf      wallpaper (written by install.sh / wallpaper script)
+├── waypaper/
+│   └── config.ini          wallpaper picker config (backend: swww)
 └── scripts/
     ├── install.sh           → install.sh (symlinked)
     ├── screenshot.sh        area/screen capture → rofi picker (copy/save/both)
     ├── clipboard.sh         cliphist | rofi picker → wl-copy
     ├── power.sh             rofi power menu (lock/suspend/reboot/shutdown)
-    ├── wallpaper.sh         live wallpaper swap (also exposed as `wallpaper` in PATH)
-    ├── terminal.sh          Super+T toggle: CWD-aware float terminal (tmux-aware)
     ├── yazi-toggle.sh       Super+Y toggle: yazi scratchpad (create-or-toggle)
     ├── yazi-loop.sh         yazi loop runner (keeps scratchpad alive after quit)
     ├── btop-toggle.sh       Super+M toggle: btop scratchpad (create-or-toggle)
@@ -57,7 +55,6 @@ hyprland-configs/
 | Key | Action |
 |---|---|
 | `Super+Return` | terminal (alacritty, `$HOME`) |
-| `Super+T` | float terminal at active window's CWD — toggle |
 | `Super+Space` | app launcher (rofi drun) |
 | `Super+W` | window switcher (rofi) |
 | `Super+D` | show desktop (go to next empty workspace) |
@@ -88,7 +85,6 @@ hyprland-configs/
 |---|---|
 | `Super+1–0` | switch to workspace 1–10 |
 | `Super+Shift+1–0` | move window to workspace 1–10 |
-| `Super+Scroll` | workspace ±1 |
 
 ### System
 
@@ -103,6 +99,7 @@ hyprland-configs/
 | `Super+B` | toggle waybar |
 | `Super+Shift+B` | bluetui (Bluetooth TUI) |
 | `Super+Shift+P` | color picker (hyprpicker) |
+| `Super+Shift+I` | wallpaper picker (waypaper) |
 | `Super+Shift+/` | keybind cheatsheet |
 
 ### Media
@@ -127,10 +124,7 @@ sleep   → lock before suspend, restore DPMS on wake
 
 **Monitors** — edit `hypr/monitors.conf` to match your hardware.
 
-**Wallpaper** — set at install time (prompted) or anytime:
-```bash
-wallpaper /path/to/image.png
-```
+**Wallpaper** — managed by waypaper, backed by swww. Pick one with `Super+Shift+I` or run `waypaper` directly. Config: `~/.config/waypaper/config.ini`.
 
 **Fonts** — BerkeleyMono Nerd Font is commercial. Place the patched variant in
 `~/.local/share/fonts/` before running install.sh.
@@ -143,7 +137,7 @@ wallpaper /path/to/image.png
 | Bar | Waybar |
 | Launcher | rofi-wayland |
 | Notifications | swaync |
-| Wallpaper | hyprpaper |
+| Wallpaper | swww + waypaper |
 | Lock | hyprlock |
 | Idle | hypridle |
 | Screenshot | grimblast (grim+slurp fallback) |

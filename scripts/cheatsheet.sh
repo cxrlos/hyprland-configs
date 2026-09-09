@@ -10,9 +10,12 @@ rofi -dmenu \
     << 'EOF'
 <b><span foreground='#c4a7e7'>  APPLICATIONS</span></b>
   Super + Return         Terminal (alacritty)
-  Super + E              File manager (yazi — q quits, not :q)
   Super + Space          App launcher (rofi)
   Super + W              Window switcher (rofi)
+<b><span foreground='#c4a7e7'>  SCRATCHPADS</span></b>
+  Super + `              General scratchpad terminal
+  Super + Y              File manager (yazi — q quits, not :q)
+  Super + M              System monitor (btop)
 <b><span foreground='#c4a7e7'>  WINDOWS</span></b>
   Super + Q              Close window
   Super + F              Fullscreen toggle
@@ -28,7 +31,7 @@ rofi -dmenu \
 <b><span foreground='#c4a7e7'>  WORKSPACES</span></b>
   Super + 1–9 / 0        Switch to workspace 1–10
   Super+Shift+1–9        Move window to workspace
-  Super + Scroll         Workspace ±1
+  Super + D              Go to next empty workspace
 <b><span foreground='#c4a7e7'>  SCREENSHOTS  (no Print key)</span></b>
   Super+Shift+A          Area screenshot  (copy + save)
   Super+Shift+F          Full screenshot  (copy + save)
@@ -39,6 +42,8 @@ rofi -dmenu \
   Super + Escape         Lock screen (hyprlock)
   Super+Shift+P          Color picker (hyprpicker)
   Super+Shift+M          Power menu
+  Super+Shift+B          Bluetooth (bluetui)
+  Super+Shift+I          Wallpaper picker (waypaper)
   Super+Shift+/          This cheatsheet
 <b><span foreground='#c4a7e7'>  MEDIA</span></b>
   XF86AudioRaiseVolume   Volume +5%
@@ -51,7 +56,4 @@ rofi -dmenu \
 <b><span foreground='#c4a7e7'>  MOUSE</span></b>
   Super + LMB            Move window
   Super + RMB            Resize window
-<b><span foreground='#c4a7e7'>  WALLPAPER</span></b>
-  wallpaper /path/img    Set new wallpaper (live reload)
-  wallpaper              Print current wallpaper path
 EOF

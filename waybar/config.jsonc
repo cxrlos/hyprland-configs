@@ -43,9 +43,7 @@
             "class<obs>":               "󰐻",
             "class<pavucontrol>":       "󰕾"
         },
-        "on-click": "activate",
-        "on-scroll-up": "hyprctl dispatch workspace e+1",
-        "on-scroll-down": "hyprctl dispatch workspace e-1"
+        "on-click": "activate"
     },
 
     // ── Window title ──────────────────────────────────────────────────────

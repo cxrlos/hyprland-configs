@@ -57,7 +57,7 @@ _install_deps() {
         rofi-wayland wl-clipboard cliphist
         yazi
         grim slurp
-        bat libnotify
+        libnotify
         pipewire wireplumber
         bluez bluez-utils btop
         polkit-gnome greetd brightnessctl playerctl pavucontrol
@@ -81,7 +81,6 @@ _install_deps() {
         tuigreet
         bluetui
         rose-pine-gtk-theme
-        nwg-look
     )
 
     if _ensure_yay; then

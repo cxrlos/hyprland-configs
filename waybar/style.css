@@ -100,7 +100,7 @@ window#waybar {
 /* ── Memory ─────────────────────────────────────────────────────────── */
 
 #memory {
-    color: #31748f;
+    color: #9ccfd8;
 }
 
 #memory.warning {
@@ -114,7 +114,7 @@ window#waybar {
 /* ── Audio ──────────────────────────────────────────────────────────── */
 
 #pulseaudio {
-    color: #c4a7e7;
+    color: #9ccfd8;
 }
 
 #pulseaudio.muted {
@@ -158,7 +158,7 @@ window#waybar {
 /* ── swaync ─────────────────────────────────────────────────────────── */
 
 #custom-swaync {
-    color: #c4a7e7;
+    color: #9ccfd8;
     padding: 0 10px;
 }
 
