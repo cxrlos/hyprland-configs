@@ -4,7 +4,7 @@
 # Empty title falls back to a timestamp. No community plugin required.
 set -euo pipefail
 
-ROFI_THEME="$HOME/.config/rofi/catppuccin.rasi"
+ROFI_THEME="$HOME/.config/rofi/rose-pine.rasi"
 
 title=$(printf '' | rofi -dmenu -p "  Capture" -theme "$ROFI_THEME" -lines 0 -width 30) || exit 0
 [ -n "$title" ] || title="$(date +'%Y-%m-%d %H-%M')"

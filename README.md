@@ -1,6 +1,6 @@
 # hyprland-configs
 
-Desktop Hyprland setup for Arch Linux — Catppuccin Mocha, Monaspace Nerd Font, keyboard-driven.
+Desktop Hyprland setup for Arch Linux — Rose Pine, Monaspace Nerd Font, keyboard-driven.
 Pairs with [`term-configs`](../term-configs) and [`neovim-configs`](../neovim-configs).
 
 ## Install
@@ -26,7 +26,7 @@ settings, and optionally configures greetd as the boot greeter.
 | Lock / Idle | hyprlock / hypridle |
 | Screenshot | grimblast (grim+slurp fallback) |
 | Clipboard | wl-clipboard + cliphist |
-| Browser | Zen |
+| Browser | Firefox |
 | Notes | Obsidian |
 | File manager | Thunar |
 | Bluetooth | bluetui |
@@ -38,9 +38,9 @@ settings, and optionally configures greetd as the boot greeter.
 ```
 hypr/       hyprland.conf sources monitors / animations / keybinds / rules; plus hyprlock, hypridle
 waybar/     bar config + style
-rofi/       catppuccin.rasi — launcher theme, shared by every rofi call
+rofi/       rose-pine.rasi — launcher theme, shared by every rofi call
 swaync/     notification center config + style
-thunar/     file manager defaults + Catppuccin GTK overrides
+thunar/     file manager defaults
 waypaper/   wallpaper picker config
 scripts/    install.sh + keybind/menu helpers
 ```
@@ -53,13 +53,13 @@ Full reference in-session: **Super+Shift+/** (cheatsheet), or read `hypr/keybind
 | Key | Action |
 |---|---|
 | `Super+Return` | terminal |
-| `Super+W` / `Super+Shift+W` | Zen / private window |
+| `Super+W` / `Super+Shift+W` | Firefox / private window |
 | `Super+N` / `Super+Shift+N` | Obsidian / quick-capture |
 | `Super+Shift+C` | caffeine — pause idle & lock |
 | `Super+Y` | Thunar |
 | `Super+Space` | app launcher |
 | `Super+\`` | terminal scratchpad |
-| `Super+M` / `Super+Shift+B` / `Super+Shift+T` | btop / bluetui / ratatoist scratchpads |
+| `Super+M` / `Super+Shift+B` | btop / bluetui scratchpads |
 | `Super+H/J/K/L` | focus (Shift = move, Alt = resize) |
 | `Super+1–0` | workspaces (Shift = move window) |
 | `Super+Escape` | lock |
@@ -75,5 +75,5 @@ on sleep → lock first, restore DPMS on wake
 ## Customize
 
 - **Monitors** — `hypr/monitors.conf`
-- **Browser** — Zen, synced per account; `Super+W` launches it (`Super+Shift+W` = private window)
+- **Browser** — Firefox; `Super+W` launches it (`Super+Shift+W` = private window)
 - **Wallpaper** — `Super+Shift+I` (waypaper)
