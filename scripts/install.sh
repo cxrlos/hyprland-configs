@@ -66,6 +66,7 @@ _install_deps() {
         polkit-gnome greetd playerctl pavucontrol
         papirus-icon-theme
         qt5-wayland qt6-wayland
+        gamemode lib32-gamemode
     )
 
     for dep in "${pacman_deps[@]}"; do
@@ -161,6 +162,7 @@ _link "$REPO_DIR/waypaper"                     "$HOME/.config/waypaper"
 _link "$REPO_DIR/thunar"                       "$HOME/.config/Thunar"
 _link "$REPO_DIR/scripts"                      "$HOME/.config/scripts"
 _link "$REPO_DIR/fontconfig"                   "$HOME/.config/fontconfig"
+_link "$REPO_DIR/gamemode.ini"                  "$HOME/.config/gamemode.ini"
 
 # screenshot + steam (resolution fix) exposed in PATH
 mkdir -p "$HOME/.local/bin"

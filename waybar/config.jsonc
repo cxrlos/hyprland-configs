@@ -1,8 +1,8 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 38,
-    "spacing": 4,
+    "height": 30,
+    "spacing": 0,
     "exclusive": true,
     "passthrough": false,
     "gtk-layer-shell": true,
@@ -15,7 +15,9 @@
         "clock"
     ],
     "modules-right": [
-        "custom/scores",
+        "cpu",
+        "memory",
+        "custom/gpu",
         "pulseaudio",
         "network",
         "custom/caffeine",
@@ -26,55 +28,25 @@
 
     // ── Workspaces ────────────────────────────────────────────────────────
     "hyprland/workspaces": {
-        "format": "{id}  {windows}",
-        "format-window-separator": " ",
-        "window-rewrite-default": "󰖲",
-        "window-rewrite": {
-            "title<.*[Cc]laude.*>":   "✻",
-            "title<.*[Cc]ursor.*>":   "✻",
-            "title<.*[Nn]vim.*>":     "󰈙",
-            "class<Alacritty>":       "󰆍",
-            "class<zen>":             "󰖟",
-            "class<zen-browser>":     "󰖟",
-            "class<zen-alpha>":       "󰖟",
-            "class<Thunar>":          "󰉋",
-            "class<thunar>":          "󰉋",
-            "class<discord>":         "󰙯",
-            "class<Spotify>":         "󰓇",
-            "class<Slack>":           "󰒱",
-            "class<obsidian>":        "󰠮",
-            "class<Obsidian>":        "󰠮",
-            "class<steam>":           "󰓓",
-            "class<steam_app_.*>":    "󰊴",
-            "class<[Ff]irefox>":      "󰈹",
-            "class<[Cc]hromium>":     "󰊯",
-            "class<[Gg]oogle-chrome>": "󰊯",
-            "class<[Vv]lc>":          "󰕼",
-            "class<mpv>":             "󰎁",
-            "class<com.obsproject.Studio>": "󰕧",
-            "class<Code>":            "󰨞",
-            "class<[Gg]imp>":         "󰋩",
-            "class<org.telegram.desktop>": "",
-            "class<org.keepassxc.KeePassXC>": "󰌆",
-            "class<[Tt]hunderbird>":  "󰇮"
-        },
-        "on-click": "activate"
+        "format": "{id}",
+        "on-click": "activate",
+        "sort-by-number": true
     },
 
     // ── Window title ──────────────────────────────────────────────────────
     "hyprland/window": {
         "format": "{}",
         "rewrite": {
-            ".*Zen Browser":   "󰖟 Zen",
-            ".*[Nn]vim.*":     "󰈙 Neovim",
-            ".*[Cc]laude.*":   "✻ Claude",
-            ".*[Cc]ursor.*":   "✻ Cursor",
-            "Alacritty":       "󰆍 Terminal",
-            ".*Obsidian.*":    "󰠮 Obsidian",
-            ".*File Manager":  "󰉋 Files",
-            ".*Spotify.*":     "󰓇 Spotify",
-            ".* - Discord":    "󰙯 Discord",
-            ".* - Slack":      "󰒱 Slack",
+            ".*Zen Browser":         "󰖟 Zen",
+            ".*[Nn]vim.*":           "󰈙 Neovim",
+            ".*[Cc]laude.*":         "✻ Claude",
+            ".*[Cc]ursor.*":         "✻ Cursor",
+            "Alacritty":             "󰆍 Terminal",
+            ".*Obsidian.*":          "󰠮 Obsidian",
+            ".*File Manager":        "󰉋 Files",
+            ".*Spotify.*":           "󰓇 Spotify",
+            ".* - Discord":          "󰙯 Discord",
+            ".* - Slack":            "󰒱 Slack",
             "Steam":                 "󰓓 Steam",
             ".*Mozilla Firefox":     "󰈹 Firefox",
             ".*Google Chrome":       "󰊯 Chrome",
@@ -83,11 +55,11 @@
             ".*OBS [0-9].*":         "󰕧 OBS",
             ".*Visual Studio Code":  "󰨞 Code",
             ".*GIMP.*":              "󰋩 GIMP",
-            ".*Telegram.*":          " Telegram",
+            ".*Telegram.*":          "󰖣 Telegram",
             ".*KeePassXC":           "󰌆 KeePassXC",
             ".*Mozilla Thunderbird": "󰇮 Mail"
         },
-        "max-length": 60,
+        "max-length": 50,
         "separate-outputs": true
     },
 
@@ -109,19 +81,33 @@
         }
     },
 
-    // ── Sports (live/next matches; hidden when idle) ─────────────────────
-    "custom/scores": {
+    // ── CPU ───────────────────────────────────────────────────────────────
+    "cpu": {
+        "interval": 3,
+        "format": " {usage}%",
+        "tooltip": true
+    },
+
+    // ── Memory ────────────────────────────────────────────────────────────
+    "memory": {
+        "interval": 3,
+        "format": " {used:0.1f}G",
+        "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)\nSwap: {swapUsed:0.1f}GiB / {swapTotal:0.1f}GiB"
+    },
+
+    // ── AMD GPU & VRAM (sysfs) ────────────────────────────────────────────
+    "custom/gpu": {
         "format": "{}",
         "return-type": "json",
-        "exec": "~/.config/scripts/scores.py",
-        "interval": 10,
-        "tooltip": false
+        "exec": "~/.config/scripts/gpu-metrics.sh",
+        "interval": 3,
+        "tooltip": true
     },
 
     // ── Audio ─────────────────────────────────────────────────────────────
     "pulseaudio": {
-        "format": "{icon}",
-        "format-muted": "󰝟",
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 muted",
         "format-icons": {
             "default": ["󰕿", "󰖀", "󰕾"]
         },
@@ -134,8 +120,8 @@
     // ── Network ───────────────────────────────────────────────────────────
     "network": {
         "format-wifi": "{icon} {essid}",
-        "format-ethernet": " {ipaddr}",
-        "format-disconnected": " disconnected",
+        "format-ethernet": "󰈀 {ipaddr}",
+        "format-disconnected": "󰤮 offline",
         "format-icons": ["󰤯", "󰤟", "󰤢", "󰤨"],
         "tooltip-format-wifi": "{ifname}  {ipaddr}\n{signalStrength}% — {bandwidthUpBits}  {bandwidthDownBits}",
         "tooltip-format-ethernet": "{ifname}  {ipaddr}",
@@ -159,6 +145,8 @@
         "tooltip": false,
         "on-click": "~/.config/scripts/power.sh"
     },
+
+    // ── SwayNC ───────────────────────────────────────────────────────────
     "custom/swaync": {
         "tooltip": false,
         "format": "{icon}",

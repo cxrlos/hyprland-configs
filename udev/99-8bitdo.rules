@@ -1,0 +1,9 @@
+# 8BitDo Controllers - HID and Xpad Support
+# Grant user access to 8BitDo raw HID nodes (USB and Bluetooth)
+KERNEL=="hidraw*", ATTRS{idVendor}=="2dc8", MODE="0660", TAG+="uaccess"
+KERNEL=="hidraw*", KERNELS=="*2DC8:*", MODE="0660", TAG+="uaccess"
+
+# Bind 8BitDo Ultimate / Pro 2 2.4G adapters to xpad driver to prevent duplicate evdev loops
+ACTION=="add", ATTRS{idVendor}=="2dc8", ATTRS{idProduct}=="3106", RUN+="/sbin/modprobe xpad", RUN+="/bin/sh -c 'echo 2dc8 3106 > /sys/bus/usb/drivers/xpad/new_id'"
+ACTION=="add", ATTRS{idVendor}=="2dc8", ATTRS{idProduct}=="3012", RUN+="/sbin/modprobe xpad", RUN+="/bin/sh -c 'echo 2dc8 3012 > /sys/bus/usb/drivers/xpad/new_id'"
+ACTION=="add", ATTRS{idVendor}=="2dc8", ATTRS{idProduct}=="3100", RUN+="/sbin/modprobe xpad", RUN+="/bin/sh -c 'echo 2dc8 3100 > /sys/bus/usb/drivers/xpad/new_id'"

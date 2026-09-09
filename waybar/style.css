@@ -1,10 +1,9 @@
-/* Catppuccin Mocha — floating islands, 4-color palette
-   base #1e1e2e (island bg)   text #cdd6f4   muted #6c7086   sky #89dceb (accent)
+/* Catppuccin Mocha — Unified Edge-to-Edge Flat Bar (Pro Minimalist)
+   base #1e1e2e   mantle #181825   surface0 #313244   text #cdd6f4   sky #89dceb
 */
 
 * {
     font-family: "MonaspiceNe Nerd Font Mono", monospace;
-    /* 13px, not 11px: at 11px the hinter snaps '1' a pixel taller than '0'; 13 grid-fits clean */
     font-size: 13px;
     border: none;
     border-radius: 0;
@@ -12,30 +11,16 @@
 }
 
 window#waybar {
-    background: transparent;
+    background-color: #181825;
+    border-bottom: 1px solid #313244;
     color: #cdd6f4;
-}
-
-/* Three frosted islands: left (workspaces + window), center (clock), right (status).
-   Blur behind them comes from the waybar layerrule; the vertical alpha ramp fakes a
-   top→bottom blur blend (compositor blur is uniform). Top sliver dissolves into the
-   screen edge; the bulk holds opaque enough to keep text legible. */
-.modules-left,
-.modules-center,
-.modules-right {
-    background: linear-gradient(to bottom,
-        rgba(30, 30, 46, 0.20) 0%,
-        rgba(30, 30, 46, 0.70) 50%,
-        rgba(30, 30, 46, 0.95) 100%);
-    border: none;
-    border-radius: 12px;
-    margin: 6px 8px;
-    padding: 0 4px;
 }
 
 #workspaces,
 #window,
-#custom-scores,
+#cpu,
+#memory,
+#custom-gpu,
 #pulseaudio,
 #network,
 #custom-caffeine,
@@ -43,74 +28,103 @@ window#waybar {
 #custom-power,
 #clock,
 #tray {
-    background: transparent;
-    padding: 0 8px;
+    padding: 0 10px;
     color: #cdd6f4;
+    background: transparent;
 }
 
 /* ── Workspaces ─────────────────────────────────────────────────────── */
 #workspaces {
-    padding: 0 2px;
+    padding: 0 4px;
 }
 
 #workspaces button {
     padding: 0 8px;
-    margin: 5px 2px;
+    margin: 3px 2px;
     color: #6c7086;
     background: transparent;
-    border-radius: 8px;
-    transition: all 0.15s ease;
+    border-radius: 4px;
 }
 
 #workspaces button:hover {
     color: #cdd6f4;
-    background: transparent;
+    background: #313244;
 }
 
-#workspaces button.active,
-#workspaces button.urgent {
-    color: #1e1e2e;
+#workspaces button.active {
+    color: #181825;
     background: #89dceb;
     font-weight: bold;
 }
 
-/* ── Secondary text ─────────────────────────────────────────────────── */
+#workspaces button.urgent {
+    color: #181825;
+    background: #f38ba8;
+    font-weight: bold;
+}
+
+/* ── Secondary Text / Active Window ─────────────────────────────────── */
 #window {
-    color: #6c7086;
+    color: #a6adc8;
 }
 
 #clock {
     font-weight: bold;
 }
 
-/* ── Dim / inactive states ──────────────────────────────────────────── */
-#pulseaudio.muted,
-#network.disconnected,
+/* ── Hardware & Metrics ─────────────────────────────────────────────── */
+#cpu {
+    color: #89dceb;
+}
+
+#memory {
+    color: #cba6f7;
+}
+
+#custom-gpu {
+    color: #a6e3a1;
+}
+
+/* ── Audio & Network ────────────────────────────────────────────────── */
+#pulseaudio {
+    color: #f9e2af;
+}
+
+#pulseaudio.muted {
+    color: #6c7086;
+}
+
+#network {
+    color: #94e2d5;
+}
+
+#network.disconnected {
+    color: #f38ba8;
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────── */
 #custom-caffeine {
     color: #6c7086;
 }
 
-/* ── Accent (the only non-grey) ─────────────────────────────────────── */
 #custom-caffeine.active {
     color: #89dceb;
 }
 
-/* ── Scores: a pill on the left of the right island; red outline when live ── */
-#custom-scores {
-    border: 1px solid transparent;   /* reserve space so .live doesn't shift layout */
-    border-radius: 10px;
-    margin: 4px 2px;
-}
-#custom-scores.live {
-    border-color: #f38ba8;
+#custom-swaync {
+    color: #89dceb;
 }
 
-/* ── Power (red = danger) ───────────────────────────────────────────── */
 #custom-power {
     color: #f38ba8;
+    padding-right: 14px;
 }
 
 /* ── Tray ───────────────────────────────────────────────────────────── */
+#tray {
+    padding: 0 8px;
+}
+
 #tray > .passive {
     -gtk-icon-effect: dim;
 }
