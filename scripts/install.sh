@@ -58,6 +58,7 @@ _install_deps() {
         waybar swaync
         rofi-wayland wl-clipboard cliphist
         thunar
+        firefox
         grim slurp
         bat libnotify
         pipewire wireplumber
@@ -85,14 +86,10 @@ _install_deps() {
         greetd-regreet
         cage
         bluetui
-        zen-browser-bin
         obsidian
-        catppuccin-gtk-theme-mocha
         catppuccin-cursors
         ttf-monaspace-nerd
         ttf-apple-emoji
-        nwg-displays
-        nwg-look
     )
 
     if _ensure_yay; then
@@ -169,38 +166,6 @@ mkdir -p "$HOME/.local/bin"
 _link "$REPO_DIR/scripts/screenshot.sh"        "$HOME/.local/bin/screenshot"
 _link "$REPO_DIR/scripts/steam.sh"             "$HOME/.local/bin/steam"
 
-# ── Zen Browser (declarative prefs + chrome CSS) ───────────────────────────────
-#
-# Only the declarative layer is tracked: user.js (prefs, re-applied every launch)
-# and chrome/userChrome.css (UI font). The Catppuccin Mod, accent, extensions and
-# data stay in Zen's per-account sync. Profile paths are randomly hashed (and may
-# contain a space), so resolve the launched profile from profiles.ini.
-
-_zen_default_profile() {
-    local ini="$HOME/.config/zen/profiles.ini" rel
-    [[ -f "$ini" ]] || return 1
-    # The [Install*] section's Default= is the profile Zen actually launches.
-    rel=$(awk -F= '/^\[Install/{f=1} f&&/^Default=/{print $2; exit}' "$ini")
-    # Fallback: the [Profile*] flagged Default=1.
-    if [[ -z "$rel" ]]; then
-        rel=$(awk -F= '/^\[Profile/{path=""} /^Path=/{path=$2} /^Default=1/{print path; exit}' "$ini")
-    fi
-    [[ -n "$rel" ]] || return 1
-    printf "%s\n" "$HOME/.config/zen/$rel"
-}
-
-_link_zen() {
-    local profile
-    if ! profile=$(_zen_default_profile); then
-        skip "Zen profile (launch Zen once, then re-run install)"
-        return 0
-    fi
-    _link "$REPO_DIR/zen/user.js"               "$profile/user.js"
-    mkdir -p "$profile/chrome"                  # keep the Mod's zen-themes.css intact
-    _link "$REPO_DIR/zen/chrome/userChrome.css" "$profile/chrome/userChrome.css"
-}
-_link_zen
-
 # ── Script permissions ─────────────────────────────────────────────────────────
 
 for script in "$REPO_DIR"/scripts/*; do
@@ -208,7 +173,7 @@ for script in "$REPO_DIR"/scripts/*; do
 done
 success "Scripts marked executable"
 
-# ── Dark-mode preference (so Zen / GTK / portal apps render dark) ───────────────
+# ── Dark-mode preference (so Firefox / GTK / portal apps render dark) ──────────
 
 if command -v gsettings &>/dev/null; then
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null \
@@ -229,7 +194,6 @@ _write_gtk_settings() {
     mkdir -p "$dir"
     cat >"$dir/settings.ini" <<EOF
 [Settings]
-gtk-theme-name=catppuccin-mocha-sky-standard+default
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=MonaspiceNe Nerd Font 11
 gtk-cursor-theme-name=Catppuccin-Mocha-Dark-Cursors
@@ -241,46 +205,6 @@ EOF
 
 _write_gtk_settings 3
 _write_gtk_settings 4
-
-# ── Verify the Catppuccin GTK theme name (varies by package version) ────────────
-
-_verify_gtk_theme() {
-    local theme="catppuccin-mocha-sky-standard+default"
-    if [[ -d "$HOME/.local/share/themes/$theme" || -d "/usr/share/themes/$theme" ]]; then
-        success "GTK theme present: $theme"
-        return 0
-    fi
-    warn "GTK theme '$theme' not found — the package may name it differently"
-    local found
-    found=$(ls -d "$HOME/.local/share/themes/"*[Cc]atppuccin* /usr/share/themes/*[Cc]atppuccin* 2>/dev/null || true)
-    if [[ -n "$found" ]]; then
-        warn "  Installed Catppuccin themes:"
-        printf '    %s\n' $found
-    else
-        warn "  No Catppuccin GTK theme installed (expected catppuccin-gtk-theme-mocha)"
-    fi
-    warn "  Set the right name in: hypr/hyprland.conf (GTK_THEME), scripts/thunar-launch.sh, ~/.config/gtk-{3,4}.0/settings.ini"
-}
-_verify_gtk_theme
-
-# ── Thunar GTK CSS overrides (Catppuccin) ──────────────────────────────────────
-
-_merge_thunar_css() {
-    local gtk_css="$HOME/.config/gtk-3.0/gtk.css"
-    local thunar_css="$REPO_DIR/thunar/gtk.css"
-    if [[ -f "$thunar_css" ]]; then
-        if [[ -f "$gtk_css" ]] && grep -q "Thunar — Catppuccin" "$gtk_css" 2>/dev/null; then
-            skip "Thunar CSS already in gtk.css"
-        else
-            mkdir -p "$(dirname "$gtk_css")"
-            [[ -f "$gtk_css" ]] || touch "$gtk_css"
-            printf "\n/* Appended by hyprland-configs install.sh — Thunar Catppuccin */\n" >>"$gtk_css"
-            cat "$thunar_css" >>"$gtk_css"
-            success "Appended Thunar Catppuccin CSS to gtk-3.0/gtk.css"
-        fi
-    fi
-}
-_merge_thunar_css
 
 # ── Wallpaper ──────────────────────────────────────────────────────────────────
 
@@ -309,15 +233,6 @@ read -r -p "  Configure greetd as boot greeter? Requires sudo. [y/N] " yn
 if [[ "$yn" =~ ^[yY]$ ]]; then
     sudo mkdir -p /etc/greetd
 
-    # Greeter background — a dedicated repo asset. The greeter runs as the
-    # unprivileged 'greeter' user (can't read your home) and is intentionally
-    # independent of the waypaper desktop wallpaper, which you manage separately.
-    greeter_bg="/usr/share/backgrounds/greeter-bg.jpg"
-    if [[ -f "$REPO_DIR/assets/greeter-bg.jpg" ]]; then
-        sudo mkdir -p /usr/share/backgrounds
-        sudo cp "$REPO_DIR/assets/greeter-bg.jpg" "$greeter_bg"
-    fi
-
     sudo tee /etc/greetd/config.toml >/dev/null <<'TOML'
 [terminal]
 vt = 1
@@ -327,23 +242,16 @@ command = "cage -s -- regreet"
 user = "greeter"
 TOML
 
-    sudo tee /etc/greetd/regreet.toml >/dev/null <<TOML
+    sudo tee /etc/greetd/regreet.toml >/dev/null <<'TOML'
 [background]
-path = "$greeter_bg"
+path = ""
 fit = "Cover"
-
-[GTK]
-application_prefer_dark_theme = true
-cursor_theme_name = "Catppuccin-Mocha-Dark-Cursors"
-font_name = "MonaspiceNe Nerd Font 11"
-icon_theme_name = "Papirus-Dark"
-theme_name = "catppuccin-mocha-sky-standard+default"
 
 [commands]
 reboot = ["systemctl", "reboot"]
 poweroff = ["systemctl", "poweroff"]
 TOML
-    success "Wrote greetd config + regreet.toml (ReGreet · Catppuccin sky)"
+    success "Wrote greetd config + regreet.toml"
 
     for dm in sddm lightdm gdm; do
         if systemctl is-enabled "$dm" &>/dev/null; then
@@ -385,11 +293,6 @@ printf "  To reload configs at any time:\n"
 printf "    %s\n"   "${BOLD}hyprctl reload${NC}"
 printf "    %s\n\n" "${BOLD}killall waybar && waybar &${NC}"
 printf "%s\n" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-
-printf "\n%s\n" "${BOLD}Next step:${NC}"
-info "Sign into Zen to sync account data (extensions, bookmarks, passwords)"
-info "Zen prefs (user.js) + chrome CSS are symlinked from the repo — restart Zen to apply"
-info "Theme: install the Catppuccin Mocha Zen Mod; accent is pinned to sky by user.js"
 
 printf "\n%s  (all should be visible)\n" "${BOLD}Character check:${NC}"
 printf "  UI          ▶  ◀  ▸  …  ●\n"

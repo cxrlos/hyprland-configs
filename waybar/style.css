@@ -1,5 +1,6 @@
-/* Catppuccin Mocha — Unified Edge-to-Edge Flat Bar (Pro Minimalist)
-   base #1e1e2e   mantle #181825   surface0 #313244   text #cdd6f4   sky #89dceb
+/* Rose Pine — Flat Bar (Pro Minimalist)
+   base #191724   surface #1f1d2e   overlay #26233a   text #e0def4
+   muted #6e6a86  subtle #908caa   foam #9ccfd8  love #eb6f92
 */
 
 * {
@@ -11,9 +12,9 @@
 }
 
 window#waybar {
-    background-color: #181825;
-    border-bottom: 1px solid #313244;
-    color: #cdd6f4;
+    background-color: #1f1d2e;
+    border-bottom: 1px solid #26233a;
+    color: #e0def4;
 }
 
 #workspaces,
@@ -29,7 +30,7 @@ window#waybar {
 #clock,
 #tray {
     padding: 0 10px;
-    color: #cdd6f4;
+    color: #e0def4;
     background: transparent;
 }
 
@@ -41,82 +42,76 @@ window#waybar {
 #workspaces button {
     padding: 0 8px;
     margin: 3px 2px;
-    color: #6c7086;
+    color: #6e6a86;
     background: transparent;
     border-radius: 4px;
 }
 
 #workspaces button:hover {
-    color: #cdd6f4;
-    background: #313244;
+    color: #e0def4;
+    background: #26233a;
 }
 
 #workspaces button.active {
-    color: #181825;
-    background: #89dceb;
+    color: #191724;
+    background: #9ccfd8;
     font-weight: bold;
 }
 
 #workspaces button.urgent {
-    color: #181825;
-    background: #f38ba8;
+    color: #191724;
+    background: #eb6f92;
     font-weight: bold;
 }
 
 /* ── Secondary Text / Active Window ─────────────────────────────────── */
 #window {
-    color: #a6adc8;
+    color: #908caa;
 }
 
 #clock {
     font-weight: bold;
 }
 
-/* ── Hardware & Metrics ─────────────────────────────────────────────── */
-#cpu {
-    color: #89dceb;
-}
-
-#memory {
-    color: #cba6f7;
-}
-
+/* ── Hardware & Metrics — flat, no per-module rainbow ───────────────── */
+#cpu,
+#memory,
 #custom-gpu {
-    color: #a6e3a1;
+    color: #908caa;
 }
 
 /* ── Audio & Network ────────────────────────────────────────────────── */
 #pulseaudio {
-    color: #f9e2af;
+    color: #908caa;
 }
 
 #pulseaudio.muted {
-    color: #6c7086;
+    color: #6e6a86;
 }
 
 #network {
-    color: #94e2d5;
+    color: #908caa;
 }
 
 #network.disconnected {
-    color: #f38ba8;
+    color: #eb6f92;
 }
 
 /* ── Utilities ──────────────────────────────────────────────────────── */
 #custom-caffeine {
-    color: #6c7086;
+    color: #6e6a86;
 }
 
 #custom-caffeine.active {
-    color: #89dceb;
+    color: #9ccfd8;
 }
 
 #custom-swaync {
-    color: #89dceb;
+    color: #908caa;
 }
 
 #custom-power {
-    color: #f38ba8;
+    color: #eb6f92;
     padding-right: 14px;
 }
 

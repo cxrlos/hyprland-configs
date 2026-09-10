@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SAVE_DIR="$HOME/Pictures/screenshots"
-ROFI_THEME="$HOME/.config/rofi/catppuccin.rasi"
+ROFI_THEME="$HOME/.config/rofi/rose-pine.rasi"
 
 _notify() {
     command -v notify-send &>/dev/null && notify-send "Screenshot" "$1" -i camera-photo -t 3000

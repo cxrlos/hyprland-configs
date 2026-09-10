@@ -1,18 +1,18 @@
-/* Catppuccin Mocha theme for rofi */
+/* Rose Pine theme for rofi — flat, opaque, no rounding */
 
 * {
-    base:       #1e1e2ed9;
-    mantle:     #181825d9;
-    surface0:   #313244ff;
-    overlay0:   #6c7086ff;
-    subtext0:   #a6adc8ff;
-    text:       #cdd6f4ff;
-    sky:        #89dcebff;
+    base:       #191724ff;
+    surface:    #1f1d2eff;
+    overlay:    #26233aff;
+    muted:      #6e6a86ff;
+    subtle:     #908caaff;
+    text:       #e0def4ff;
+    foam:       #9ccfd8ff;
 
     background-color:   @base;
     text-color:         @text;
-    border-color:       @sky;
-    separatorcolor:     @surface0;
+    border-color:       @overlay;
+    separatorcolor:     @overlay;
 }
 
 configuration {
@@ -30,9 +30,8 @@ configuration {
 
 window {
     width:            480px;
-    border:           1px solid;
-    border-color:     @sky;
-    border-radius:    12px;
+    border:           0px;
+    border-radius:    0px;
     background-color: @base;
     padding:          0px;
 }
@@ -45,8 +44,8 @@ mainbox {
 }
 
 inputbar {
-    background-color: @mantle;
-    border-radius:    12px 12px 0px 0px;
+    background-color: @surface;
+    border-radius:    0px;
     padding:          10px 12px;
     spacing:          8px;
     children:         [prompt, entry];
@@ -54,19 +53,19 @@ inputbar {
 
 prompt {
     background-color: transparent;
-    text-color:       @sky;
+    text-color:       @foam;
 }
 
 entry {
     background-color: transparent;
     text-color:       @text;
     placeholder:      "Search...";
-    placeholder-color: @overlay0;
+    placeholder-color: @muted;
 }
 
 listview {
     background-color: @base;
-    border-radius:    0px 0px 12px 12px;
+    border-radius:    0px;
     padding:          4px;
     spacing:          0px;
     scrollbar:        false;
@@ -76,20 +75,20 @@ listview {
 element {
     background-color: transparent;
     text-color:       @text;
-    border-radius:    8px;
+    border-radius:    0px;
     padding:          8px 12px;
     spacing:          8px;
     orientation:      horizontal;
 }
 
 element selected {
-    background-color: @surface0;
-    text-color:       @sky;
+    background-color: @overlay;
+    text-color:       @foam;
 }
 
 element alternate {
     background-color: transparent;
-    text-color:       @subtext0;
+    text-color:       @subtle;
 }
 
 element-icon {

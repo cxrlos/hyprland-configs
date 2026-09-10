@@ -37,7 +37,6 @@
     "hyprland/window": {
         "format": "{}",
         "rewrite": {
-            ".*Zen Browser":         "󰖟 Zen",
             ".*[Nn]vim.*":           "󰈙 Neovim",
             ".*[Cc]laude.*":         "✻ Claude",
             ".*[Cc]ursor.*":         "✻ Cursor",
@@ -72,11 +71,7 @@
             "mode": "month",
             "on-scroll": 1,
             "format": {
-                "months":   "<span color='#cdd6f4'><b>{}</b></span>",
-                "days":     "<span color='#a6adc8'>{}</span>",
-                "weeks":    "<span color='#89dceb'><b>W{}</b></span>",
-                "weekdays": "<span color='#89dceb'><b>{}</b></span>",
-                "today":    "<span color='#f38ba8'><b><u>{}</u></b></span>"
+                "today": "<b><u>{}</u></b>"
             }
         }
     },
@@ -152,13 +147,7 @@
         "format": "{icon}",
         "format-icons": {
             "notification": "󰂚",
-            "none": "󰂛",
-            "dnd-notification": "󰂚",
-            "dnd-none": "󰂛",
-            "inhibited-notification": "󰂚",
-            "inhibited-none": "󰂛",
-            "dnd-inhibited-notification": "󰂚",
-            "dnd-inhibited-none": "󰂛"
+            "none": "󰂛"
         },
         "return-type": "json",
         "exec-if": "which swaync-client",
