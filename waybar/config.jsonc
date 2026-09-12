@@ -15,16 +15,24 @@
         "clock"
     ],
     "modules-right": [
-        "cpu",
-        "memory",
-        "custom/gpu",
-        "pulseaudio",
-        "network",
-        "custom/caffeine",
-        "custom/swaync",
-        "tray",
-        "custom/power"
+        "group/right"
     ],
+
+    // ── Right cluster — one continuous chip, not a box per module ──────────
+    "group/right": {
+        "orientation": "horizontal",
+        "modules": [
+            "cpu",
+            "memory",
+            "custom/gpu",
+            "pulseaudio",
+            "network",
+            "custom/caffeine",
+            "custom/swaync",
+            "tray",
+            "custom/power"
+        ]
+    },
 
     // ── Workspaces ────────────────────────────────────────────────────────
     "hyprland/workspaces": {

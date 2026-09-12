@@ -246,11 +246,93 @@ TOML
 path = ""
 fit = "Cover"
 
+[GTK]
+application_prefer_dark_theme = true
+cursor_theme_name = "Catppuccin-Mocha-Dark-Cursors"
+font_name = "Mononoki Nerd Font 11"
+icon_theme_name = "Papirus-Dark"
+theme_name = "Adwaita"
+
 [commands]
 reboot = ["systemctl", "reboot"]
 poweroff = ["systemctl", "poweroff"]
 TOML
-    success "Wrote greetd config + regreet.toml"
+
+    # Gruvbox, boxy chip style — matches waybar/hyprlock rather than a
+    # third-party GTK theme, since ReGreet loads this CSS directly.
+    sudo tee /etc/greetd/regreet.css >/dev/null <<'CSS'
+/* Gruvbox — boxy chip style, matches waybar/hyprlock
+   base #282828  surface #3c3836  overlay #504945
+   muted #7c6f64  subtle #a89984  text #ebdbb2  love #fb4934  gold #fabd2f
+*/
+
+window {
+    background-color: #282828;
+}
+
+frame.background {
+    background-color: rgba(60, 56, 54, 0.85);
+    color: #ebdbb2;
+    border: 1px solid #504945;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+label {
+    color: #ebdbb2;
+}
+
+entry {
+    background-color: #282828;
+    color: #ebdbb2;
+    caret-color: #ebdbb2;
+    border: 1px solid #504945;
+    border-radius: 0px;
+}
+
+entry:focus-within {
+    border-color: #ebdbb2;
+}
+
+combobox box,
+combobox button {
+    background-color: #282828;
+    color: #ebdbb2;
+    border-radius: 0px;
+}
+
+button {
+    background-color: #504945;
+    color: #ebdbb2;
+    border: none;
+    border-radius: 0px;
+}
+
+button:hover {
+    background-color: #7c6f64;
+}
+
+button.suggested-action {
+    background-color: #ebdbb2;
+    color: #282828;
+}
+
+button.suggested-action:hover {
+    background-color: #fabd2f;
+}
+
+button.destructive-action {
+    background-color: #fb4934;
+    color: #282828;
+}
+
+infobar {
+    background-color: #3c3836;
+    color: #ebdbb2;
+    border-radius: 0px;
+}
+CSS
+    success "Wrote greetd config + regreet.toml + regreet.css"
 
     for dm in sddm lightdm gdm; do
         if systemctl is-enabled "$dm" &>/dev/null; then

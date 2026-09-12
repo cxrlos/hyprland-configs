@@ -8,7 +8,7 @@ if [[ ! -d "$gpu_path" ]]; then
 fi
 
 if [[ -f "$gpu_path/gpu_busy_percent" ]]; then
-    busy=$(cat "$gpu_path/gpu_busy_percent")
+    busy=$(cat "$gpu_path/gpu_busy_percent" 2>/dev/null || echo 0)
     vram_used=$(cat "$gpu_path/mem_info_vram_used" 2>/dev/null || echo 0)
     vram_mb=$((vram_used / 1024 / 1024))
     vram_gb=$(awk "BEGIN {printf \"%.1f\", $vram_mb / 1024}")

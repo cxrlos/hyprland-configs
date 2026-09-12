@@ -16,24 +16,40 @@ window#waybar {
     color: #ebdbb2;
 }
 
-/* Each module is its own translucent chip on the transparent bar — this is
-   what keeps text/icons legible over any wallpaper without a solid strip. */
+/* Each top-level cluster is its own translucent chip on the transparent bar —
+   this is what keeps text/icons legible over any wallpaper without a solid strip. */
 #workspaces,
 #window,
-#cpu,
-#memory,
-#custom-gpu,
-#pulseaudio,
-#network,
-#custom-caffeine,
-#custom-swaync,
-#custom-power,
 #clock,
-#tray {
+#group-right {
     padding: 3px 10px;
     margin: 4px 3px;
     color: #ebdbb2;
     background: rgba(60, 56, 54, 0.6); /* surface, translucent */
+}
+
+/* ── Right cluster — one continuous background instead of a box per icon ── */
+#group-right {
+    padding: 3px 4px;
+}
+
+#group-right > widget > #cpu,
+#group-right > widget > #memory,
+#group-right > widget > #custom-gpu,
+#group-right > widget > #pulseaudio,
+#group-right > widget > #network,
+#group-right > widget > #custom-caffeine,
+#group-right > widget > #custom-swaync,
+#group-right > widget > #custom-power,
+#group-right > widget > #tray {
+    padding: 0 8px;
+    margin: 0;
+    background: transparent;
+}
+
+/* Thin dividers between modules instead of gaps between boxes */
+#group-right > widget:not(:first-child) > * {
+    border-left: 1px solid #504945;
 }
 
 /* ── Workspaces ─────────────────────────────────────────────────────── */
@@ -68,6 +84,23 @@ window#waybar {
 /* ── Secondary Text / Active Window ─────────────────────────────────── */
 #window {
     color: #a89984;
+}
+
+/* No window title on this workspace — collapse the chip instead of
+   showing an empty box. */
+#window:empty {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+}
+
+/* gpu-metrics.sh always emits text now, but collapse defensively if a
+   custom module's script ever returns nothing. */
+#group-right > widget > #custom-gpu:empty,
+#group-right > widget > #custom-caffeine:empty,
+#group-right > widget > #custom-swaync:empty {
+    padding: 0;
+    border-left: none;
 }
 
 #clock {
