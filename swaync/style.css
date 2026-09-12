@@ -1,28 +1,28 @@
-/* Rose Pine — swaync style
-   base #191724  surface #1f1d2e  overlay #26233a
-   muted #6e6a86  subtle #908caa  text #e0def4
-   love #eb6f92  foam #9ccfd8
+/* Gruvbox — swaync style
+   base #282828  surface #3c3836  overlay #504945
+   muted #7c6f64  subtle #a89984  text #ebdbb2
+   love #fb4934  foam #8ec07c
 */
 
 * {
-    font-family: "MonaspiceNe Nerd Font", monospace;
+    font-family: "BerkeleyMono Nerd Font Mono", monospace;
     font-size: 11px;
 }
 
 /* ── Control center ─────────────────────────────────────────────────── */
 
 .control-center {
-    background: #1f1d2e;
+    background: #3c3836;
     border-radius: 0;
-    border: 1px solid #26233a;
+    border: 1px solid #504945;
     padding: 8px;
-    color: #e0def4;
+    color: #ebdbb2;
 }
 
 /* ── Title / header ─────────────────────────────────────────────────── */
 
 .widget-title {
-    color: #e0def4;
+    color: #ebdbb2;
     font-size: 14px;
     font-weight: bold;
     padding: 8px 12px 4px;
@@ -30,39 +30,39 @@
 
 .widget-title > button {
     font-size: 11px;
-    color: #908caa;
-    background: #26233a;
+    color: #a89984;
+    background: #504945;
     border-radius: 0;
     border: none;
     padding: 4px 10px;
 }
 
 .widget-title > button:hover {
-    background: #26233a;
-    color: #e0def4;
+    background: #504945;
+    color: #ebdbb2;
 }
 
 /* ── DND toggle ─────────────────────────────────────────────────────── */
 
 .widget-dnd {
     padding: 4px 12px 8px;
-    color: #908caa;
+    color: #a89984;
     font-size: 12px;
 }
 
 .widget-dnd > switch {
-    background: #26233a;
+    background: #504945;
     border-radius: 0;
-    border: 1px solid #26233a;
+    border: 1px solid #504945;
 }
 
 .widget-dnd > switch:checked {
-    background: #9ccfd8;
-    color: #191724;
+    background: #8ec07c;
+    color: #282828;
 }
 
 .widget-dnd > switch slider {
-    background: #908caa;
+    background: #a89984;
     border-radius: 0;
     min-width: 14px;
     min-height: 14px;
@@ -72,13 +72,13 @@
 
 .widget-inhibitors {
     padding: 4px 12px;
-    color: #908caa;
+    color: #a89984;
 }
 
 .widget-inhibitors > button {
     font-size: 11px;
-    color: #908caa;
-    background: #26233a;
+    color: #a89984;
+    background: #504945;
     border-radius: 0;
     border: none;
     padding: 4px 10px;
@@ -96,20 +96,20 @@
 }
 
 .notification {
-    background: #26233a;
+    background: #504945;
     border-radius: 0;
-    border: 1px solid #26233a;
+    border: 1px solid #504945;
     padding: 10px 12px;
     margin: 2px 0;
-    color: #e0def4;
+    color: #ebdbb2;
 }
 
 .notification.critical {
-    border-color: #eb6f92;
+    border-color: #fb4934;
 }
 
 .notification.low {
-    border-color: #26233a;
+    border-color: #504945;
 }
 
 /* ── Notification body ──────────────────────────────────────────────── */
@@ -123,51 +123,51 @@
     background: transparent;
     border-radius: 0;
     padding: 0;
-    color: #e0def4;
+    color: #ebdbb2;
 }
 
 .notification-default-action:hover {
-    background: #26233a;
+    background: #504945;
 }
 
 .summary {
     font-size: 12px;
     font-weight: bold;
-    color: #e0def4;
+    color: #ebdbb2;
 }
 
 .time {
     font-size: 11px;
-    color: #6e6a86;
+    color: #7c6f64;
 }
 
 .body {
     font-size: 12px;
-    color: #908caa;
+    color: #a89984;
 }
 
 /* ── Action buttons ─────────────────────────────────────────────────── */
 
 .notification-action {
     font-size: 11px;
-    color: #9ccfd8;
-    background: #191724;
+    color: #8ec07c;
+    background: #282828;
     border-radius: 0;
-    border: 1px solid #26233a;
+    border: 1px solid #504945;
     padding: 4px 10px;
     margin: 4px 2px 0;
 }
 
 .notification-action:hover {
-    background: #26233a;
-    color: #e0def4;
+    background: #504945;
+    color: #ebdbb2;
 }
 
 /* ── Close button ───────────────────────────────────────────────────── */
 
 .close-button {
     background: transparent;
-    color: #6e6a86;
+    color: #7c6f64;
     border: none;
     border-radius: 0;
     padding: 2px 6px;
@@ -175,8 +175,8 @@
 }
 
 .close-button:hover {
-    background: #26233a;
-    color: #eb6f92;
+    background: #504945;
+    color: #fb4934;
 }
 
 /* ── Scrollbar ──────────────────────────────────────────────────────── */
@@ -186,7 +186,7 @@ scrollbar {
 }
 
 scrollbar slider {
-    background: #26233a;
+    background: #504945;
     border-radius: 0;
     min-width: 4px;
 }
@@ -198,7 +198,7 @@ scrollbar slider {
 }
 
 .floating-notifications > box > .notification-row > .notification {
-    background: #1f1d2e;
-    border: 1px solid #26233a;
+    background: #3c3836;
+    border: 1px solid #504945;
     box-shadow: none;
 }

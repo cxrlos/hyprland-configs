@@ -1,6 +1,6 @@
 # hyprland-configs
 
-Desktop Hyprland setup for Arch Linux — Rose Pine, Monaspace Nerd Font, keyboard-driven.
+Desktop Hyprland setup for Arch Linux — Gruvbox, BerkeleyMono Nerd Font Mono, keyboard-driven.
 Pairs with [`term-configs`](../term-configs) and [`neovim-configs`](../neovim-configs).
 
 ## Install
@@ -38,7 +38,7 @@ settings, and optionally configures greetd as the boot greeter.
 ```
 hypr/       hyprland.conf sources monitors / animations / keybinds / rules; plus hyprlock, hypridle
 waybar/     bar config + style
-rofi/       rose-pine.rasi — launcher theme, shared by every rofi call
+rofi/       gruvbox.rasi — launcher theme, shared by every rofi call
 swaync/     notification center config + style
 thunar/     file manager defaults
 waypaper/   wallpaper picker config

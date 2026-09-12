@@ -1,10 +1,10 @@
-/* Rose Pine — Flat Bar (Pro Minimalist)
-   base #191724   surface #1f1d2e   overlay #26233a   text #e0def4
-   muted #6e6a86  subtle #908caa   foam #9ccfd8  love #eb6f92
+/* Gruvbox — Flat Bar (Pro Minimalist)
+   base #282828   surface #3c3836   overlay #504945   text #ebdbb2
+   muted #7c6f64  subtle #a89984   foam #8ec07c  love #fb4934
 */
 
 * {
-    font-family: "MonaspiceNe Nerd Font Mono", monospace;
+    font-family: "BerkeleyMono Nerd Font Mono", monospace;
     font-size: 13px;
     border: none;
     border-radius: 0;
@@ -12,9 +12,9 @@
 }
 
 window#waybar {
-    background-color: #1f1d2e;
-    border-bottom: 1px solid #26233a;
-    color: #e0def4;
+    background-color: #3c3836;
+    border-bottom: 1px solid #504945;
+    color: #ebdbb2;
 }
 
 #workspaces,
@@ -30,7 +30,7 @@ window#waybar {
 #clock,
 #tray {
     padding: 0 10px;
-    color: #e0def4;
+    color: #ebdbb2;
     background: transparent;
 }
 
@@ -42,31 +42,31 @@ window#waybar {
 #workspaces button {
     padding: 0 8px;
     margin: 3px 2px;
-    color: #6e6a86;
+    color: #7c6f64;
     background: transparent;
     border-radius: 4px;
 }
 
 #workspaces button:hover {
-    color: #e0def4;
-    background: #26233a;
+    color: #ebdbb2;
+    background: #504945;
 }
 
 #workspaces button.active {
-    color: #191724;
-    background: #9ccfd8;
+    color: #282828;
+    background: #8ec07c;
     font-weight: bold;
 }
 
 #workspaces button.urgent {
-    color: #191724;
-    background: #eb6f92;
+    color: #282828;
+    background: #fb4934;
     font-weight: bold;
 }
 
 /* ── Secondary Text / Active Window ─────────────────────────────────── */
 #window {
-    color: #908caa;
+    color: #a89984;
 }
 
 #clock {
@@ -77,41 +77,41 @@ window#waybar {
 #cpu,
 #memory,
 #custom-gpu {
-    color: #908caa;
+    color: #a89984;
 }
 
 /* ── Audio & Network ────────────────────────────────────────────────── */
 #pulseaudio {
-    color: #908caa;
+    color: #a89984;
 }
 
 #pulseaudio.muted {
-    color: #6e6a86;
+    color: #7c6f64;
 }
 
 #network {
-    color: #908caa;
+    color: #a89984;
 }
 
 #network.disconnected {
-    color: #eb6f92;
+    color: #fb4934;
 }
 
 /* ── Utilities ──────────────────────────────────────────────────────── */
 #custom-caffeine {
-    color: #6e6a86;
+    color: #7c6f64;
 }
 
 #custom-caffeine.active {
-    color: #9ccfd8;
+    color: #8ec07c;
 }
 
 #custom-swaync {
-    color: #908caa;
+    color: #a89984;
 }
 
 #custom-power {
-    color: #eb6f92;
+    color: #fb4934;
     padding-right: 14px;
 }
 

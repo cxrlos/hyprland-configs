@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 rofi -dmenu \
     -p "  Keybinds" \
-    -theme ~/.config/rofi/rose-pine.rasi \
+    -theme ~/.config/rofi/gruvbox.rasi \
     -theme-str 'window { width: 680px; } listview { lines: 18; }' \
     -no-custom \
     -kb-accept-entry "" \
