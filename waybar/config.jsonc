@@ -11,30 +11,21 @@
         "hyprland/workspaces",
         "hyprland/window"
     ],
-    "modules-center": [
-        "clock"
-    ],
+    "modules-center": [],
     "modules-right": [
-        "group/right"
+        "clock",
+        "cpu",
+        "memory",
+        "custom/gpu",
+        "custom/updates",
+        "pulseaudio",
+        "custom/mpris",
+        "network",
+        "custom/caffeine",
+        "custom/swaync",
+        "tray",
+        "custom/power"
     ],
-
-    // ── Right cluster — one continuous chip, not a box per module ──────────
-    "group/right": {
-        "orientation": "horizontal",
-        "modules": [
-            "cpu",
-            "memory",
-            "custom/gpu",
-            "custom/updates",
-            "pulseaudio",
-            "custom/mpris",
-            "network",
-            "custom/caffeine",
-            "custom/swaync",
-            "tray",
-            "custom/power"
-        ]
-    },
 
     // ── Workspaces ────────────────────────────────────────────────────────
     "hyprland/workspaces": {
@@ -74,8 +65,7 @@
 
     // ── Clock ─────────────────────────────────────────────────────────────
     "clock": {
-        "format": "{:%A, %B %d    %H:%M}",
-        "format-alt": "{:%H:%M}",
+        "format": "{:%H:%M  %d-%m-%Y}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",

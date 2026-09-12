@@ -17,53 +17,43 @@ window#waybar {
 }
 
 /* Each top-level cluster is its own translucent chip on the transparent bar —
-   this is what keeps text/icons legible over any wallpaper without a solid strip. */
+   this is what keeps text/icons legible over any wallpaper without a solid strip.
+   #window is deliberately left out: it needs to be able to go fully blank (no
+   box) when there's no focused window, since GTK's CSS engine has no :empty
+   support to do that conditionally — see its own flat rule further down.
+
+   The right-side metrics used to be wrapped in a "group/right" module so they
+   could share one continuous chip, but Waybar's group container never painted
+   a background in this environment (confirmed live: even a solid debug red
+   directly on the group never rendered, while every plain top-level module
+   below rendered its background fine). Rather than chase that further, the
+   right-side modules are now flat top-level entries (see config.jsonc) styled
+   the same proven way as #workspaces/#clock. */
 #workspaces,
-#window,
-#clock,
-#group-right {
+#clock {
     padding: 3px 10px;
     margin: 4px 3px;
     color: #ebdbb2;
     background: rgba(60, 56, 54, 0.6); /* surface, translucent */
 }
 
-/* ── Right cluster — one continuous background instead of a box per icon ── */
-#group-right {
-    padding: 3px 4px;
-}
-
-#group-right > #cpu,
-#group-right > #memory,
-#group-right > #custom-gpu,
-#group-right > #custom-updates,
-#group-right > #pulseaudio,
-#group-right > #custom-mpris,
-#group-right > #network,
-#group-right > #custom-caffeine,
-#group-right > #custom-swaync,
-#group-right > #custom-power,
-#group-right > #tray {
-    padding: 0 8px;
-    margin: 0;
-    background: transparent;
-}
-
-/* Thin dividers between modules instead of gaps between boxes —
-   #cpu is always first (see modules-right order in config.jsonc), so it's
-   the one module left out here rather than relying on GTK CSS :not(), which
-   this GTK version's parser rejects. */
-#group-right > #memory,
-#group-right > #custom-gpu,
-#group-right > #custom-updates,
-#group-right > #pulseaudio,
-#group-right > #custom-mpris,
-#group-right > #network,
-#group-right > #custom-caffeine,
-#group-right > #custom-swaync,
-#group-right > #custom-power,
-#group-right > #tray {
-    border-left: 1px solid #504945;
+/* Right-side metrics — one continuous chip: same background, touching edges
+   (zero horizontal margin) so adjacent modules read as a single rectangle,
+   with no dividers between them. */
+#cpu,
+#memory,
+#custom-gpu,
+#custom-updates,
+#pulseaudio,
+#custom-mpris,
+#network,
+#custom-caffeine,
+#custom-swaync,
+#tray,
+#custom-power {
+    padding: 3px 12px;
+    margin: 4px 0;
+    background: rgba(60, 56, 54, 0.6);
 }
 
 /* ── Workspaces ─────────────────────────────────────────────────────── */
@@ -97,27 +87,9 @@ window#waybar {
 
 /* ── Secondary Text / Active Window ─────────────────────────────────── */
 #window {
+    padding: 0 8px;
     color: #a89984;
-}
-
-/* No window title on this workspace — collapse the chip instead of
-   showing an empty box. */
-#window:empty {
-    padding: 0;
-    margin: 0;
     background: transparent;
-}
-
-/* gpu-metrics.sh always emits text now, but collapse defensively if a
-   custom module's script ever returns nothing. custom/updates and
-   custom/mpris collapse for real whenever there's nothing to show. */
-#group-right > #custom-gpu:empty,
-#group-right > #custom-updates:empty,
-#group-right > #custom-mpris:empty,
-#group-right > #custom-caffeine:empty,
-#group-right > #custom-swaync:empty {
-    padding: 0;
-    border-left: none;
 }
 
 #clock {
