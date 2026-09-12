@@ -22,15 +22,15 @@ hl.bind(mod .. " + Y", hl.dsp.exec_cmd("thunar"))
 hl.bind(mod .. " + M", hl.dsp.exec_cmd("~/.config/scripts/scratch.sh btop btop-scratch btop"))
 
 -- Window cycling
-hl.bind(mod .. " + TAB", hl.dsp.cycle_next({ prev = false }), { repeating = true })
-hl.bind(mod .. " SHIFT + TAB", hl.dsp.cycle_next({ prev = true }), { repeating = true })
+hl.bind(mod .. " + TAB", hl.dsp.window.cycle_next({ next = true }), { repeating = true })
+hl.bind(mod .. " SHIFT + TAB", hl.dsp.window.cycle_next({ next = false }), { repeating = true })
 
 -- Window management
 hl.bind(mod .. " + Q", hl.dsp.window.close())
-hl.bind(mod .. " + F", hl.dsp.window.fullscreen({ mode = 0 }))
+hl.bind(mod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind(mod .. " SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + B", hl.dsp.exec_cmd("killall -SIGUSR1 waybar"))
-hl.bind(mod .. " + D", hl.dsp.workspace.go("empty"))
+hl.bind(mod .. " + D", hl.dsp.focus({ workspace = "empty" }))
 hl.bind(mod .. " + ESCAPE", hl.dsp.exec_cmd("hyprlock"))
 
 -- Clipboard
@@ -38,48 +38,46 @@ hl.bind(mod .. " + C", hl.dsp.exec_cmd("wl-copy \"$(wl-paste --primary 2>/dev/nu
 hl.bind(mod .. " + V", hl.dsp.exec_cmd("~/.config/scripts/clipboard.sh"))
 
 -- Focus (vim hjkl)
-hl.bind(mod .. " + H", hl.dsp.focus("l"))
-hl.bind(mod .. " + J", hl.dsp.focus("d"))
-hl.bind(mod .. " + K", hl.dsp.focus("u"))
-hl.bind(mod .. " + L", hl.dsp.focus("r"))
+hl.bind(mod .. " + H", hl.dsp.focus({ direction = "left" }))
+hl.bind(mod .. " + J", hl.dsp.focus({ direction = "down" }))
+hl.bind(mod .. " + K", hl.dsp.focus({ direction = "up" }))
+hl.bind(mod .. " + L", hl.dsp.focus({ direction = "right" }))
 
 -- Move windows
-hl.bind(mod .. " SHIFT + H", hl.dsp.window.move("l"))
-hl.bind(mod .. " SHIFT + J", hl.dsp.window.move("d"))
-hl.bind(mod .. " SHIFT + K", hl.dsp.window.move("u"))
-hl.bind(mod .. " SHIFT + L", hl.dsp.window.move("r"))
+hl.bind(mod .. " SHIFT + H", hl.dsp.window.move({ direction = "left" }))
+hl.bind(mod .. " SHIFT + J", hl.dsp.window.move({ direction = "down" }))
+hl.bind(mod .. " SHIFT + K", hl.dsp.window.move({ direction = "up" }))
+hl.bind(mod .. " SHIFT + L", hl.dsp.window.move({ direction = "right" }))
 
 -- Resize submap: enter with mod+R, hjkl resizes (no ALT needed), Escape/Return exits
--- TODO verify against wiki.hypr.land/Configuring/ for Hyprland 0.56 -- exact hl submap API (definition + enter/exit dispatchers)
-hl.submap("resize", function()
+hl.define_submap("resize", function()
     hl.bind("H", hl.dsp.window.resize({ x = -30, y = 0, relative = true }), { repeating = true })
     hl.bind("J", hl.dsp.window.resize({ x = 0, y = 30, relative = true }), { repeating = true })
     hl.bind("K", hl.dsp.window.resize({ x = 0, y = -30, relative = true }), { repeating = true })
     hl.bind("L", hl.dsp.window.resize({ x = 30, y = 0, relative = true }), { repeating = true })
-    hl.bind("ESCAPE", hl.dsp.submap_exit())
-    hl.bind("RETURN", hl.dsp.submap_exit())
+    hl.bind("ESCAPE", hl.dsp.submap("reset"))
+    hl.bind("RETURN", hl.dsp.submap("reset"))
 end)
-hl.bind(mod .. " + R", hl.dsp.submap_enter("resize"))
+hl.bind(mod .. " + R", hl.dsp.submap("resize"))
 
 -- System submap: fast path for power actions (rofi power.sh below still works too)
--- TODO verify against wiki.hypr.land/Configuring/ for Hyprland 0.56 -- exact hl submap API (definition + enter/exit dispatchers)
-hl.submap("system", function()
+hl.define_submap("system", function()
     hl.bind("L", hl.dsp.exec_cmd("hyprlock"))
     hl.bind("R", hl.dsp.exec_cmd("systemctl reboot"))
     hl.bind("P", hl.dsp.exec_cmd("systemctl poweroff"))
     hl.bind("U", hl.dsp.exec_cmd("systemctl suspend"))
-    hl.bind("ESCAPE", hl.dsp.submap_exit())
-    hl.bind("RETURN", hl.dsp.submap_exit())
+    hl.bind("ESCAPE", hl.dsp.submap("reset"))
+    hl.bind("RETURN", hl.dsp.submap("reset"))
 end)
-hl.bind(mod .. " + S", hl.dsp.submap_enter("system"))
+hl.bind(mod .. " + S", hl.dsp.submap("system"))
 
 -- Workspaces 1-10
 for i = 1, 9 do
-    hl.bind(mod .. " + " .. i, hl.dsp.workspace.go(i))
-    hl.bind(mod .. " SHIFT + " .. i, hl.dsp.window.move_to_workspace(i))
+    hl.bind(mod .. " + " .. i, hl.dsp.focus({ workspace = tostring(i) }))
+    hl.bind(mod .. " SHIFT + " .. i, hl.dsp.window.move({ workspace = tostring(i), follow = true }))
 end
-hl.bind(mod .. " + 0", hl.dsp.workspace.go(10))
-hl.bind(mod .. " SHIFT + 0", hl.dsp.window.move_to_workspace(10))
+hl.bind(mod .. " + 0", hl.dsp.focus({ workspace = "10" }))
+hl.bind(mod .. " SHIFT + 0", hl.dsp.window.move({ workspace = "10", follow = true }))
 
 -- Screenshots (no Print key)
 hl.bind(mod .. " SHIFT + A", hl.dsp.exec_cmd("~/.local/bin/screenshot area"))
@@ -99,8 +97,7 @@ hl.bind(mod .. " SHIFT + D", hl.dsp.exec_cmd("swaync-client -d"))
 
 -- Mouse window actions
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
--- TODO verify against wiki.hypr.land/Configuring/Basics/Binds/ for Hyprland 0.56 -- dispatcher name for mouse-driven resize (old resizewindow)
-hl.bind(mod .. " + mouse:273", hl.dsp.window.resize_drag(), { mouse = true })
+hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Media / hardware keys
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
