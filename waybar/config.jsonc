@@ -25,7 +25,9 @@
             "cpu",
             "memory",
             "custom/gpu",
+            "custom/updates",
             "pulseaudio",
+            "custom/mpris",
             "network",
             "custom/caffeine",
             "custom/swaync",
@@ -107,6 +109,16 @@
         "tooltip": true
     },
 
+    // ── Package updates (official repos via checkupdates) ────────────────
+    "custom/updates": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/scripts/updates-count.sh",
+        "interval": 1800,
+        "on-click": "alacritty -e yay",
+        "tooltip": true
+    },
+
     // ── Audio ─────────────────────────────────────────────────────────────
     "pulseaudio": {
         "format": "{icon} {volume}%",
@@ -118,6 +130,18 @@
         "max-volume": 100,
         "on-click": "~/.config/scripts/scratch.sh wiremix wiremix-scratch wiremix",
         "tooltip-format": "{desc} — {volume}%"
+    },
+
+    // ── Now playing (mpris via playerctl) ─────────────────────────────────
+    "custom/mpris": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/scripts/mpris-status.sh",
+        "interval": 3,
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous",
+        "tooltip": true
     },
 
     // ── Network ───────────────────────────────────────────────────────────

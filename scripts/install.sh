@@ -69,6 +69,7 @@ _install_deps() {
         qt5-wayland qt6-wayland
         gamemode lib32-gamemode
         ttf-mononoki-nerd
+        wf-recorder pacman-contrib jq
     )
 
     for dep in "${pacman_deps[@]}"; do
@@ -129,6 +130,14 @@ _backup() {
     [[ -e "$target" || -L "$target" ]] || return 0
     local backup="${target}.bak.${TIMESTAMP}"
     mv "$target" "$backup"
+    info "Backed up $(basename "$target") → $(basename "$backup")"
+}
+
+_backup_sudo() {
+    local target="$1"
+    sudo test -e "$target" || return 0
+    local backup="${target}.bak.${TIMESTAMP}"
+    sudo cp "$target" "$backup"
     info "Backed up $(basename "$target") → $(basename "$backup")"
 }
 
@@ -232,6 +241,7 @@ read -r -p "  Configure greetd as boot greeter? Requires sudo. [y/N] " yn
 if [[ "$yn" =~ ^[yY]$ ]]; then
     sudo mkdir -p /etc/greetd
 
+    _backup_sudo /etc/greetd/config.toml
     sudo tee /etc/greetd/config.toml >/dev/null <<'TOML'
 [terminal]
 vt = 1
@@ -241,6 +251,7 @@ command = "cage -s -- regreet --style /etc/greetd/regreet.css"
 user = "greeter"
 TOML
 
+    _backup_sudo /etc/greetd/regreet.toml
     sudo tee /etc/greetd/regreet.toml >/dev/null <<'TOML'
 [background]
 path = ""
@@ -260,6 +271,7 @@ TOML
 
     # Gruvbox, boxy chip style — matches waybar/hyprlock rather than a
     # third-party GTK theme, since ReGreet loads this CSS directly.
+    _backup_sudo /etc/greetd/regreet.css
     sudo tee /etc/greetd/regreet.css >/dev/null <<'CSS'
 /* Gruvbox — boxy chip style, matches waybar/hyprlock
    base #282828  surface #3c3836  overlay #504945
@@ -291,7 +303,38 @@ entry {
 }
 
 entry:focus-within {
-    border-color: #ebdbb2;
+    border: 2px solid #8ec07c;
+    outline: 1px solid rgba(142, 192, 124, 0.4);
+    outline-offset: 2px;
+}
+
+/* usernames_box is a GtkComboBoxText; its dropdown popover renders its
+   entries as list rows, so style those flat too. */
+listbox row {
+    background-color: #3c3836;
+    border: 1px solid #504945;
+    border-radius: 0px;
+}
+
+listbox row:selected {
+    background-color: #504945;
+    color: #ebdbb2;
+    border-left: 3px solid #8ec07c;
+}
+
+/* Session/user combobox popovers otherwise fall back to a rounded default
+   GTK popup, breaking the flat look mid-flow. */
+popover,
+popover.background,
+menu {
+    background-color: #282828;
+    border: 1px solid #504945;
+    border-radius: 0px;
+}
+
+menu menuitem:hover,
+popover row:hover {
+    background-color: #504945;
 }
 
 combobox box,
@@ -315,6 +358,7 @@ button:hover {
 button.suggested-action {
     background-color: #ebdbb2;
     color: #282828;
+    border: 1px solid #8ec07c;
 }
 
 button.suggested-action:hover {
@@ -330,6 +374,26 @@ infobar {
     background-color: #3c3836;
     color: #ebdbb2;
     border-radius: 0px;
+}
+
+/* #message_label is ReGreet's top status/greeting label; #clock_frame wraps
+   its clock widget. Sized up so they don't look disconnected from
+   hyprlock's larger clock text. */
+#message_label {
+    font-size: 18px;
+}
+
+#clock_frame label {
+    font-size: 32px;
+}
+
+/* TODO: confirm ReGreet's actual capslock CSS class/selector name — as of
+   the current upstream source (rharish101/ReGreet), there is no capslock
+   indicator widget at all, so this selector is a guess for if/when one is
+   added, following the same naming convention as other GTK greeters. */
+.capslock-warning {
+    color: #fabd2f;
+    font-weight: bold;
 }
 CSS
     success "Wrote greetd config + regreet.toml + regreet.css"
@@ -348,6 +412,8 @@ CSS
     if [[ -f /usr/share/wayland-sessions/hyprland-uwsm.desktop ]]; then
         sudo rm -f /usr/share/wayland-sessions/hyprland-uwsm.desktop
         success "Removed hyprland-uwsm.desktop — only plain Hyprland shows in the greeter"
+    else
+        success "hyprland-uwsm.desktop already removed"
     fi
 else
     info "Skipping greetd — start Hyprland manually with: Hyprland"

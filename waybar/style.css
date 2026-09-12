@@ -36,7 +36,9 @@ window#waybar {
 #group-right > #cpu,
 #group-right > #memory,
 #group-right > #custom-gpu,
+#group-right > #custom-updates,
 #group-right > #pulseaudio,
+#group-right > #custom-mpris,
 #group-right > #network,
 #group-right > #custom-caffeine,
 #group-right > #custom-swaync,
@@ -47,8 +49,20 @@ window#waybar {
     background: transparent;
 }
 
-/* Thin dividers between modules instead of gaps between boxes */
-#group-right > *:not(:first-child) {
+/* Thin dividers between modules instead of gaps between boxes —
+   #cpu is always first (see modules-right order in config.jsonc), so it's
+   the one module left out here rather than relying on GTK CSS :not(), which
+   this GTK version's parser rejects. */
+#group-right > #memory,
+#group-right > #custom-gpu,
+#group-right > #custom-updates,
+#group-right > #pulseaudio,
+#group-right > #custom-mpris,
+#group-right > #network,
+#group-right > #custom-caffeine,
+#group-right > #custom-swaync,
+#group-right > #custom-power,
+#group-right > #tray {
     border-left: 1px solid #504945;
 }
 
@@ -95,8 +109,11 @@ window#waybar {
 }
 
 /* gpu-metrics.sh always emits text now, but collapse defensively if a
-   custom module's script ever returns nothing. */
+   custom module's script ever returns nothing. custom/updates and
+   custom/mpris collapse for real whenever there's nothing to show. */
 #group-right > #custom-gpu:empty,
+#group-right > #custom-updates:empty,
+#group-right > #custom-mpris:empty,
 #group-right > #custom-caffeine:empty,
 #group-right > #custom-swaync:empty {
     padding: 0;
@@ -110,7 +127,8 @@ window#waybar {
 /* ── Hardware & Metrics — flat, no per-module rainbow ───────────────── */
 #cpu,
 #memory,
-#custom-gpu {
+#custom-gpu,
+#custom-updates {
     color: #a89984;
 }
 
@@ -121,6 +139,10 @@ window#waybar {
 
 #pulseaudio.muted {
     color: #7c6f64;
+}
+
+#custom-mpris {
+    color: #a89984;
 }
 
 #network {
