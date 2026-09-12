@@ -237,7 +237,7 @@ if [[ "$yn" =~ ^[yY]$ ]]; then
 vt = 1
 
 [default_session]
-command = "cage -s -- regreet"
+command = "cage -s -- regreet --style /etc/greetd/regreet.css"
 user = "greeter"
 TOML
 
