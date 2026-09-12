@@ -17,7 +17,7 @@
 
 configuration {
     modi:                "drun,run,window";
-    font:                "BerkeleyMono Nerd Font Mono 11";
+    font:                "Mononoki Nerd Font 11";
     show-icons:          true;
     icon-theme:          "Papirus-Dark";
     drun-display-format: "{name}";

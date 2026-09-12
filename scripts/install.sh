@@ -68,6 +68,7 @@ _install_deps() {
         papirus-icon-theme
         qt5-wayland qt6-wayland
         gamemode lib32-gamemode
+        ttf-mononoki-nerd
     )
 
     for dep in "${pacman_deps[@]}"; do
@@ -109,16 +110,17 @@ _install_deps() {
 # ── Font check ─────────────────────────────────────────────────────────────────
 
 _check_font() {
-    if ! fc-list 2>/dev/null | grep -qi "berkeleymono nerd font"; then
-        warn "BerkeleyMono Nerd Font Mono not found."
-        warn "It's a paid font — no AUR package exists for it."
-        warn "Buy + download: https://usgraphics.com/products/berkeley-mono"
-        warn "Patch with https://github.com/ryanoasis/nerd-fonts (or use their pre-patched download option), then install the font."
-    fi
+    fc-list 2>/dev/null | grep -qi "mononoki nerd font" && return 0
+    return 1
 }
 
+if _check_font; then
+    success "Mononoki Nerd Font"
+else
+    warn "Mononoki Nerd Font not found — installing ttf-mononoki-nerd below"
+fi
+
 _install_deps
-_check_font
 
 # ── Backup helper ──────────────────────────────────────────────────────────────
 
@@ -192,7 +194,7 @@ _write_gtk_settings() {
     cat >"$dir/settings.ini" <<EOF
 [Settings]
 gtk-icon-theme-name=Papirus-Dark
-gtk-font-name=BerkeleyMono Nerd Font Mono 11
+gtk-font-name=Mononoki Nerd Font 11
 gtk-cursor-theme-name=Catppuccin-Mocha-Dark-Cursors
 gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=1

@@ -1,6 +1,6 @@
 # hyprland-configs
 
-Desktop Hyprland setup for Arch Linux — Gruvbox, BerkeleyMono Nerd Font Mono, keyboard-driven.
+Desktop Hyprland setup for Arch Linux — Gruvbox, Mononoki Nerd Font, keyboard-driven.
 Pairs with [`term-configs`](../term-configs) and [`neovim-configs`](../neovim-configs).
 
 ## Install

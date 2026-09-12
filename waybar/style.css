@@ -1,10 +1,10 @@
-/* Gruvbox — Flat Bar (Pro Minimalist)
+/* Gruvbox — Transparent Bar (boxed modules, no solid strip)
    base #282828   surface #3c3836   overlay #504945   text #ebdbb2
    muted #7c6f64  subtle #a89984   foam #8ec07c  love #fb4934
 */
 
 * {
-    font-family: "BerkeleyMono Nerd Font Mono", monospace;
+    font-family: "Mononoki Nerd Font Mono", monospace;
     font-size: 13px;
     border: none;
     border-radius: 0;
@@ -12,11 +12,12 @@
 }
 
 window#waybar {
-    background-color: #3c3836;
-    border-bottom: 1px solid #504945;
+    background: transparent;
     color: #ebdbb2;
 }
 
+/* Each module is its own translucent chip on the transparent bar — this is
+   what keeps text/icons legible over any wallpaper without a solid strip. */
 #workspaces,
 #window,
 #cpu,
@@ -29,27 +30,27 @@ window#waybar {
 #custom-power,
 #clock,
 #tray {
-    padding: 0 10px;
+    padding: 3px 10px;
+    margin: 4px 3px;
     color: #ebdbb2;
-    background: transparent;
+    background: rgba(60, 56, 54, 0.6); /* surface, translucent */
 }
 
 /* ── Workspaces ─────────────────────────────────────────────────────── */
 #workspaces {
-    padding: 0 4px;
+    padding: 3px 4px;
 }
 
 #workspaces button {
     padding: 0 8px;
-    margin: 3px 2px;
+    margin: 0 2px;
     color: #7c6f64;
     background: transparent;
-    border-radius: 4px;
 }
 
 #workspaces button:hover {
     color: #ebdbb2;
-    background: #504945;
+    background: rgba(80, 73, 69, 0.8);
 }
 
 #workspaces button.active {
@@ -112,14 +113,9 @@ window#waybar {
 
 #custom-power {
     color: #fb4934;
-    padding-right: 14px;
 }
 
 /* ── Tray ───────────────────────────────────────────────────────────── */
-#tray {
-    padding: 0 8px;
-}
-
 #tray > .passive {
     -gtk-icon-effect: dim;
 }
