@@ -5,7 +5,7 @@ local terminal    = "alacritty --working-directory " .. os.getenv("HOME")
 local rofi_theme  = "-theme ~/.config/rofi/gruvbox.rasi"
 local launcher    = "rofi -show drun " .. rofi_theme
 local winswitcher = "rofi -show window " .. rofi_theme
-local browser     = "firefox"
+local browser     = "zen-browser"
 
 -- Applications
 hl.bind(mod .. " + RETURN", hl.dsp.exec_cmd(terminal))

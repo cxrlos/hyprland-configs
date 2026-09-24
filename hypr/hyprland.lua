@@ -33,6 +33,7 @@ hl.env("XDG_SESSION_TYPE", "wayland")
 hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 hl.env("COLORTERM", "truecolor")
+hl.env("BROWSER", "zen-browser")
 
 hl.config({
     general = {

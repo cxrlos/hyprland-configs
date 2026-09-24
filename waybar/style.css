@@ -134,6 +134,10 @@ window#waybar {
     color: #8ec07c;
 }
 
+#custom-caffeine.claude {
+    color: #fe8019;
+}
+
 #custom-swaync {
     color: #a89984;
 }

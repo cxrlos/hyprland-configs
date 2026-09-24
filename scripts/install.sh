@@ -181,6 +181,43 @@ for script in "$REPO_DIR"/scripts/*; do
 done
 success "Scripts marked executable"
 
+# ── Claude Code hooks (caffeine's "while Claude works" mode) ───────────────────
+
+# Merged into ~/.claude/settings.json: stale claude-busy.sh entries are replaced,
+# every other setting and hook is kept.
+_install_claude_hooks() {
+    local settings="$HOME/.claude/settings.json" merged
+    mkdir -p "$(dirname "$settings")"
+    [[ -s "$settings" ]] || echo '{}' >"$settings"
+    merged=$(mktemp)
+    jq '
+        def hook($matcher; $event): {
+            matcher: $matcher,
+            hooks: [{type: "command", command: "~/.config/scripts/claude-busy.sh \($event) 2>/dev/null || true"}]
+        };
+        def without_busy: map(select(all(.hooks[]?; .command | contains("claude-busy.sh") | not)));
+        reduce (
+            ["SessionStart", "", "start"],
+            ["UserPromptSubmit", "", "busy"],
+            ["PostToolUse", "", "busy"],
+            ["Stop", "", "stop"],
+            ["Notification", "permission_prompt|elicitation_dialog", "idle"],
+            ["SessionEnd", "", "end"]
+        ) as [$event, $matcher, $arg]
+            (.; .hooks[$event] = ((.hooks[$event] // []) | without_busy) + [hook($matcher; $arg)])
+    ' "$settings" >"$merged"
+    if cmp -s "$settings" "$merged"; then
+        rm -f "$merged"
+        success "Claude Code busy hooks already installed"
+    else
+        [[ $(<"$settings") == '{}' ]] || _backup "$settings"
+        mv "$merged" "$settings"
+        success "Claude Code busy hooks merged into $settings"
+    fi
+}
+
+_install_claude_hooks
+
 # ── Dark-mode preference (so Firefox / GTK / portal apps render dark) ──────────
 
 if command -v gsettings &>/dev/null; then

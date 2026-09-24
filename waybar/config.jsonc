@@ -151,7 +151,7 @@
         "format": "{}",
         "return-type": "json",
         "exec": "~/.config/scripts/caffeine.sh status",
-        "on-click": "~/.config/scripts/caffeine.sh toggle",
+        "on-click": "~/.config/scripts/caffeine.sh menu",
         "signal": 8,
         "tooltip": true
     },
