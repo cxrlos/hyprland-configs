@@ -17,7 +17,7 @@ hl.bind(mod .. " + SHIFT + N", hl.dsp.exec_cmd("~/.config/scripts/obsidian-captu
 hl.bind(mod .. " + SHIFT + O", hl.dsp.exec_cmd(winswitcher))
 
 -- Scratchpads
-hl.bind(mod .. " + grave", hl.dsp.workspace.toggle_special("scratch"))
+hl.bind(mod .. " + grave", hl.dsp.exec_cmd("~/.config/scripts/scratch.sh scratch scratchpad zsh"))
 hl.bind(mod .. " + Y", hl.dsp.exec_cmd("thunar"))
 hl.bind(mod .. " + M", hl.dsp.exec_cmd("~/.config/scripts/scratch.sh btop btop-scratch btop"))
 
@@ -61,11 +61,12 @@ end)
 hl.bind(mod .. " + R", hl.dsp.submap("resize"))
 
 -- System submap: fast path for power actions (rofi power.sh below still works too)
-hl.define_submap("system", function()
+-- "reset": leave the submap after any action, so a stray r/p after unlock or resume can't reboot
+hl.define_submap("system", "reset", function()
     hl.bind("L", hl.dsp.exec_cmd("hyprlock"))
     hl.bind("R", hl.dsp.exec_cmd("systemctl reboot"))
     hl.bind("P", hl.dsp.exec_cmd("systemctl poweroff"))
-    hl.bind("U", hl.dsp.exec_cmd("systemctl suspend"))
+    hl.bind("U", hl.dsp.exec_cmd("sleep 1 && systemctl suspend")) -- let the key release land before sleep
     hl.bind("ESCAPE", hl.dsp.submap("reset"))
     hl.bind("RETURN", hl.dsp.submap("reset"))
 end)

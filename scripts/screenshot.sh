@@ -33,7 +33,8 @@ case "${1:-area}" in
 esac
 
 choice=$(printf "  Copy\n  Save\n  Copy+Save" \
-    | rofi -dmenu -p " Screenshot" -theme "$ROFI_THEME" -lines 3 -width 22)
+    | rofi -dmenu -p " Screenshot" -theme "$ROFI_THEME" -theme-str 'window { width: 280px; } listview { lines: 3; }') \
+    || choice=""
 
 mkdir -p "$SAVE_DIR"
 TIMESTAMP="$(date +'%Y-%m-%d_%H-%M-%S')"

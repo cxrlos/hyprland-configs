@@ -22,4 +22,4 @@ else
 fi
 
 status=$(playerctl status 2>/dev/null || echo "Unknown")
-printf '{"text": "󰝚 %s", "tooltip": "%s\n%s", "class": "mpris"}\n' "$display" "$track" "$status"
+jq -nc --arg d "$display" --arg t "$track" --arg s "$status" '{text: "󰝚 \($d)", tooltip: "\($t)\n\($s)", class: "mpris"}'

@@ -5,7 +5,6 @@ hl.window_rule({
     match = { class = "^(steam_app_.*|gamescope|.*\\.exe|.*\\.EXE)$" },
     immediate = true,
     no_anim = true,
-    no_blur = true,
 })
 
 hl.window_rule({
@@ -55,15 +54,9 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    name = "nm-float",
-    match = { class = "^(nm-connection-editor)$" },
-    float = true,
-})
-
-hl.window_rule({
     name = "obsidian-workspace",
     match = { class = "^(obsidian)$" },
-    workspace = "2 silent",
+    workspace = "2",
 })
 
 hl.window_rule({

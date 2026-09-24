@@ -6,8 +6,8 @@ set -euo pipefail
 
 ROFI_THEME="$HOME/.config/rofi/gruvbox.rasi"
 
-title=$(printf '' | rofi -dmenu -p "  Capture" -theme "$ROFI_THEME" -lines 0 -width 30) || exit 0
+title=$(printf '' | rofi -dmenu -p "  Capture" -theme "$ROFI_THEME" -theme-str 'window { width: 360px; } listview { lines: 0; }') || exit 0
 [ -n "$title" ] || title="$(date +'%Y-%m-%d %H-%M')"
 
-name=$(printf '%s' "$title" | sed 's/ /%20/g')
+name=$(jq -rn --arg t "$title" '$t | @uri')
 xdg-open "obsidian://new?name=$name" >/dev/null 2>&1

@@ -8,13 +8,9 @@ require("rules")
 hl.on("hyprland.start", function()
     hl.exec_cmd("waybar")
     hl.exec_cmd("~/.config/scripts/wallpaper.sh")
-    hl.exec_cmd("swaync")
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     hl.exec_cmd("hypridle")
-
-    -- Scratchpads (pre-started, toggled with Super+GRAVE)
-    hl.exec_cmd("[workspace special:scratch silent] alacritty --class scratchpad")
 end)
 
 -- Environment

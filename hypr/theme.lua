@@ -1,14 +1,6 @@
--- Palette (Gruvbox) and layout tokens, shared by keybinds.lua and rules.lua
+-- Gruvbox border colours and layout tokens, shared by hyprland.lua and rules.lua
 
 return {
-    base    = "rgb(282828)",
-    surface = "rgb(3c3836)",
-    overlay = "rgb(504945)",
-    muted   = "rgb(7c6f64)",
-    text    = "rgb(ebdbb2)",
-    foam    = "rgb(8ec07c)",
-    love    = "rgb(fb4934)",
-
     border_active   = "rgb(ebdbb2)",
     border_inactive = "rgb(504945)",
 

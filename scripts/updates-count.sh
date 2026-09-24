@@ -8,7 +8,7 @@ set -euo pipefail
 count=$(checkupdates 2>/dev/null | wc -l | tr -d ' ')
 
 if [[ "$count" -gt 0 ]]; then
-    printf '{"text": "%s 󰚰", "tooltip": "%s package update(s) available\nClick to open yay"}\n' "$count" "$count"
+    jq -nc --arg n "$count" '{text: "\($n) 󰚰", tooltip: "\($n) package update(s) available\nClick to open yay"}'
 else
     printf '{"text": "", "tooltip": ""}\n'
 fi

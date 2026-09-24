@@ -70,6 +70,7 @@ _install_deps() {
         gamemode lib32-gamemode
         ttf-mononoki-nerd
         wf-recorder pacman-contrib jq
+        wiremix
     )
 
     for dep in "${pacman_deps[@]}"; do
@@ -89,8 +90,11 @@ _install_deps() {
         cage
         bluetui
         obsidian
-        catppuccin-cursors
+        catppuccin-cursors-mocha
+        bibata-cursor-theme-bin
         ttf-apple-emoji
+        zen-browser-bin
+        logiops-git
     )
 
     if _ensure_yay; then
@@ -250,6 +254,28 @@ EOF
 
 _write_gtk_settings 3
 _write_gtk_settings 4
+
+# XCursor falls back to the "default" theme when the configured one is missing.
+mkdir -p "$HOME/.local/share/icons/default"
+cat >"$HOME/.local/share/icons/default/index.theme" <<'EOF'
+[Icon Theme]
+Inherits=Bibata-Modern-Classic
+EOF
+success "Cursor fallback set to Bibata-Modern-Classic"
+
+# ── logiops (MX Master) — /etc/logid.cfg is root-owned, so it's copied, not linked ──
+
+if command -v logid &>/dev/null; then
+    if sudo cmp -s "$REPO_DIR/logiops/logid.cfg" /etc/logid.cfg; then
+        success "logid.cfg up to date"
+    else
+        _backup_sudo /etc/logid.cfg
+        sudo install -m 644 "$REPO_DIR/logiops/logid.cfg" /etc/logid.cfg
+        sudo systemctl enable logid &>/dev/null
+        sudo systemctl restart logid
+        success "logid.cfg deployed and logid restarted"
+    fi
+fi
 
 # ── Wallpaper ──────────────────────────────────────────────────────────────────
 
