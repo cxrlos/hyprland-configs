@@ -16,6 +16,11 @@ skip()    { printf "%s\n" "${DIM}–${NC} $* ${DIM}(not yet created)${NC}"; }
 die()     { printf "%s\n" "${RED}✗${NC} $*" >&2; exit 1; }
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+case "$(grep -m1 vendor_id /proc/cpuinfo)" in
+    *GenuineIntel*) UCODE=intel-ucode ;;
+    *AuthenticAMD*) UCODE=amd-ucode ;;
+    *)              UCODE="" ;;
+esac
 TIMESTAMP="$(date +%Y%m%d%H%M%S)"
 
 # ── Arch-only ──────────────────────────────────────────────────────────────────
@@ -72,6 +77,8 @@ _install_deps() {
         wf-recorder pacman-contrib jq
         wiremix
     )
+
+    [[ -n "$UCODE" ]] && pacman_deps+=("$UCODE")
 
     for dep in "${pacman_deps[@]}"; do
         if pacman -Qi "$dep" &>/dev/null; then
@@ -245,7 +252,7 @@ _write_gtk_settings() {
 [Settings]
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=Mononoki Nerd Font 11
-gtk-cursor-theme-name=Catppuccin-Mocha-Dark-Cursors
+gtk-cursor-theme-name=catppuccin-mocha-dark-cursors
 gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=1
 EOF
@@ -262,6 +269,29 @@ cat >"$HOME/.local/share/icons/default/index.theme" <<'EOF'
 Inherits=Bibata-Modern-Classic
 EOF
 success "Cursor fallback set to Bibata-Modern-Classic"
+
+# ── Microcode — the boot entry must load the image matching this CPU ─────────
+
+if [[ -n "$UCODE" ]]; then
+    if grep -qs "/$UCODE.img" /boot/loader/entries/*.conf; then
+        success "$UCODE loaded by the systemd-boot entries"
+    else
+        warn "No /boot/loader/entries/*.conf loads /$UCODE.img — add 'initrd /$UCODE.img' before the initramfs line"
+    fi
+fi
+
+# ── udev rules (Logi Bolt, 8BitDo) ─────────────────────────────────────────────
+
+for rule in "$REPO_DIR"/udev/*.rules; do
+    dst="/etc/udev/rules.d/$(basename "$rule")"
+    if sudo cmp -s "$rule" "$dst"; then
+        success "$(basename "$rule") up to date"
+    else
+        sudo install -m 644 "$rule" "$dst"
+        success "Installed $dst"
+    fi
+done
+sudo udevadm control --reload-rules
 
 # ── logiops (MX Master) — /etc/logid.cfg is root-owned, so it's copied, not linked ──
 
@@ -322,7 +352,7 @@ fit = "Cover"
 
 [GTK]
 application_prefer_dark_theme = true
-cursor_theme_name = "Catppuccin-Mocha-Dark-Cursors"
+cursor_theme_name = "catppuccin-mocha-dark-cursors"
 font_name = "Mononoki Nerd Font 11"
 icon_theme_name = "Papirus-Dark"
 theme_name = "Adwaita"

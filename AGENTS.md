@@ -47,7 +47,7 @@ Sibling repos: `../term-configs` (Alacritty, tmux, Zsh, Starship), `../neovim-co
 | `waypaper/config.ini` | picked wallpaper; `post_command` runs `wallpaper.sh` |
 | `gamemode.ini` | performance governor + renice/ioprio; renice needs `gamemode` group membership and `[gpu]` only applies from a root-owned `/etc/gamemode.ini` (see file header) |
 | `logiops/logid.cfg` | MX Master 3S DPI/SmartShift/hires scroll; `install.sh` copies it (root-owned, not symlinked) to `/etc/logid.cfg` and restarts `logid` |
-| `udev/` | Logi Bolt autosuspend off + 8BitDo HID/xpad rules; not deployed by `install.sh` — copied to `/etc/udev/rules.d/` by hand |
+| `udev/` | Logi Bolt autosuspend off + 8BitDo HID/xpad rules; `install.sh` copies them to `/etc/udev/rules.d/` (root-owned, not linked) and reloads udev |
 | `scripts/scratch.sh` | parametrized create-or-toggle special-workspace scratchpad |
 | `scripts/focus-or-spawn.sh` | focus a window by class or spawn it (Obsidian, Super+N) |
 | `scripts/screenshot.sh` | area/screen capture → rofi Copy/Save menu (`~/Pictures/screenshots`); linked as `~/.local/bin/screenshot` |
@@ -120,6 +120,7 @@ Full keybind map: `hypr/keybinds.lua` or **Super+Shift+/** (cheatsheet).
 - **Cursor** — the one intentional Catppuccin item: the Catppuccin Mocha Dark cursor (name set in `hyprland.lua` `XCURSOR_THEME`, also in the GTK settings and `regreet.toml`) from AUR `catppuccin-cursors-mocha`. `install.sh` also installs `bibata-cursor-theme-bin` and writes `~/.local/share/icons/default/index.theme` with `Inherits=Bibata-Modern-Classic`, so XCursor falls back to Bibata if the Catppuccin theme is missing.
 - **hyprpaper IPC** — preload is broken in 0.8.x; `wallpaper.sh` drives the `wallpaper` IPC verb directly.
 - **Zen class** — reports WM class `zen`; no window rule targets it. Prefs, theme and extensions live in Zen's own profile/sync, not this repo.
+- **Microcode** — `install.sh` installs `intel-ucode` or `amd-ucode` from `/proc/cpuinfo`'s vendor and warns if no systemd-boot entry loads it; it never edits the boot entries. (This box once booted AMD microcode on an Intel i5-12400F.)
 - **Apple emoji fontconfig** — `fontconfig/fonts.conf` adds Apple Color Emoji as a `<default>` (append) fallback, **not** `<prefer>` / `binding="strong"`: the emoji font also covers the ASCII digits 0-9 and will hijack them otherwise (mismatched glyph heights).
 - **iwd vs NetworkManager** — never run an iwd tool (e.g. impala) alongside NetworkManager; both grab the wifi device and break auto-connect. `install.sh` masks iwd; the waybar wifi click uses `nmtui`.
 - **Claude busy gap** — after a permission prompt is approved, that session reads idle until the tool (or its next tool call) finishes; no hook fires in between. If every session is idle at a 10s watcher tick, *Caffeine while Claude works* ends and hypridle restarts with a fresh timeout.

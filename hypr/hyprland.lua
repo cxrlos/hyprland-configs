@@ -15,7 +15,9 @@ end)
 
 -- Environment
 hl.env("XCURSOR_SIZE", "24")
-hl.env("XCURSOR_THEME", "Catppuccin-Mocha-Dark-Cursors")
+hl.env("XCURSOR_THEME", "catppuccin-mocha-dark-cursors")
+hl.env("HYPRCURSOR_THEME", "catppuccin-mocha-dark-cursors")
+hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "1")
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")

@@ -11,8 +11,10 @@ cd hyprland-configs
 bash scripts/install.sh
 ```
 
-Installs pacman + AUR dependencies, symlinks configs into `~/.config/`, writes GTK theme/font
-settings, and optionally configures greetd as the boot greeter.
+Installs pacman + AUR dependencies (plus the CPU's microcode), symlinks configs into `~/.config/`,
+writes GTK font/cursor settings, copies the root-owned udev rules and `logid.cfg` into `/etc`,
+merges the Claude Code busy hooks into `~/.claude/settings.json`, and optionally configures
+greetd as the boot greeter.
 
 ## Stack
 
@@ -26,7 +28,7 @@ settings, and optionally configures greetd as the boot greeter.
 | Lock / Idle | hyprlock / hypridle |
 | Screenshot | grimblast (grim+slurp fallback) |
 | Clipboard | wl-clipboard + cliphist |
-| Browser | Firefox |
+| Browser | Zen |
 | Notes | Obsidian |
 | File manager | Thunar |
 | Bluetooth | bluetui |
@@ -43,6 +45,10 @@ rofi/       gruvbox.rasi — launcher theme, shared by every rofi call
 swaync/     notification center config + style
 thunar/     file manager defaults
 waypaper/   wallpaper picker config
+logiops/    MX Master config, copied to /etc/logid.cfg
+udev/       Logi Bolt + 8BitDo rules, copied to /etc/udev/rules.d
+fontconfig/ Apple emoji fallback
+gamemode.ini  GameMode profile (GPU section lives in /etc/gamemode.ini)
 scripts/    install.sh + keybind/menu helpers
 ```
 
@@ -64,27 +70,30 @@ Full reference in-session: **Super+Shift+/** (cheatsheet), or read `hypr/keybind
 | Key | Action |
 |---|---|
 | `Super+Return` | terminal |
-| `Super+W` / `Super+Shift+W` | Firefox / private window |
+| `Super+W` / `Super+Shift+W` | Zen / private window |
 | `Super+N` / `Super+Shift+N` | Obsidian / quick-capture |
-| `Super+Shift+C` | caffeine — pause idle & lock |
+| `Super+Shift+C` | caffeine toggle (bar click: mode menu incl. *while Claude works*) |
 | `Super+Y` | Thunar |
 | `Super+Space` | app launcher |
 | `Super+\`` | terminal scratchpad |
 | `Super+M` / `Super+Shift+B` | btop / bluetui scratchpads |
-| `Super+H/J/K/L` | focus (Shift = move, Alt = resize) |
+| `Super+H/J/K/L` | focus (Shift = move; `Super+R` then hjkl = resize) |
 | `Super+1–0` | workspaces (Shift = move window) |
 | `Super+Escape` | lock |
+| `Super+S` then `L/U/R/P` | lock / suspend / reboot / power off |
 
 ## Idle
 
 ```
 10 min → lock (hyprlock)
 15 min → monitor off (DPMS)
+30 min → suspend
 on sleep → lock first, restore DPMS on wake
+caffeine (any mode) pauses all three
 ```
 
 ## Customize
 
 - **Monitors** — `hypr/monitors.lua`
-- **Browser** — Firefox; `Super+W` launches it (`Super+Shift+W` = private window)
+- **Browser** — Zen (`zen-browser`); `Super+W` launches it (`Super+Shift+W` = private window)
 - **Wallpaper** — `Super+Shift+I` (waypaper)
