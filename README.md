@@ -12,7 +12,7 @@ bash scripts/install.sh
 ```
 
 Installs pacman + AUR dependencies (plus the CPU's microcode), symlinks configs into `~/.config/`,
-writes GTK font/cursor settings, copies the root-owned udev rules and `logid.cfg` into `/etc`,
+writes GTK font/cursor settings, copies the root-owned udev rules into `/etc`,
 merges the Claude Code busy hooks into `~/.claude/settings.json`, and optionally configures
 greetd as the boot greeter.
 
@@ -45,8 +45,7 @@ rofi/       gruvbox.rasi — launcher theme, shared by every rofi call
 swaync/     notification center config + style
 thunar/     file manager defaults
 waypaper/   wallpaper picker config
-logiops/    MX Master config, copied to /etc/logid.cfg
-udev/       Logi Bolt + 8BitDo rules, copied to /etc/udev/rules.d
+udev/       8BitDo rules, copied to /etc/udev/rules.d
 fontconfig/ Apple emoji fallback
 gamemode.ini  GameMode profile (GPU section lives in /etc/gamemode.ini)
 scripts/    install.sh + keybind/menu helpers

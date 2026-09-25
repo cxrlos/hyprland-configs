@@ -101,7 +101,6 @@ _install_deps() {
         bibata-cursor-theme-bin
         ttf-apple-emoji
         zen-browser-bin
-        logiops-git
     )
 
     if _ensure_yay; then
@@ -280,7 +279,7 @@ if [[ -n "$UCODE" ]]; then
     fi
 fi
 
-# ── udev rules (Logi Bolt, 8BitDo) ─────────────────────────────────────────────
+# ── udev rules (8BitDo) ─────────────────────────────────────────────────────────
 
 for rule in "$REPO_DIR"/udev/*.rules; do
     dst="/etc/udev/rules.d/$(basename "$rule")"
@@ -292,20 +291,6 @@ for rule in "$REPO_DIR"/udev/*.rules; do
     fi
 done
 sudo udevadm control --reload-rules
-
-# ── logiops (MX Master) — /etc/logid.cfg is root-owned, so it's copied, not linked ──
-
-if command -v logid &>/dev/null; then
-    if sudo cmp -s "$REPO_DIR/logiops/logid.cfg" /etc/logid.cfg; then
-        success "logid.cfg up to date"
-    else
-        _backup_sudo /etc/logid.cfg
-        sudo install -m 644 "$REPO_DIR/logiops/logid.cfg" /etc/logid.cfg
-        sudo systemctl enable logid &>/dev/null
-        sudo systemctl restart logid
-        success "logid.cfg deployed and logid restarted"
-    fi
-fi
 
 # ── Wallpaper ──────────────────────────────────────────────────────────────────
 

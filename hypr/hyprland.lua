@@ -61,8 +61,6 @@ hl.config({
         follow_mouse = 2,
         repeat_delay = 250,
         repeat_rate = 40,
-        sensitivity = 0.0,
-        accel_profile = "flat",
     },
 
     cursor = {
@@ -87,12 +85,4 @@ hl.config({
         preserve_split = true,
         force_split = 2,
     },
-})
-
--- MX Master 3S (Logi Bolt Receiver)
-hl.device({
-    name = "logitech-usb-receiver-mouse",
-    sensitivity = 0.0,
-    accel_profile = "adaptive",
-    scroll_factor = 0.1,
 })

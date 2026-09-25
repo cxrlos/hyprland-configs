@@ -21,7 +21,6 @@ Sibling repos: `../term-configs` (Alacritty, tmux, Zsh, Starship), `../neovim-co
 | File manager | Thunar (Super+Y) |
 | Bluetooth | bluetui |
 | System monitor | btop |
-| Mouse | logiops (MX Master 3S) |
 | Greeter | greetd + ReGreet (Gruvbox CSS written by `install.sh`) |
 | Terminal / Shell / Editor | Alacritty / Zsh+Starship / Neovim (in sibling repos) |
 | Colorscheme | Gruvbox dark, accent aqua `#8ec07c` (cursor is Catppuccin, see quirks) |
@@ -31,7 +30,7 @@ Sibling repos: `../term-configs` (Alacritty, tmux, Zsh, Starship), `../neovim-co
 
 | File | Purpose |
 |---|---|
-| `hypr/hyprland.lua` | entry point — `require`s theme, monitors, animations, keybinds, rules; autostart via `hl.on("hyprland.start", …)`, env, `hl.config`, MX Master `hl.device` |
+| `hypr/hyprland.lua` | entry point — `require`s theme, monitors, animations, keybinds, rules; autostart via `hl.on("hyprland.start", …)`, env, `hl.config` |
 | `hypr/theme.lua` | returns border colours, gaps, rounding and `size_sm/md/lg` scratchpad sizes; `require("theme")` in `hyprland.lua` + `rules.lua` |
 | `hypr/keybinds.lua` | all binds + resize/system submaps; `browser` launches `zen-browser`; reserved-prefix header |
 | `hypr/rules.lua` | `hl.window_rule{ name=…, match={class=…} }` — scratchpad floats, Obsidian → workspace 2, PiP, game tearing/no-anim |
@@ -46,8 +45,7 @@ Sibling repos: `../term-configs` (Alacritty, tmux, Zsh, Starship), `../neovim-co
 | `fontconfig/fonts.conf` | Apple Color Emoji fallback (see quirks) |
 | `waypaper/config.ini` | picked wallpaper; `post_command` runs `wallpaper.sh` |
 | `gamemode.ini` | performance governor + renice/ioprio; renice needs `gamemode` group membership and `[gpu]` only applies from a root-owned `/etc/gamemode.ini` (see file header) |
-| `logiops/logid.cfg` | MX Master 3S DPI/SmartShift/hires scroll; `install.sh` copies it (root-owned, not symlinked) to `/etc/logid.cfg` and restarts `logid` |
-| `udev/` | Logi Bolt autosuspend off + 8BitDo HID/xpad rules; `install.sh` copies them to `/etc/udev/rules.d/` (root-owned, not linked) and reloads udev |
+| `udev/` | 8BitDo HID/xpad rules; `install.sh` copies them to `/etc/udev/rules.d/` (root-owned, not linked) and reloads udev |
 | `scripts/scratch.sh` | parametrized create-or-toggle special-workspace scratchpad |
 | `scripts/focus-or-spawn.sh` | focus a window by class or spawn it (Obsidian, Super+N) |
 | `scripts/screenshot.sh` | area/screen capture → rofi Copy/Save menu (`~/Pictures/screenshots`); linked as `~/.local/bin/screenshot` |
@@ -120,6 +118,7 @@ Full keybind map: `hypr/keybinds.lua` or **Super+Shift+/** (cheatsheet).
 - **Cursor** — the one intentional Catppuccin item: the Catppuccin Mocha Dark cursor (name set in `hyprland.lua` `XCURSOR_THEME`, also in the GTK settings and `regreet.toml`) from AUR `catppuccin-cursors-mocha`. `install.sh` also installs `bibata-cursor-theme-bin` and writes `~/.local/share/icons/default/index.theme` with `Inherits=Bibata-Modern-Classic`, so XCursor falls back to Bibata if the Catppuccin theme is missing.
 - **hyprpaper IPC** — preload is broken in 0.8.x; `wallpaper.sh` drives the `wallpaper` IPC verb directly.
 - **Zen class** — reports WM class `zen`; no window rule targets it. Prefs, theme and extensions live in Zen's own profile/sync, not this repo.
+- **Mouse** — no mouse tuning anywhere (no logiops, udev, `hl.device` or `input` sensitivity/accel/scroll overrides): libinput defaults, and the kernel `hid-logitech-hidpp` driver owns hi-res scroll. logid re-applying hires on every mouse wake raced the kernel and flipped scroll speed ~8x.
 - **Microcode** — `install.sh` installs `intel-ucode` or `amd-ucode` from `/proc/cpuinfo`'s vendor and warns if no systemd-boot entry loads it; it never edits the boot entries. (This box once booted AMD microcode on an Intel i5-12400F.)
 - **Apple emoji fontconfig** — `fontconfig/fonts.conf` adds Apple Color Emoji as a `<default>` (append) fallback, **not** `<prefer>` / `binding="strong"`: the emoji font also covers the ASCII digits 0-9 and will hijack them otherwise (mismatched glyph heights).
 - **iwd vs NetworkManager** — never run an iwd tool (e.g. impala) alongside NetworkManager; both grab the wifi device and break auto-connect. `install.sh` masks iwd; the waybar wifi click uses `nmtui`.
