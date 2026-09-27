@@ -24,30 +24,6 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    name = "wiremix-scratch",
-    match = { class = "^(wiremix-scratch)$" },
-    float = true,
-    size = theme.size_md,
-    center = true,
-})
-
-hl.window_rule({
-    name = "bluetui-float",
-    match = { class = "^(bluetui-float)$" },
-    float = true,
-    size = theme.size_sm,
-    center = true,
-})
-
-hl.window_rule({
-    name = "nmtui-float",
-    match = { class = "^(nmtui-float)$" },
-    float = true,
-    size = theme.size_md,
-    center = true,
-})
-
-hl.window_rule({
     name = "pavucontrol-float",
     match = { class = "^(pavucontrol)$" },
     float = true,
@@ -66,4 +42,21 @@ hl.window_rule({
     pin = true,
     size = "30% 30%",
     move = "68% 68%",
+})
+
+-- Frosted chrome: blur behind the translucent layers; ignore_alpha skips their fully
+-- transparent margins so the blur keeps the rounded shape.
+hl.layer_rule({
+    name = "frosted-bar",
+    match = { namespace = "^(quickshell-bar)$" },
+    blur = true,
+    blur_popups = true,
+    ignore_alpha = 0.2,
+})
+
+hl.layer_rule({
+    name = "frosted-overlays",
+    match = { namespace = "^(quickshell-panel|rofi|swaync-control-center|swaync-notification-window)$" },
+    blur = true,
+    ignore_alpha = 0.2,
 })

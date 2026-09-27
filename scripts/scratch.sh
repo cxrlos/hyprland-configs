@@ -10,8 +10,12 @@ name="$1"
 class="$2"
 shift 2
 
+# With the Lua config, `hyprctl dispatch` evaluates its argument as a Lua dispatcher.
+lua_quote() { local s=${1//\\/\\\\}; printf '"%s"' "${s//\"/\\\"}"; }
+
 if hyprctl clients -j | grep -qP "\"class\":\s*\"$class\""; then
-    hyprctl dispatch togglespecialworkspace "$name"
+    hyprctl dispatch "hl.dsp.workspace.toggle_special($(lua_quote "$name"))"
 else
-    hyprctl dispatch exec "[workspace special:$name] alacritty --class $class -e $*"
+    cmd=$(lua_quote "alacritty --class $class -e $*")
+    hyprctl dispatch "hl.dsp.exec_cmd($cmd, { workspace = $(lua_quote "special:$name") })"
 fi

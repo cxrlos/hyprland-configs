@@ -1,204 +1,51 @@
-/* Gruvbox — swaync style
-   base #282828  surface #3c3836  overlay #504945
-   muted #7c6f64  subtle #a89984  text #ebdbb2
-   love #fb4934  foam #8ec07c
-*/
+/* Neutral chrome for swaync: its own default theme, retuned through its variables.
+   Blur comes from the Hyprland layer rule. */
+
+@import url("file:///etc/xdg/swaync/style.css");
+
+:root {
+  --cc-bg: rgba(30, 30, 33, 0.72);
+  --noti-border-color: rgba(255, 255, 255, 0.12);
+  --noti-bg: 44, 44, 48;
+  --noti-bg-alpha: 0.72;
+  --noti-bg-darker: rgb(36, 36, 40);
+  --noti-bg-hover: rgb(58, 58, 62);
+  --noti-bg-focus: rgba(255, 255, 255, 0.08);
+  --noti-close-bg: rgba(255, 255, 255, 0.1);
+  --noti-close-bg-hover: rgba(255, 255, 255, 0.16);
+  --text-color: rgba(255, 255, 255, 0.9);
+  --text-color-disabled: rgba(235, 235, 245, 0.32);
+  --bg-selected: #83a598;
+  --notification-icon-size: 40px;
+  --border-radius: 14px;
+  --notification-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  --font-size-body: 13px;
+  --font-size-summary: 13.5px;
+}
 
 * {
-    font-family: "Mononoki Nerd Font", monospace;
-    font-size: 11px;
+  font-family: "Inter", sans-serif;
 }
-
-/* ── Control center ─────────────────────────────────────────────────── */
 
 .control-center {
-    background: #3c3836;
-    border-radius: 0;
-    border: 1px solid #504945;
-    padding: 8px;
-    color: #ebdbb2;
+  border-radius: 14px;
 }
 
-/* ── Title / header ─────────────────────────────────────────────────── */
-
-.widget-title {
-    color: #ebdbb2;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 8px 12px 4px;
+.widget-title > label {
+  font-size: 15px;
+  font-weight: 600;
 }
 
-.widget-title > button {
-    font-size: 11px;
-    color: #a89984;
-    background: #504945;
-    border-radius: 0;
-    border: none;
-    padding: 4px 10px;
-}
-
-.widget-title > button:hover {
-    background: #504945;
-    color: #ebdbb2;
-}
-
-/* ── DND toggle ─────────────────────────────────────────────────────── */
-
-.widget-dnd {
-    padding: 4px 12px 8px;
-    color: #a89984;
-    font-size: 12px;
-}
-
-.widget-dnd > switch {
-    background: #504945;
-    border-radius: 0;
-    border: 1px solid #504945;
-}
-
-.widget-dnd > switch:checked {
-    background: #8ec07c;
-    color: #282828;
-}
-
-.widget-dnd > switch slider {
-    background: #a89984;
-    border-radius: 0;
-    min-width: 14px;
-    min-height: 14px;
-}
-
-/* ── Inhibitors ─────────────────────────────────────────────────────── */
-
-.widget-inhibitors {
-    padding: 4px 12px;
-    color: #a89984;
-}
-
+.widget-title > button,
 .widget-inhibitors > button {
-    font-size: 11px;
-    color: #a89984;
-    background: #504945;
-    border-radius: 0;
-    border: none;
-    padding: 4px 10px;
+  border-radius: 8px;
+  padding: 4px 10px;
 }
 
-/* ── Notification list ──────────────────────────────────────────────── */
-
-.notification-row {
-    background: transparent;
-    padding: 4px 0;
+.widget-dnd switch:checked {
+  background: #83a598;
 }
 
-.notification-row:hover {
-    background: transparent;
-}
-
-.notification {
-    background: #504945;
-    border-radius: 0;
-    border: 1px solid #504945;
-    padding: 10px 12px;
-    margin: 2px 0;
-    color: #ebdbb2;
-}
-
-.notification.critical {
-    border-color: #fb4934;
-}
-
-.notification.low {
-    border-color: #504945;
-}
-
-/* ── Notification body ──────────────────────────────────────────────── */
-
-.notification-content {
-    background: transparent;
-    padding: 0;
-}
-
-.notification-default-action {
-    background: transparent;
-    border-radius: 0;
-    padding: 0;
-    color: #ebdbb2;
-}
-
-.notification-default-action:hover {
-    background: #504945;
-}
-
-.summary {
-    font-size: 12px;
-    font-weight: bold;
-    color: #ebdbb2;
-}
-
-.time {
-    font-size: 11px;
-    color: #7c6f64;
-}
-
-.body {
-    font-size: 12px;
-    color: #a89984;
-}
-
-/* ── Action buttons ─────────────────────────────────────────────────── */
-
-.notification-action {
-    font-size: 11px;
-    color: #8ec07c;
-    background: #282828;
-    border-radius: 0;
-    border: 1px solid #504945;
-    padding: 4px 10px;
-    margin: 4px 2px 0;
-}
-
-.notification-action:hover {
-    background: #504945;
-    color: #ebdbb2;
-}
-
-/* ── Close button ───────────────────────────────────────────────────── */
-
-.close-button {
-    background: transparent;
-    color: #7c6f64;
-    border: none;
-    border-radius: 0;
-    padding: 2px 6px;
-    font-size: 11px;
-}
-
-.close-button:hover {
-    background: #504945;
-    color: #fb4934;
-}
-
-/* ── Scrollbar ──────────────────────────────────────────────────────── */
-
-scrollbar {
-    background: transparent;
-}
-
-scrollbar slider {
-    background: #504945;
-    border-radius: 0;
-    min-width: 4px;
-}
-
-/* ── Popup notifications ────────────────────────────────────────────── */
-
-.floating-notifications {
-    background: transparent;
-}
-
-.floating-notifications > box > .notification-row > .notification {
-    background: #3c3836;
-    border: 1px solid #504945;
-    box-shadow: none;
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .time {
+  color: rgba(235, 235, 245, 0.6);
 }

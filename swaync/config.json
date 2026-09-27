@@ -10,12 +10,12 @@
   "timeout-critical": 0,
   "fit-media-player-actions": true,
   "control-center-margin-top": 8,
-  "control-center-margin-bottom": 0,
+  "control-center-margin-bottom": 8,
   "control-center-margin-right": 8,
   "control-center-margin-left": 0,
   "control-center-width": 360,
-  "control-center-height": 600,
-  "notification-icon-size": 48,
+  "control-center-height": 560,
+  "notification-icon-size": 40,
   "notification-body-image-height": 100,
   "notification-body-image-width": 200,
   "notification-inline-replies": false,
@@ -47,5 +47,6 @@
       "image-size": 96,
       "image-radius": 6
     }
-  }
+  },
+  "fit-to-screen": false
 }

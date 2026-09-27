@@ -1,140 +1,155 @@
 # hyprland-configs
 
-Desktop-only Hyprland setup for Arch Linux. Keyboard-driven, tuned to a tmux + Neovim workflow.
-`hypr/`, `waybar/`, etc. symlink into `~/.config/` via `scripts/install.sh` — edits are live after a reload.
+Hyprland setup for Arch Linux on a desktop and a laptop, used for client presentations as well as daily work.
+Two visual layers: the **terminal** (Alacritty/tmux/Neovim, in the sibling repos) keeps Gruvbox + Mononoki;
+the **chrome** (bar, dropdowns, panels, launcher, notifications, lock, greeter, window frames) is a
+neutral macOS-like frosted dark with a sage accent. Keyboard-driven, tuned to a tmux + Neovim workflow.
+Config dirs symlink into `~/.config/` via `scripts/install.sh`, so edits are live after a reload.
 Sibling repos: `../term-configs` (Alacritty, tmux, Zsh, Starship), `../neovim-configs` (Neovim).
 
 ## Stack
 
 | Role | Tool |
 |---|---|
-| WM | Hyprland (Lua config) |
-| Bar | Waybar (transparent bar, translucent chips) |
-| Launcher | rofi-wayland |
-| Notifications | swaync |
+| WM | Hyprland 0.56 (Lua config) |
+| Bar, dropdowns, panels | Quickshell 0.3 (QML) — replaced waybar |
+| Launcher / window switcher | rofi-wayland (the only rofi uses left) |
+| Notifications | swaync (its own default theme, retuned) |
 | Wallpaper | waypaper + hyprpaper |
 | Lock / Idle | hyprlock / hypridle |
+| Greeter | greetd + ReGreet |
 | Screenshot / Recording | grimblast (grim+slurp fallback) / wf-recorder |
 | Clipboard | wl-clipboard + cliphist |
-| Browser | Zen (`zen-browser`, AUR `zen-browser-bin`) |
-| Notes | Obsidian |
-| File manager | Thunar (Super+Y) |
-| Bluetooth | bluetui |
-| System monitor | btop |
-| Greeter | greetd + ReGreet (Gruvbox CSS written by `install.sh`) |
-| Terminal / Shell / Editor | Alacritty / Zsh+Starship / Neovim (in sibling repos) |
-| Colorscheme | Gruvbox dark, accent aqua `#8ec07c` (cursor is Catppuccin, see quirks) |
-| Font | Mononoki Nerd Font (waybar uses `Mononoki Nerd Font Mono`) |
+| Browser / Notes / Files | Zen (`zen-browser`) / Obsidian / Thunar |
+| UI font / icons / cursor | Inter / Material Symbols Rounded / Bibata Modern Classic |
 
-## Key files
+## Desktop and laptop
 
-| File | Purpose |
+One config for both machines; laptop pieces detect their hardware and stay inert on the desktop:
+
+- Bar: `BrightnessStatus` shows only when `brightnessctl` finds a backlight; `Battery` only for a UPower laptop battery (its dropdown, with power modes, is created only then).
+- Keys: `XF86MonBrightness*` → `qs ipc call brightness up|down` (+ OSD).
+- Input: `input.touchpad` (natural scroll, tap, disable-while-typing) and a 3-finger workspace swipe; mice keep libinput defaults.
+- Idle: extra hypridle listeners gated by `scripts/on-battery.sh` (dim 4 min, lock 5, screen off 7, suspend 15). Lid close is logind's default suspend, locked first by hypridle's `before_sleep_cmd`.
+- Monitors: `HDMI-A-1` is pinned for the desktop; every other output (laptop panel, projector) takes its preferred mode.
+- Install: `install.sh` sets `IS_LAPTOP` from `/sys/class/power_supply/BAT*` and adds `brightnessctl upower power-profiles-daemon` (enabled).
+
+## Chrome palette
+
+Every chrome surface shares these values (the terminal palette lives in `term-configs`):
+
+| Token | Value |
 |---|---|
-| `hypr/hyprland.lua` | entry point — `require`s theme, monitors, animations, keybinds, rules; autostart via `hl.on("hyprland.start", …)`, env, `hl.config` |
-| `hypr/theme.lua` | returns border colours, gaps, rounding and `size_sm/md/lg` scratchpad sizes; `require("theme")` in `hyprland.lua` + `rules.lua` |
-| `hypr/keybinds.lua` | all binds + resize/system submaps; `browser` launches `zen-browser`; reserved-prefix header |
-| `hypr/rules.lua` | `hl.window_rule{ name=…, match={class=…} }` — scratchpad floats, Obsidian → workspace 2, PiP, game tearing/no-anim |
-| `hypr/monitors.lua` | single 2560x1080 ultrawide on HDMI-A-1; edit for your hardware |
-| `hypr/animations.lua` | quick fades + 95% popin for windows open/close; move, workspace and border animations off |
-| `hypr/hyprlock.conf` / `hypridle.conf` | lock screen / idle (10 min lock → 15 min DPMS off → 30 min suspend; caffeine stops hypridle, so it blocks all three) |
-| `hypr/hyprpaper.conf` | splash off + IPC on only; the wallpaper is set by `wallpaper.sh` |
-| `waybar/` | workspaces + window title left; clock, CPU/RAM/GPU, updates, audio (→ wiremix scratchpad), mpris, network (→ nmtui), caffeine, swaync, tray, power right |
-| `rofi/gruvbox.rasi` | launcher theme — the one file using named colour vars; shared by every rofi call |
-| `swaync/` | `config.json` + `style.css`; D-Bus-activated, not autostarted |
-| `thunar/` | → `~/.config/Thunar` (details view, "Open Terminal Here" action, accels) |
-| `fontconfig/fonts.conf` | Apple Color Emoji fallback (see quirks) |
-| `waypaper/config.ini` | picked wallpaper; `post_command` runs `wallpaper.sh` |
-| `gamemode.ini` | performance governor + renice/ioprio; renice needs `gamemode` group membership and `[gpu]` only applies from a root-owned `/etc/gamemode.ini` (see file header) |
-| `udev/` | 8BitDo HID/xpad rules; `install.sh` copies them to `/etc/udev/rules.d/` (root-owned, not linked) and reloads udev |
-| `scripts/scratch.sh` | parametrized create-or-toggle special-workspace scratchpad |
-| `scripts/focus-or-spawn.sh` | focus a window by class or spawn it (Obsidian, Super+N) |
-| `scripts/screenshot.sh` | area/screen capture → rofi Copy/Save menu (`~/Pictures/screenshots`); linked as `~/.local/bin/screenshot` |
-| `scripts/record.sh` | wf-recorder region toggle → `~/Videos` |
-| `scripts/clipboard.sh` | cliphist picker in rofi |
-| `scripts/power.sh` | rofi lock/suspend/reboot/shutdown menu (Super+Shift+M, bar power button) |
-| `scripts/wallpaper.sh` | applies waypaper's pick via hyprpaper IPC (autostart + waypaper `post_command`) |
-| `scripts/cheatsheet.sh` | hand-maintained rofi keybind list (Super+Shift+/) |
-| `scripts/steam.sh` | Steam with `SDL_VIDEODRIVER=x11` so games detect the real resolution; linked as `~/.local/bin/steam` |
-| `scripts/gpu-metrics.sh` / `mpris-status.sh` / `updates-count.sh` | waybar JSON: AMD GPU %/VRAM (sysfs), now playing (playerctl), official-repo update count (`checkupdates`; click runs `yay`) |
-| `scripts/caffeine.sh` | idle inhibitor (pauses hypridle): off/on/`claude` modes (caffeine while any Claude session is mid-turn); bar click opens a rofi mode menu with Claude session counts; keybind toggles off/on; + waybar status JSON |
-| `scripts/claude-busy.sh` | Claude Code hook (in `~/.claude/settings.json`) recording per-session busy state under `$XDG_RUNTIME_DIR/claude-busy/`; `count` answers for caffeine |
-| `scripts/gamemode-start.sh` / `end.sh` | GameMode `[custom]` hooks; only send a notification |
-| `scripts/obsidian-capture.sh` | rofi prompt → new Obsidian note via `obsidian://` URI |
-| `scripts/install.sh` | Arch installer + symlink setup; merges the Claude Code busy hooks into `~/.claude/settings.json` |
-| `.tmux-sessionizer` | tmux layout for this repo (nvim, claude, shell, Hyprland log tail) |
+| surface (bar) | `rgba(30,30,33,0.58)` + Hyprland layer blur |
+| elevated (dropdowns, panels, rofi, swaync) | `rgba(36,36,40,0.72)` + blur |
+| rim / hairline | `white/12%` / `white/8%` |
+| text / secondary / tertiary | `white/90%` / `rgba(235,235,245,.6)` / `rgba(235,235,245,.32)` |
+| accent / text on accent | sage `#83a598` (the wallpaper's circle, also Gruvbox blue) / `#1d2021` |
+| critical | `#ff6961` |
+
+Radius: 10 windows, 6 bar pills, 8 rows/fields, 14 panels, full for pills. Blur never applies to
+windows except translucent Alacritty; windows stay opaque, inactive ones dimmed 12%.
+
+## Layout
+
+| Path | Purpose |
+|---|---|
+| `hypr/hyprland.lua` | entry point: `require`s theme, monitors, animations, keybinds, rules; autostart (`qs`, wallpaper, cliphist, polkit, hypridle); env; `hl.config` |
+| `hypr/theme.lua` | Hyprland-side tokens: borders, shadow, dim, gaps, rounding, `size_*` scratchpad sizes |
+| `hypr/rules.lua` | window rules + the **layer blur rules** (`quickshell-bar`, `quickshell-panel`, `rofi`, `swaync-*`) |
+| `hypr/hyprlock.conf` / `hypridle.conf` | lock screen / idle (10 min lock → 15 min DPMS off → 30 min suspend) |
+| `quickshell/Theme.qml` | chrome tokens for every QML surface (single source inside Quickshell) |
+| `quickshell/bar/` | the menu-bar strip; one file per item, each owning its dropdown |
+| `quickshell/dropdowns/` | Sound, Wi-Fi, Bluetooth, Idle, Power, Calendar, Media, System |
+| `quickshell/panels/` | centred Spotlight-style panels: Clipboard, Cheatsheet |
+| `quickshell/osd/` | volume / mic / brightness level pill for the keys (click-through) |
+| `quickshell/widgets/` | shared parts: `Dropdown`, `DropdownState`, `MenuRow`, `Slider`, `Switch`, `PillButton`…; `ScreenShare` (screen-share guard) |
+| `rofi/chrome.rasi` | launcher theme |
+| `swaync/style.css` | `@import`s swaync's default theme and overrides its CSS variables |
+| `scripts/install.sh` | Arch installer: packages, symlinks, GTK settings + `gtk.css`, gsettings, greetd/ReGreet (config + CSS heredocs), udev, Claude hooks |
+| `scripts/wallpaper.sh` | applies waypaper's pick via hyprpaper IPC; publishes it for the lock (`~/.cache/wallpaper/current`) and a pre-blurred copy for the greeter (`/usr/local/share/greeter/background.jpg`) |
+| `scripts/system-status.sh` | CPU/RAM/GPU/update-count JSON for the System item |
+| `scripts/caffeine.sh` | idle modes `off|on|claude` + `status`; refreshes the bar via `qs ipc call caffeine refresh` |
+| `scripts/claude-busy.sh` | Claude Code hook recording per-session busy state; `count` feeds the Idle dropdown |
+| `scripts/clipboard.sh` | `list` (JSON, image previews cached) / `copy <id>` for the Clipboard panel |
+| `scripts/on-battery.sh` | exits 0 only on a laptop running on battery (gates the battery idle listeners) |
+| `scripts/screenshot.sh` | capture → copy → notification with Save / Edit (satty) / Open |
+| `scripts/scratch.sh` / `focus-or-spawn.sh` | create-or-toggle scratchpad / focus-or-launch (Obsidian) |
 
 ## Conventions
 
-- Hyprland config is **Lua**: `hyprland.lua` `require`s the sub-modules. The `hl` API (config keys, dispatchers, rule fields, events) is typed in `/usr/share/hypr/stubs/hl.meta.lua` — check it instead of guessing. `hypridle`, `hyprlock` and `hyprpaper` are separate programs and stay hyprlang `.conf`.
-- **Layout tokens live in `theme.lua`** (`gap_in/gap_out`, `rounding`, `size_*`, `border_active/inactive`). Reference `theme.*` instead of literals in `hyprland.lua` / `rules.lua`.
-- waybar, rofi, swaync, hyprlock and regreet are **separate processes** — each keeps its own copy of the Gruvbox palette (raw hex; rofi uses named vars). Keep them in sync by hand on a theme change.
-- Scripts are Bash, `set -euo pipefail`, ShellCheck-clean. New scripts need a manual `chmod +x` until the next `install.sh` run.
-- The `hyprland.start` autostart does **not** re-run on `hyprctl reload` — scratchpads use create-or-toggle (`scratch.sh`) so they survive a reload without re-login.
-- No GTK configs in the repo — `install.sh` writes `gtk-{3,4}.0/settings.ini` (Papirus-Dark icons, font, cursor, prefer-dark; no GTK theme) at deploy time.
+- Hyprland config is **Lua**. The `hl` API is typed in `/usr/share/hypr/stubs/hl.meta.lua`; check it instead of guessing. hypridle, hyprlock and hyprpaper stay hyprlang `.conf`.
+- **`hyprctl dispatch` takes Lua** (`hyprctl dispatch 'hl.dsp.focus({ workspace = "2" })'`), so every script and `.conf` that dispatches uses that form. `scratch.sh`/`focus-or-spawn.sh` show the quoting helper. Hyprland's own `/usr/share/hypr/hypridle.conf` is a reference for syntax.
+- Chrome tokens: Hyprland reads `theme.lua`, Quickshell reads `Theme.qml`; rofi, swaync, hyprlock and the greeter are separate processes with their own copies. Change a token in all of them together.
+- Quickshell hot-reloads on save; a half-written file pops its error overlay. Singletons use `pragma Singleton`; modules import as `qs.bar`, `qs.widgets`, etc.
+- Keyboard entry points into Quickshell go through IPC (`qs ipc call dropdown toggle power`, `qs ipc call panel toggle clipboard`, `qs ipc call bar toggle`); `qs ipc show` lists targets.
+- Scripts are Bash, `set -euo pipefail`, ShellCheck-clean. New scripts need `chmod +x` until the next `install.sh` run.
+- The `hyprland.start` autostart does not re-run on `hyprctl reload`; restart Quickshell with `pkill -x qs; setsid -f qs`.
+- GTK settings, `gtk.css` and the greeter config are written by `install.sh`, not symlinked.
 
 ## Workflow
 
-**Theme / font swap**
-1. `hypr/theme.lua` — border colours only (Hyprland side).
-2. Raw hex in `waybar/style.css`, `swaync/style.css`, `hypr/hyprlock.conf`, the `regreet.css` heredoc in `install.sh`, and the rofi `-theme-str` in `scripts/caffeine.sh`. **Watch for** decimal-RGB forms (`rgba(60, 56, 54, 0.6)`) and hyprlang `rgb(ebdbb2)` that a `#hex` find/replace will miss.
-3. `rofi/gruvbox.rasi` — named-var block. Renaming the file means updating every `gruvbox.rasi` path (`keybinds.lua` + scripts).
-4. Fonts: `Mononoki Nerd Font` in swaync/rofi/hyprlock + GTK settings and `regreet.toml` (`install.sh`); waybar uses the `Mono` variant. `install.sh` also names the font package (`ttf-mononoki-nerd`) and its `fc-list` check. The terminal font lives in `term-configs`.
+**Change a chrome token (colour, font, radius)**
+1. `quickshell/Theme.qml` and `hypr/theme.lua`.
+2. `rofi/chrome.rasi` (`#rrggbbaa`), `swaync/style.css` variables, `hypr/hyprlock.conf` (hyprlang `rgba(rrggbbaa)`), and the `regreet.css`/`regreet.toml` heredocs in `install.sh`.
+3. Fonts also live in the GTK settings + gsettings block of `install.sh` and its package list.
 
-**Add a scratchpad**
-1. Keybind in `keybinds.lua` → `scratch.sh <name> <class> <cmd>`.
-2. `hl.window_rule` in `rules.lua`: `match = { class = … }`, `float = true`, `size = theme.size_*`, `center = true`.
-3. No autostart needed — `scratch.sh` create-or-toggles.
+**Add a bar item with a dropdown**
+1. `quickshell/dropdowns/XDropdown.qml`: root `Dropdown { name: "x" }`, content built from `widgets/`.
+2. `quickshell/bar/X.qml`: a `BarIcon` with `highlighted: menu.shown`, `onClicked: DropdownState.toggle("x")`, and the dropdown as a child with `anchorItem: root`.
+3. Add it to the right-side `RowLayout` in `bar/Bar.qml`.
 
 **Add a keybind**
 1. Respect the reserved prefixes below.
-2. Add to `keybinds.lua`, then mirror it in `scripts/cheatsheet.sh`.
+2. Add to `hypr/keybinds.lua`, then mirror it in `quickshell/panels/Cheatsheet.qml`.
 
-**Claude Code busy hooks** (caffeine's *Caffeine while Claude works* mode + menu session counts)
-1. `install.sh` merges six hooks into `~/.claude/settings.json` via `jq`: idempotent, replaces any older `claude-busy.sh` entries, keeps every other setting/hook, backs the file up when it changes. The commands call `~/.config/scripts/claude-busy.sh`, so the `scripts/` symlink must exist.
-2. Contract — `SessionStart` → `start` (idle); `UserPromptSubmit` + `PostToolUse` → `busy`; `Stop` → `stop`; `Notification` (matcher `permission_prompt|elicitation_dialog`, i.e. blocked on the user) → `idle`; `SessionEnd` → `end`. Each writes `$XDG_RUNTIME_DIR/claude-busy/<session_id>` as `<claude PID> <busy|idle>` (PID found by walking up the hook's parents); `end` deletes it.
-3. **Background work** — `Stop` fires when the main turn ends even if background subagents, `run_in_background` shells or workflows are still going. Its payload lists them in `background_tasks` (`[{id, type: "subagent"|"shell"|…, status: "running"}]`), so `stop` stays `busy` while any is running. Each completion re-enters the session through `UserPromptSubmit`, and the next `Stop` re-evaluates. (Verified for subagents + shells; workflows are assumed to appear in `background_tasks` the same way.) Subagent tool calls fire `PostToolUse` with the parent's `session_id`. Don't count `SubagentStart`/`SubagentStop` — internal helpers emit `SubagentStop` with no matching start.
-4. `claude-busy.sh count` prints `<busy> <open>` over files whose PID is still `claude`, pruning the rest (crashed sessions can't pin caffeine on). Open includes `--bg` background sessions; a session started before the hooks existed shows up at its first event.
-5. Verify: `ls $XDG_RUNTIME_DIR/claude-busy` / `cat` a file mid-turn, or `~/.config/scripts/claude-busy.sh count`. Running sessions pick up new hooks on their own; if one doesn't, open `/hooks` in it once or restart it.
+**Add a scratchpad**
+1. Keybind → `scratch.sh <name> <class> <cmd>`.
+2. `hl.window_rule` in `rules.lua` with `float`, `size = theme.size_*`, `center`.
+
+**Claude Code busy hooks** (the Idle dropdown's *Caffeine while Claude works* + session counts)
+1. `install.sh` merges six hooks into `~/.claude/settings.json` via `jq`: idempotent, replaces older `claude-busy.sh` entries, keeps every other setting, backs the file up when it changes. They call `~/.config/scripts/claude-busy.sh`, so the `scripts/` symlink must exist.
+2. Contract — `SessionStart` → `start` (idle); `UserPromptSubmit` + `PostToolUse` → `busy`; `Stop` → `stop`; `Notification` (matcher `permission_prompt|elicitation_dialog`) → `idle`; `SessionEnd` → `end`. Each writes `$XDG_RUNTIME_DIR/claude-busy/<session_id>` as `<claude PID> <busy|idle>`; `end` deletes it.
+3. **Background work** — `Stop` fires when the main turn ends even if background subagents, shells or workflows still run; its payload lists them in `background_tasks`, so `stop` stays `busy` while any is running. Each completion re-enters through `UserPromptSubmit`. Subagent tool calls fire `PostToolUse` with the parent's `session_id`. `SubagentStart`/`SubagentStop` are unreliable (unmatched stops) and unused.
+4. `claude-busy.sh count` prints `<busy> <open>` over files whose PID is still `claude`, pruning the rest.
+5. Verify: `ls $XDG_RUNTIME_DIR/claude-busy`, or `~/.config/scripts/claude-busy.sh count`.
 
 ## Reserved keys
 
-Never bind these at the WM level — they belong to the terminal stack:
+These belong to the terminal stack; WM binds live only under `SUPER`:
 
 | Chord | Owner |
 |---|---|
 | `` ` `` + any | tmux prefix |
 | `Space` + any | nvim leader |
 | `C-h/j/k/l` | vim ↔ tmux navigation |
-| `SUPER` (`mod`) | the WM modifier — everything in `keybinds.lua` |
 
-Full keybind map: `hypr/keybinds.lua` or **Super+Shift+/** (cheatsheet).
+Full map: `hypr/keybinds.lua`, or **Super+Shift+/** in-session.
 
-## Known quirks (Hyprland 0.56, Lua config)
+## Known quirks
 
-- **Auto-leaving submaps** — `hl.define_submap(name, "reset", fn)` leaves the submap after any bind in it fires. The system submap (Super+S → L/R/P/U) uses it so a stray key after unlock or resume can't reboot; the resize submap (Super+R) stays until Esc/Return.
-- **Suspend** — idle policy is hypridle-owned (`loginctl lock-session` → DPMS off → `systemctl suspend`; `inhibit_sleep = 3` holds sleep until the lock is confirmed); logind `IdleAction` stays `ignore`. Manual suspend (Super+S → U, `power.sh`) runs `sleep 1 && systemctl suspend` because the key release otherwise wakes the PC via the USB keyboard's wake.
-- **Opaque, no blur** — windows are opaque, `decoration.blur` and shadows are off. Translucency is only per-app CSS alpha (waybar chips, hyprlock chip).
-- **Borders** — active border is solid `#ebdbb2`, inactive `#504945`; no gradient, border animations off.
-- **Cursor** — the one intentional Catppuccin item: the Catppuccin Mocha Dark cursor (name set in `hyprland.lua` `XCURSOR_THEME`, also in the GTK settings and `regreet.toml`) from AUR `catppuccin-cursors-mocha`. `install.sh` also installs `bibata-cursor-theme-bin` and writes `~/.local/share/icons/default/index.theme` with `Inherits=Bibata-Modern-Classic`, so XCursor falls back to Bibata if the Catppuccin theme is missing.
+- **Dropdown dismissal** — dropdowns are `PopupWindow`s with `grabFocus`; an outside click closes them and then lands on the bar, so `DropdownState` ignores a reopen of the same dropdown within 300 ms. Switching dropdowns closes the old one before mapping the next (two grabs at once confuse Wayland).
+- **Screen-share guard** — Hyprland's `screencast` event fires for screenshots too (grim, for a split second), so `ScreenShare` engages only after 1.5 s of continuous capture; it turns Do Not Disturb on (and back off only if it was the one to turn it on) and hides the bar's now-playing text.
+- **Tray clicks** — tray item ids are matched to windows by their leading word (`Slack_status_icon_1` → app id `slack`); no window means the app is opened on an empty workspace.
+- **Tray menus** — native right-click menus need `//@ pragma UseQApplication` at the top of `shell.qml`.
+- **Panels take the keyboard** — Clipboard/Cheatsheet are overlay layers with exclusive keyboard focus while open; opening one from a script steals whatever you were typing.
+- **QML naming** — a property named `on` + capital (e.g. `onAccent`) is parsed as a signal handler, `escape` is not a valid signal name, and `font.pixelSize` must be an integer.
+- **ReGreet styling** — GTK 4.22's built-in theme paints buttons with a `background-image` gradient, so the greeter CSS sets `background-image: none` before any button colour. Preview it without logging out: `regreet --demo -l /tmp/regreet.log -c <toml> -s <css>`.
+- **Greeter background** — ReGreet can't blur and runs as the `greeter` user, so `wallpaper.sh` renders a blurred, dimmed copy into `/usr/local/share/greeter/` (owned by the user, created by `install.sh`).
+- **Suspend** — idle policy is hypridle-owned (`inhibit_sleep = 3` holds sleep until the lock is confirmed); logind `IdleAction` stays `ignore`. Manual suspend runs `sleep 1 && systemctl suspend` so the click/key release can't wake the PC via USB.
 - **hyprpaper IPC** — preload is broken in 0.8.x; `wallpaper.sh` drives the `wallpaper` IPC verb directly.
-- **Zen class** — reports WM class `zen`; no window rule targets it. Prefs, theme and extensions live in Zen's own profile/sync, not this repo.
-- **Mouse** — no mouse tuning anywhere (no logiops, udev, `hl.device` or `input` sensitivity/accel/scroll overrides): libinput defaults, and the kernel `hid-logitech-hidpp` driver owns hi-res scroll. logid re-applying hires on every mouse wake raced the kernel and flipped scroll speed ~8x.
-- **Microcode** — `install.sh` installs `intel-ucode` or `amd-ucode` from `/proc/cpuinfo`'s vendor and warns if no systemd-boot entry loads it; it never edits the boot entries. (This box once booted AMD microcode on an Intel i5-12400F.)
-- **Apple emoji fontconfig** — `fontconfig/fonts.conf` adds Apple Color Emoji as a `<default>` (append) fallback, **not** `<prefer>` / `binding="strong"`: the emoji font also covers the ASCII digits 0-9 and will hijack them otherwise (mismatched glyph heights).
-- **iwd vs NetworkManager** — never run an iwd tool (e.g. impala) alongside NetworkManager; both grab the wifi device and break auto-connect. `install.sh` masks iwd; the waybar wifi click uses `nmtui`.
-- **Claude busy gap** — after a permission prompt is approved, that session reads idle until the tool (or its next tool call) finishes; no hook fires in between. If every session is idle at a 10s watcher tick, *Caffeine while Claude works* ends and hypridle restarts with a fresh timeout.
-- **Greeter session list** — `install.sh` removes `hyprland-uwsm.desktop` so only plain Hyprland shows in ReGreet; it returns on a `hyprland` package update (re-run install). The greeter has no background image (`regreet.toml` `path = ""`), just the `regreet.css` base colour.
+- **Mouse** — libinput defaults only; the kernel `hid-logitech-hidpp` driver owns hi-res scroll (logid raced it and flipped scroll speed ~8x).
+- **Microcode** — `install.sh` installs `intel-ucode`/`amd-ucode` from `/proc/cpuinfo` and warns if no systemd-boot entry loads it; it never edits boot entries.
+- **Apple emoji fontconfig** — Apple Color Emoji is a `<default>` (append) fallback only; as `<prefer>` it hijacks ASCII digits.
+- **iwd vs NetworkManager** — NetworkManager owns wifi; `install.sh` masks iwd, and iwd tools (impala) break auto-connect.
+- **Claude busy gap** — after a permission prompt is approved, that session reads idle until the tool finishes; if every session is idle at a 10 s watcher tick, the Claude caffeine mode ends.
+- **Greeter session list** — `install.sh` removes `hyprland-uwsm.desktop`; it returns on a `hyprland` package update (re-run install).
+- **Zen class** — reports WM class `zen`; the bar shows only "Zen", never page titles.
 
 ## Debugging
 
-1. **Reload** — `hyprctl reload` (config) and `killall waybar && waybar &` (bar). The `hyprland.start` autostart won't re-run.
-2. **Config errors** — surface in the `hyprctl reload` output and as on-screen notifications.
-3. **Window rules** — `hyprctl clients -j | grep -i class` to get the real class/title to match on.
-4. **Layers** — `hyprctl layers` lists layer-shell namespaces (waybar, rofi, swaync…).
-5. **Logs** — `hyprctl rollinglog`, or `$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/hyprland.log`.
-6. **Waybar** — run `waybar` in a terminal to see CSS/JSON parse errors live.
-
-## Related repos
-
-- `term-configs/` — Alacritty, tmux, Zsh, Starship
-- `neovim-configs/` — Neovim
+1. **Reload** — `hyprctl reload`; Quickshell reloads itself on save (`pkill -x qs; setsid -f qs` for a clean start).
+2. **Config errors** — `hyprctl configerrors`; Quickshell: `qs log` (filter out `INFO`).
+3. **Window rules** — `hyprctl clients -j` for the real class/title.
+4. **Layers** — `hyprctl layers` lists namespaces (`quickshell-bar`, `quickshell-panel`, `rofi`, `swaync-*`).
+5. **Hyprland logs** — `hyprctl rollinglog`.
