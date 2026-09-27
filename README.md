@@ -19,19 +19,22 @@ busy hooks into `~/.claude/settings.json`, and optionally configures greetd + Re
 
 - **Menu bar** (Quickshell): workspace dots, app name, clock, and icons that open dropdowns:
   Sound (volume, outputs, inputs), Wi-Fi (networks, inline password), Bluetooth (devices, pairing),
-  Idle (caffeine modes), Power, Calendar, Now playing, System (metrics, updates).
+  Idle (caffeine modes), Power, Calendar (event dots, click a day for its events), Now playing, System (metrics, updates).
+  The next meeting appears beside the clock in the hour before it; click to join.
 - **Panels**: clipboard history with image previews (`Super+V`) and a keybind cheatsheet (`Super+Shift+/`).
-- **Launcher**: rofi, frosted to match (`Super+Space`).
+- **Launcher** (`Super+Space`): apps, open windows, Obsidian notes, quick sums, `:emoji`.
+- **Overview** (`Super+O`): every workspace as a live miniature; click to jump.
 - **Lock and greeter**: the current wallpaper, blurred, with a large clock and a rounded card.
 - **Screenshots**: copied instantly; the notification offers Save / Open.
+- **Zen**: its tabs, URL bar, menus, new-tab and settings pages follow the same neutral dark + Inter + sage.
 
 ## Layout
 
 ```
 hypr/        Hyprland (Lua) + hyprlock / hypridle / hyprpaper (.conf)
 quickshell/  bar, dropdowns, panels, shared widgets, Theme.qml
-rofi/        chrome.rasi launcher theme
 swaync/      notification center config + style
+zen/         userChrome.css, userContent.css + user.js, linked into the Zen profile
 thunar/      file manager defaults
 waypaper/    wallpaper picker config
 udev/        8BitDo rules, copied to /etc/udev/rules.d
@@ -52,7 +55,7 @@ scripts/     install.sh and the helpers the shell calls
 | `Super+Return` / `Super+Space` | terminal / launcher |
 | `Super+W` / `Super+Shift+W` | Zen / private window |
 | `Super+N` / `Super+Y` | Obsidian / Thunar |
-| `Super+V` | clipboard history |
+| `Super+V` / `Super+O` | clipboard history / overview |
 | `Super+H/J/K/L` | focus (Shift = move; `Super+R` then hjkl = resize) |
 | `Super+1–0` | workspaces (Shift = move window) |
 | `Super+Shift+A` / `Super+Shift+F` | screenshot area / screen |
@@ -72,4 +75,7 @@ the Idle dropdown's Caffeine modes pause all three
 
 - **Monitors** — `hypr/monitors.lua`
 - **Wallpaper** — `Super+Shift+I` (waypaper); lock and greeter follow it
+- **Calendars** — `~/.config/calendars.yaml` (written by `install.sh`, kept out of the repo): one
+  entry per Google "Secret address in iCal format", each with a style (work, personal, events, sports,
+  family, other); only `bar: true` styles show beside the clock
 - **Colours, radius, fonts** — `quickshell/Theme.qml` + `hypr/theme.lua` (see `AGENTS.md` for the other copies)

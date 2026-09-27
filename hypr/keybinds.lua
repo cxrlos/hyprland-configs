@@ -2,18 +2,14 @@
 
 local mod         = "SUPER"
 local terminal    = "alacritty --working-directory " .. os.getenv("HOME")
-local rofi_theme  = "-theme ~/.config/rofi/chrome.rasi"
-local launcher    = "rofi -show drun " .. rofi_theme .. [[ -theme-str 'entry { placeholder: "Search apps"; }']]
-local winswitcher = "rofi -show window " .. rofi_theme .. [[ -theme-str 'entry { placeholder: "Switch window"; }']]
 local browser     = "zen-browser"
 
 -- Applications
 hl.bind(mod .. " + RETURN", hl.dsp.exec_cmd(terminal))
-hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd(launcher))
+hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd("qs ipc call panel toggle launcher"))
 hl.bind(mod .. " + w", hl.dsp.exec_cmd(browser))
 hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd(browser .. " --private-window"))
 hl.bind(mod .. " + N", hl.dsp.exec_cmd("~/.config/scripts/focus-or-spawn.sh obsidian obsidian"))
-hl.bind(mod .. " + SHIFT + O", hl.dsp.exec_cmd(winswitcher))
 
 -- Scratchpads
 hl.bind(mod .. " + grave", hl.dsp.exec_cmd("~/.config/scripts/scratch.sh scratch scratchpad zsh"))
@@ -29,6 +25,7 @@ hl.bind(mod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind(mod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + B", hl.dsp.exec_cmd("qs ipc call bar toggle"))
 hl.bind(mod .. " + D", hl.dsp.focus({ workspace = "empty" }))
+hl.bind(mod .. " + O", hl.dsp.exec_cmd("qs ipc call panel toggle overview"))
 hl.bind(mod .. " + ESCAPE", hl.dsp.exec_cmd("hyprlock"))
 
 -- Clipboard

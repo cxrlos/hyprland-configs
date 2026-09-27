@@ -1,0 +1,80 @@
+# Calendars for the bar (meeting chip beside the clock) and the Calendar dropdown.
+# install.sh copies this template to ~/.config/calendars.yaml (chmod 600); that copy is yours and
+# never enters the repo, because secret iCal addresses are credentials.
+#
+# HOW TO FILL IT
+# 1. Get each calendar's address:
+#    - Your own Google calendars: calendar.google.com → gear → Settings → under "Settings for my
+#      calendars" click the calendar → Integrate calendar → copy "Secret address in iCal format".
+#    - A calendar shared with you: only its owner has the secret address; ask them, or use
+#      "Public address in iCal format" if the calendar is public.
+#    - Sports fixtures, holidays, events: the provider's .ics link, webcal:// ones included
+#      (e.g. FotMob → team page → Follow → Calendar sync, pasted as-is).
+#    - No "Secret address" field (a Workspace admin can disable it)? Read that calendar through
+#      Google's API instead, with `gcalcli: <calendar id or name>` in place of `url:` (see below).
+# 2. Add one entry under `calendars:` per calendar: a `name` (shown in the dropdown), a `style`
+#    from the list below, and its source (`url:` or `gcalcli:`). Many calendars can share one
+#    style (e.g. several `work`).
+# 3. Check it: ~/.config/scripts/calendar-feed.py | jq -c '.[] | {title, calendar}'
+#    The bar picks changes up within 5 minutes, or now with: qs ipc call agenda refresh
+#    The address must look like …/calendar/ical/<id>/private-<secret>/basic.ics; a share link
+#    (…/calendar/u/0?cid=…) only works signed in, and the script reports it as "not an iCal feed".
+#
+# GCALCLI (Google calendars without a secret address; one-time setup per machine)
+# 1. console.cloud.google.com → new project → APIs & Services → enable "Google Calendar API".
+# 2. OAuth consent screen → User type "Internal" (Workspace) → app name, your email → save.
+# 3. Credentials → Create credentials → OAuth client ID → "Desktop app" → copy ID and secret.
+# 4. gcalcli init → paste the ID and secret → open the printed URL, sign in, allow.
+# 5. gcalcli list → the calendar ids/names to put after `gcalcli:`.
+#    Declined events are hidden (--nodeclined); the token lives in ~/.local/share/gcalcli.
+#
+# STYLES
+# A style sets the colour of the event's dots and stripe, and `bar` decides whether its timed
+# events can appear beside the clock (the hour before, sage from 5 min out, click to join).
+# Built-in (defined in scripts/calendar-feed.py, usable without listing them here):
+#
+#   style      colour     bar
+#   work       #83a598    yes   sage, the chrome accent
+#   personal   #d3869b    no    rose
+#   events     #d8a657    no    amber
+#   sports     #e78a4e    no    orange
+#   family     #a9b665    no    green
+#   other      #928374    no    grey (also the fallback for an unknown style)
+#
+# Override a built-in or add your own under `styles:`, e.g. put a client's meetings in the bar
+# with their own colour, or show personal meetings beside the clock too:
+#
+#   styles:
+#     client:   { color: "#89b482", bar: true }
+#     personal: { color: "#d3869b", bar: true }
+
+styles: {}
+
+calendars:
+  - name: Work
+    style: work
+    url: https://calendar.google.com/calendar/ical/you%40company.com/private-xxxxxxxx/basic.ics
+
+  # - name: Work (via gcalcli)
+  #   style: work
+  #   gcalcli: you@company.com
+
+  # - name: Client X
+  #   style: work
+  #   url: https://calendar.google.com/calendar/ical/…/private-…/basic.ics
+
+  # - name: Personal
+  #   style: personal
+  #   url: https://calendar.google.com/calendar/ical/…/private-…/basic.ics
+
+  # - name: Family
+  #   style: family
+  #   url: https://calendar.google.com/calendar/ical/…/private-…/basic.ics
+
+  # - name: Concerts
+  #   style: events
+  #   url: https://…/events.ics
+
+  # - name: Juventus
+  #   style: sports
+  #   url: webcal://pub.fotmob.com/prod/pub/api/v2/calendar/team/9885.ics

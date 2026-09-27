@@ -1,0 +1,168 @@
+/* Zen's internal pages in the desktop chrome tokens (quickshell/Theme.qml), companion to
+ * userChrome.css. They are built on the design-system tokens (tokens-shared.css, which
+ * imports Zen's zen-theme.css), so overriding tokens reaches their shadow DOM too. A
+ * user-origin sheet, so every declaration needs !important to beat the pages' own rules. */
+
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+/* A regexp because url-prefix("about:") also matches about:blank and about:srcdoc, the
+ * iframes websites build their own content in. Reader view and devtools keep their themes.
+ * The preferences prefix covers the sub-dialogs settings opens over itself. */
+@-moz-document regexp("about:(?!blank|srcdoc|reader|devtools).*"),
+  url-prefix("chrome://browser/content/preferences/dialogs/") {
+  :root {
+    --hc-base: #1e1e21;
+    --hc-elevated: #242428;
+    --hc-rim: rgba(255, 255, 255, 0.12);
+    --hc-hair: rgba(255, 255, 255, 0.08);
+    --hc-hover: rgba(255, 255, 255, 0.1);
+    --hc-selected: rgba(255, 255, 255, 0.12);
+    --hc-text: rgba(255, 255, 255, 0.9);
+    --hc-text2: rgba(235, 235, 245, 0.6);
+    --hc-text3: rgba(235, 235, 245, 0.32);
+    --hc-accent: #83a598;
+    --hc-accent-ink: #1d2021;
+    --hc-critical: #ff6961;
+
+    color-scheme: dark !important;
+    font-family: Inter, sans-serif !important;
+
+    /* Radii are calc(n * squircle) and Zen adds corner-shape: superellipse(squircle);
+     * 1 makes both exact and round, like the rest of the desktop. */
+    --zen-squircle-value: 1 !important;
+    --border-radius-medium: 8px !important;
+    --border-radius-large: 14px !important;
+    --button-border-radius: 8px !important;
+    --card-border-radius: 14px !important;
+
+    --background-color-canvas: var(--hc-base) !important;
+    --background-color-box: var(--hc-elevated) !important;
+    --background-color-box-info: var(--hc-elevated) !important;
+    --background-color-list-item-hover: var(--hc-hover) !important;
+    --text-color: var(--hc-text) !important;
+    --text-color-deemphasized: var(--hc-text2) !important;
+    --icon-color: var(--hc-text) !important;
+    --border-color: var(--hc-hair) !important;
+    --border-color-deemphasized: var(--hc-hair) !important;
+    --border-color-interactive: var(--hc-rim) !important;
+    --input-border-color: var(--hc-rim) !important;
+    --input-text-border-color: var(--hc-rim) !important;
+    --input-text-background-color: var(--hc-hair) !important;
+    --card-border-color: var(--hc-hair) !important;
+    --card-box-shadow: none !important;
+    --card-box-shadow-hover: none !important;
+    --panel-background-color: var(--hc-elevated) !important;
+    --panel-border-color: var(--hc-rim) !important;
+    --panel-menuitem-border-radius: 8px !important;
+
+    /* zen-theme.css chains these through --in-content-primary-button-* and
+     * --zen-primary-color (AccentColor, the GTK accent), so each is set directly. */
+    --zen-primary-color: var(--hc-accent) !important;
+    --zen-colors-hover-bg: color-mix(in srgb, var(--hc-accent) 88%, white) !important;
+    --zen-colors-primary: var(--hc-elevated) !important;
+    --zen-colors-secondary: var(--hc-hover) !important;
+    --zen-colors-tertiary: var(--hc-base) !important;
+    --zen-colors-border: var(--hc-hair) !important;
+    --color-accent-primary: var(--hc-accent) !important;
+    --color-accent-primary-hover: color-mix(in srgb, var(--hc-accent) 88%, white) !important;
+    --color-accent-primary-active: color-mix(in srgb, var(--hc-accent) 88%, black) !important;
+    --color-accent-primary-selected: var(--hc-accent) !important;
+    --text-color-accent-primary-selected: var(--hc-accent-ink) !important;
+    --button-background-color-primary: var(--color-accent-primary) !important;
+    --button-background-color-primary-hover: var(--color-accent-primary-hover) !important;
+    --button-background-color-primary-active: var(--color-accent-primary-active) !important;
+    --button-text-color-primary: var(--hc-accent-ink) !important;
+    --button-background-color: var(--hc-hair) !important;
+    --button-background-color-hover: var(--hc-hover) !important;
+    --button-background-color-active: var(--hc-selected) !important;
+    --button-text-color: var(--hc-text) !important;
+    --focus-outline-color: var(--hc-accent) !important;
+    --link-color: var(--hc-accent) !important;
+    --link-color-hover: var(--color-accent-primary-hover) !important;
+    --link-color-active: var(--hc-accent) !important;
+    --text-color-error: var(--hc-critical) !important;
+
+    --table-background-color: var(--hc-elevated) !important;
+    --table-row-background-color-alternate: var(--hc-elevated) !important;
+    --table-header-background-color: var(--hc-base) !important;
+    --table-header-text-color: var(--hc-text2) !important;
+
+    --newtab-background-color: var(--hc-base) !important;
+    --newtab-background-color-secondary: var(--hc-elevated) !important;
+    --newtab-background-card: var(--hc-elevated) !important;
+    --newtab-weather-background-color: var(--hc-elevated) !important;
+    --newtab-text-primary-color: var(--hc-text) !important;
+    --newtab-text-secondary-color: var(--hc-text2) !important;
+    --newtab-text-secondary-text: var(--hc-text2) !important;
+    --newtab-wordmark-color: var(--hc-text) !important;
+    --newtab-primary-action-background: var(--hc-accent) !important;
+    --newtab-primary-element-text-color: var(--hc-accent-ink) !important;
+    --newtab-element-hover-color: var(--hc-hover) !important;
+    --newtab-element-active-color: var(--hc-selected) !important;
+    --newtab-button-static-background: var(--hc-hair) !important;
+    --newtab-button-static-hover-background: var(--hc-hover) !important;
+    --newtab-button-static-active-background: var(--hc-selected) !important;
+  }
+
+  /* Dialog documents swap the canvas for --zen-dialog-background. */
+  :root[dialogroot] {
+    --background-color-canvas: var(--hc-elevated) !important;
+  }
+
+  /* The new-tab page sets its own font on body. */
+  body {
+    font-family: Inter, sans-serif !important;
+  }
+
+  /* Component tokens are redeclared on each element's :host, so they are set on the host. */
+  moz-page-nav {
+    --page-nav-button-background-color-selected: var(--hc-accent) !important;
+    --page-nav-button-text-color-selected: var(--hc-accent-ink) !important;
+    --page-nav-button-indicator-background-color: transparent !important;
+  }
+
+  moz-toggle {
+    --toggle-border-color: var(--hc-text3) !important;
+    --toggle-dot-background-color-on-pressed: var(--hc-accent-ink) !important;
+  }
+
+  content-search-handoff-ui {
+    --content-search-handoff-ui-background-color: var(--hc-elevated) !important;
+    --content-search-handoff-ui-color: var(--hc-text) !important;
+    --content-search-handoff-ui-fill: var(--hc-text2) !important;
+    --content-search-handoff-ui-caret-color: var(--hc-accent) !important;
+    --content-search-handoff-ui-border-width: 1px !important;
+    --content-search-handoff-ui-border-radius: 8px !important;
+    --content-search-handoff-ui-unfocused-border-color: var(--hc-rim) !important;
+    --content-search-handoff-ui-fakefocus-border-color: var(--hc-accent) !important;
+    --content-search-handoff-ui-fakefocus-box-shadow-inner: transparent !important;
+    --content-search-handoff-ui-fakefocus-box-shadow-outer: transparent !important;
+  }
+
+  /* The settings sub-dialog frame hard-codes #42414d as its canvas. */
+  .dialogBox,
+  html|dialog {
+    --background-color-canvas: var(--hc-elevated) !important;
+    border-color: var(--hc-rim) !important;
+    border-radius: 14px !important;
+  }
+
+  /* Toolkit paints the active item with the GTK -moz-menuhover system colour. */
+  :is(menu, menuitem)[_moz-menuactive]:not([disabled]) {
+    background-color: var(--hc-hover) !important;
+    color: var(--hc-text) !important;
+  }
+
+  /* about:privatebrowsing paints its info box in hard-coded purples. */
+  html.private .info-border {
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  html.private .info {
+    background-color: var(--hc-elevated) !important;
+    border-color: var(--hc-hair) !important;
+    border-radius: 14px !important;
+    box-shadow: none !important;
+  }
+}

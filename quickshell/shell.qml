@@ -16,5 +16,7 @@ ShellRoot {
 
     Clipboard {}
     Cheatsheet {}
+    Overview {}
+    Launcher {}
     Osd {}
 }

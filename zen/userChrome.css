@@ -1,0 +1,140 @@
+/* Zen's UI in the desktop chrome tokens (quickshell/Theme.qml); install.sh links it into the
+ * profile. A user-origin sheet, so its !important beats Zen's own !important and the inline
+ * styles ZenGradientGenerator writes at runtime. */
+
+:root {
+  --hc-base: #1e1e21;
+  --hc-elevated: #242428;
+  --hc-rim: rgba(255, 255, 255, 0.12);
+  --hc-hair: rgba(255, 255, 255, 0.08);
+  --hc-hover: rgba(255, 255, 255, 0.1);
+  --hc-selected: rgba(255, 255, 255, 0.12);
+  --hc-text: rgba(255, 255, 255, 0.9);
+  --hc-text2: rgba(235, 235, 245, 0.6);
+  --hc-text3: rgba(235, 235, 245, 0.32);
+  --hc-accent: #83a598;
+  --hc-accent-ink: #1d2021;
+  --hc-critical: #ff6961;
+
+  font-family: Inter, sans-serif !important;
+
+  /* Set inline on <html> by the gradient generator per workspace. */
+  --zen-primary-color: var(--hc-accent) !important;
+  --toolbox-textcolor: var(--hc-text) !important;
+  --toolbar-color-scheme: dark !important;
+
+  --zen-colors-primary: var(--hc-elevated) !important;
+  --zen-colors-secondary: var(--hc-hover) !important;
+  --zen-colors-tertiary: var(--hc-base) !important;
+  --zen-colors-border: var(--hc-hair) !important;
+  --zen-colors-border-contrast: var(--hc-hair) !important;
+  --zen-colors-input-bg: var(--hc-hover) !important;
+  --zen-colors-primary-foreground: var(--hc-text) !important;
+  --zen-dialog-background: var(--hc-elevated) !important;
+  --zen-themed-toolbar-bg-transparent: var(--hc-base) !important;
+
+  --zen-toolbar-element-bg: var(--hc-hair) !important;
+  --zen-toolbar-element-bg-hover: var(--hc-hover) !important;
+  --toolbarbutton-background-color-hover: var(--hc-hover) !important;
+  --toolbarbutton-background-color-active: var(--hc-selected) !important;
+  --toolbar-field-background-color: var(--hc-hair) !important;
+  --toolbar-field-focus-background-color: var(--hc-elevated) !important;
+  --toolbar-field-color: var(--hc-text) !important;
+  --focus-outline-color: var(--hc-accent) !important;
+
+  --arrowpanel-background: var(--hc-elevated) !important;
+  --arrowpanel-color: var(--hc-text) !important;
+  --arrowpanel-border-color: var(--hc-rim) !important;
+  --arrowpanel-menuitem-border-radius: 8px !important;
+  --panel-separator-color: var(--hc-hair) !important;
+
+  --link-color: var(--hc-accent) !important;
+  --in-content-primary-button-background: var(--hc-accent) !important;
+  --in-content-primary-button-background-hover: color-mix(in srgb, var(--hc-accent) 88%, white) !important;
+  --in-content-primary-button-text-color: var(--hc-accent-ink) !important;
+}
+
+/* The gradient generator writes these inline on #zen-browser-background and
+ * #zen-toolbar-background; the -old pair is the cross-fade source. */
+.zen-browser-generic-background {
+  --zen-main-browser-background: var(--hc-base) !important;
+  --zen-main-browser-background-old: var(--hc-base) !important;
+  --zen-main-browser-background-toolbar: var(--hc-base) !important;
+  --zen-main-browser-background-toolbar-old: var(--hc-base) !important;
+
+  & .zen-browser-grain {
+    display: none !important;
+  }
+}
+
+/* zen-workspace re-declares the selected-tab colour, so :root can't reach it. */
+zen-workspace {
+  --tab-background-color-selected: var(--hc-selected) !important;
+  --tab-box-shadow-selected: none !important;
+  --tab-background-color-hover: var(--hc-hover) !important;
+}
+
+#navigator-toolbox {
+  --tab-border-radius: 8px !important;
+}
+
+.tabbrowser-tab[zen-essential="true"] {
+  --zen-essential-tab-selected-bg: var(--hc-selected) !important;
+  --zen-essential-tab-selected-bg-hover: var(--hc-hover) !important;
+}
+
+.zen-current-workspace-indicator,
+#zen-sidebar-foot-buttons {
+  color: var(--hc-text2) !important;
+}
+
+#urlbar[breakout-extend] .urlbar-background {
+  background-color: var(--hc-elevated) !important;
+  outline: 1px solid var(--hc-rim) !important;
+  outline-offset: -1px !important;
+  border-radius: 14px !important;
+}
+
+.urlbarView-row {
+  color: var(--hc-text) !important;
+
+  &:hover {
+    background-color: var(--hc-hover) !important;
+  }
+
+  &[selected] {
+    background-color: var(--hc-accent) !important;
+
+    & *,
+    & .urlbarView-title-separator::before {
+      color: var(--hc-accent-ink) !important;
+    }
+  }
+}
+
+.urlbarView-url,
+.urlbarView-action {
+  color: var(--hc-text2) !important;
+}
+
+menupopup,
+panel {
+  --panel-background-color: var(--hc-elevated) !important;
+  --panel-text-color: var(--hc-text) !important;
+  --panel-border-color: var(--hc-rim) !important;
+  --panel-border-radius: 14px !important;
+  --menuitem-border-radius: 8px !important;
+  --button-background-color-menu-hover: var(--hc-hover) !important;
+  --button-background-color-hover: var(--hc-hover) !important;
+  font-family: Inter, sans-serif !important;
+}
+
+/* Toolkit paints the active item with the GTK -moz-menuhover system colour. */
+:is(menu, menuitem)[_moz-menuactive]:not([disabled]) {
+  background-color: var(--hc-hover) !important;
+  color: var(--hc-text) !important;
+}
+
+:is(menu, menuitem)[disabled] {
+  color: var(--hc-text3) !important;
+}

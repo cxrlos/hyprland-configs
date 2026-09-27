@@ -64,7 +64,7 @@ _install_deps() {
         hyprland hyprlock hypridle hyprpaper
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
         quickshell swaync
-        rofi wl-clipboard cliphist
+        wl-clipboard cliphist unicode-emoji
         thunar
         grim slurp
         libnotify
@@ -78,6 +78,7 @@ _install_deps() {
         inter-font
         wf-recorder pacman-contrib jq imagemagick
         nm-connection-editor satty hyprpicker obsidian
+        python-yaml python-icalendar python-recurring-ical-events
     )
 
     [[ -n "$UCODE" ]] && pacman_deps+=("$UCODE")
@@ -99,6 +100,7 @@ _install_deps() {
         ttf-apple-emoji
         ttf-material-symbols-variable-git
         zen-browser-bin
+        gcalcli
     )
 
     if _ensure_yay; then
@@ -156,7 +158,6 @@ printf "\n%s\n" "${BOLD}Linking configs...${NC}"
 
 _link "$REPO_DIR/hypr"                         "$HOME/.config/hypr"
 _link "$REPO_DIR/quickshell"                   "$HOME/.config/quickshell"
-_link "$REPO_DIR/rofi"                         "$HOME/.config/rofi"
 _link "$REPO_DIR/swaync"                       "$HOME/.config/swaync"
 _link "$REPO_DIR/waypaper"                     "$HOME/.config/waypaper"
 _link "$REPO_DIR/thunar"                       "$HOME/.config/Thunar"
@@ -169,12 +170,39 @@ mkdir -p "$HOME/.local/bin"
 _link "$REPO_DIR/scripts/screenshot.sh"        "$HOME/.local/bin/screenshot"
 _link "$REPO_DIR/scripts/steam.sh"             "$HOME/.local/bin/steam"
 
+# ── Zen theme (linked into Zen's default profile) ─────────────────────────────
+
+# A fresh install has no profile until Zen's first start, so a headless run creates it.
+_zen_profile() {
+    local ini="$HOME/.config/zen/installs.ini" dir
+    [[ -f "$ini" ]] || timeout 20 zen-browser --headless --no-remote about:blank &>/dev/null || true
+    dir=$(sed -n 's/^Default=//p' "$ini" 2>/dev/null | head -1)
+    [[ -n "$dir" ]] && printf '%s\n' "$HOME/.config/zen/$dir"
+}
+
+if command -v zen-browser &>/dev/null && zen_profile=$(_zen_profile) && [[ -d "$zen_profile" ]]; then
+    _link "$REPO_DIR/zen/userChrome.css"  "$zen_profile/chrome/userChrome.css"
+    _link "$REPO_DIR/zen/userContent.css" "$zen_profile/chrome/userContent.css"
+    _link "$REPO_DIR/zen/user.js"         "$zen_profile/user.js"
+else
+    warn "Zen profile not found: start Zen once, then re-run install.sh"
+fi
+
 # ── Script permissions ─────────────────────────────────────────────────────────
 
-for script in "$REPO_DIR"/scripts/*; do
+for script in "$REPO_DIR"/scripts/*.{sh,py}; do
     [[ -f "$script" ]] && chmod +x "$script"
 done
 success "Scripts marked executable"
+
+# ── Calendar feeds (secret iCal URLs are credentials, so never symlinked) ──────
+
+if [[ ! -e "$HOME/.config/calendars.yaml" ]]; then
+    install -m 600 "$REPO_DIR/scripts/calendars.example.yaml" "$HOME/.config/calendars.yaml"
+    success "Wrote $HOME/.config/calendars.yaml (add your secret iCal URLs)"
+else
+    success "$HOME/.config/calendars.yaml (kept)"
+fi
 
 # ── Claude Code hooks (caffeine's "while Claude works" mode) ───────────────────
 
@@ -381,7 +409,7 @@ format = "%a %-d %b  %H:%M"
 resolution = "1s"
 TOML
 
-    # Neutral chrome, same tokens as hyprlock/rofi/swaync; the background image is
+    # Neutral chrome, same tokens as hyprlock/swaync/Zen; the background image is
     # already blurred and dimmed, so the translucent card reads as frosted glass.
     _backup_sudo /etc/greetd/regreet.css
     sudo tee /etc/greetd/regreet.css >/dev/null <<'CSS'

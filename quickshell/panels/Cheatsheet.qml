@@ -10,12 +10,11 @@ Panel {
     readonly property var groups: [
         { title: "Applications", binds: [
             ["Super Return", "Terminal"],
-            ["Super Space", "App launcher"],
+            ["Super Space", "Launcher: apps, windows, notes, sums, :emoji"],
             ["Super W", "Browser (Zen)"],
             ["Super Shift W", "Private browser window"],
             ["Super Y", "Files (Thunar)"],
             ["Super N", "Obsidian"],
-            ["Super Shift O", "Window switcher"],
         ] },
         { title: "Windows", binds: [
             ["Super Q", "Close window"],
@@ -30,6 +29,7 @@ Panel {
         { title: "Workspaces", binds: [
             ["Super 1–9 0", "Go to workspace 1–10"],
             ["Super Shift 1–9 0", "Move window to workspace"],
+            ["Super O", "Overview of all workspaces"],
             ["Super D", "Empty workspace"],
             ["Super `", "Terminal scratchpad"],
             ["Super B", "Hide / show the bar"],

@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 
 // Neutral chrome tokens. Every Quickshell surface reads colours, type and sizes from here;
-// rofi, swaync, hyprlock and the greeter keep their own copies (separate processes).
+// swaync, hyprlock, the greeter and Zen keep their own copies (separate processes).
 Singleton {
     readonly property color surface: Qt.rgba(30 / 255, 30 / 255, 33 / 255, 0.58)
     readonly property color elevated: Qt.rgba(36 / 255, 36 / 255, 40 / 255, 0.72)
