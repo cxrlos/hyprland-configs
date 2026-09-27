@@ -13,7 +13,7 @@ Sibling repos: `../term-configs` (Alacritty, tmux, Zsh, Starship), `../neovim-co
 |---|---|
 | WM | Hyprland 0.56 (Lua config) |
 | Bar, dropdowns, panels | Quickshell 0.3 (QML) — replaced waybar |
-| Launcher / window switcher | rofi-wayland (the only rofi uses left) |
+| Launcher / window switcher | rofi 2.0 (the only rofi uses left) |
 | Notifications | swaync (its own default theme, retuned) |
 | Wallpaper | waypaper + hyprpaper |
 | Lock / Idle | hyprlock / hypridle |

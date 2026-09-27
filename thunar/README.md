@@ -11,9 +11,9 @@ Thunar config matched to the Hyprland stack (compact details view).
 
 ## Theme
 
-Global GTK icon theme (`Papirus-Dark`), font (`Mononoki Nerd Font 11`), and cursor are written
-by the main installer to `~/.config/gtk-{3,4}.0/settings.ini`. Thunar is launched via the plain
-`thunar` command.
+Global GTK icon theme (`Papirus-Dark`), font (`Inter 11`) and cursor (`Bibata-Modern-Classic`) are
+written by the main installer to `~/.config/gtk-{3,4}.0/settings.ini`, plus `gtk-3.0/gtk.css` for the
+sage selection colour. Thunar is launched via the plain `thunar` command.
 
 ## After install
 

@@ -64,21 +64,20 @@ _install_deps() {
         hyprland hyprlock hypridle hyprpaper
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
         quickshell swaync
-        rofi-wayland wl-clipboard cliphist
+        rofi wl-clipboard cliphist
         thunar
-        firefox
         grim slurp
-        bat libnotify
+        libnotify
         pipewire wireplumber
         bluez bluez-utils btop
         networkmanager
-        polkit-gnome greetd playerctl pavucontrol
+        polkit-gnome greetd greetd-regreet cage playerctl pavucontrol
         papirus-icon-theme
         qt5-wayland qt6-wayland
         gamemode lib32-gamemode
-        ttf-mononoki-nerd inter-font
+        inter-font
         wf-recorder pacman-contrib jq imagemagick
-        nm-connection-editor satty
+        nm-connection-editor satty hyprpicker obsidian
     )
 
     [[ -n "$UCODE" ]] && pacman_deps+=("$UCODE")
@@ -95,11 +94,7 @@ _install_deps() {
 
     local aur_deps=(
         grimblast-git
-        hyprpicker
         waypaper
-        greetd-regreet
-        cage
-        obsidian
         bibata-cursor-theme-bin
         ttf-apple-emoji
         ttf-material-symbols-variable-git
@@ -120,19 +115,6 @@ _install_deps() {
         warn "  Install manually: yay -S ${aur_deps[*]}"
     fi
 }
-
-# ── Font check ─────────────────────────────────────────────────────────────────
-
-_check_font() {
-    fc-list 2>/dev/null | grep -qi "mononoki nerd font" && return 0
-    return 1
-}
-
-if _check_font; then
-    success "Mononoki Nerd Font"
-else
-    warn "Mononoki Nerd Font not found — installing ttf-mononoki-nerd below"
-fi
 
 _install_deps
 
@@ -231,7 +213,7 @@ _install_claude_hooks() {
 
 _install_claude_hooks
 
-# ── Dark-mode preference (so Firefox / GTK / portal apps render dark) ──────────
+# ── Dark-mode preference (so Zen / GTK / portal apps render dark) ──────────────
 
 if command -v gsettings &>/dev/null; then
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null \
@@ -328,6 +310,14 @@ info "Config: ~/.config/waypaper/config.ini  (default folder: ~/Pictures/backgro
 
 if $IS_LAPTOP; then
     sudo systemctl enable --now power-profiles-daemon && success "power-profiles-daemon enabled"
+fi
+
+# ── Bluetooth (the bar's Bluetooth dropdown talks to bluez) ───────────────────
+
+if systemctl is-enabled bluetooth &>/dev/null; then
+    success "bluetooth enabled"
+else
+    sudo systemctl enable --now bluetooth && success "bluetooth enabled"
 fi
 
 # ── Networking (NetworkManager; keep iwd from fighting over wifi) ──────────────
@@ -562,9 +552,4 @@ printf "  %s\n\n" "${GREEN}Installation complete!${NC}"
 printf "  To reload configs at any time:\n"
 printf "    %s\n"   "${BOLD}hyprctl reload${NC}"
 printf "    %s\n\n" "${BOLD}pkill -x qs; setsid -f qs${NC}"
-printf "%s\n" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-
-printf "\n%s  (all should be visible)\n" "${BOLD}Character check:${NC}"
-printf "  UI          ▶  ◀  ▸  …  ●\n"
-printf "  Box         ─  │  ╭  ╮  ╯  ╰\n"
-printf "  Powerline   \ue0b0  \ue0b1  \ue0b2  \ue0b3   %s\n\n" "${DIM}(blank = Nerd Font missing)${NC}"
+printf "%s\n\n" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
