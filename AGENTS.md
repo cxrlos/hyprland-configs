@@ -74,6 +74,7 @@ windows except translucent Alacritty; windows stay opaque, inactive ones dimmed 
 | `scripts/clipboard.sh` | `list` (JSON, image previews cached) / `copy <id>` for the Clipboard panel |
 | `scripts/on-battery.sh` | exits 0 only on a laptop running on battery (gates the battery idle listeners) |
 | `scripts/screenshot.sh` | capture → copy → notification with Save / Edit (satty) / Open |
+| `scripts/compact-workspaces.sh` | renumbers occupied workspaces to 1..N (no gaps); run by `bar/WorkspaceCompactor.qml` |
 | `scripts/scratch.sh` / `focus-or-spawn.sh` | create-or-toggle scratchpad / focus-or-launch (Obsidian) |
 
 ## Conventions
@@ -130,6 +131,7 @@ Full map: `hypr/keybinds.lua`, or **Super+Shift+/** in-session.
 
 - **Dropdown dismissal** — dropdowns are `PopupWindow`s with `grabFocus`; an outside click closes them and then lands on the bar, so `DropdownState` ignores a reopen of the same dropdown within 300 ms. Switching dropdowns closes the old one before mapping the next (two grabs at once confuse Wayland).
 - **Screen-share guard** — Hyprland's `screencast` event fires for screenshots too (grim, for a split second), so `ScreenShare` engages only after 1.5 s of continuous capture; it turns Do Not Disturb on (and back off only if it was the one to turn it on) and hides the bar's now-playing text.
+- **Workspace compaction** — the bar shows unnumbered dots, so gaps are closed: on `destroyworkspacev2` (an empty workspace you just left) later workspaces shift left. Super+1–0 address slots, not fixed contents, and no window rule pins an app to a workspace number. The focused workspace counts as occupied, so nothing slides onto the current screen.
 - **Tray clicks** — tray item ids are matched to windows by their leading word (`Slack_status_icon_1` → app id `slack`); no window means the app is opened on an empty workspace.
 - **Tray menus** — native right-click menus need `//@ pragma UseQApplication` at the top of `shell.qml`.
 - **Panels take the keyboard** — Clipboard/Cheatsheet are overlay layers with exclusive keyboard focus while open; opening one from a script steals whatever you were typing.

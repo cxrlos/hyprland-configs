@@ -12,6 +12,8 @@ ShellRoot {
         Bar {}
     }
 
+    WorkspaceCompactor {}
+
     Clipboard {}
     Cheatsheet {}
     Osd {}

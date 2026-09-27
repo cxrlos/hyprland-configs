@@ -30,12 +30,6 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    name = "obsidian-workspace",
-    match = { class = "^(obsidian)$" },
-    workspace = "2",
-})
-
-hl.window_rule({
     name = "pip",
     match = { title = "^(Picture-in-Picture)$" },
     float = true,
