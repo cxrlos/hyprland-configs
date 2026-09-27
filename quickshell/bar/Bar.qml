@@ -51,7 +51,17 @@ PanelWindow {
     }
 
     Clock {
+        id: clock
+
         anchors.centerIn: parent
+    }
+
+    NextMeeting {
+        anchors {
+            left: clock.right
+            leftMargin: 6
+            verticalCenter: parent.verticalCenter
+        }
     }
 
     RowLayout {

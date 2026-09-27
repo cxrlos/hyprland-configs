@@ -50,7 +50,7 @@ hl.layer_rule({
 
 hl.layer_rule({
     name = "frosted-overlays",
-    match = { namespace = "^(quickshell-panel|rofi|swaync-control-center|swaync-notification-window)$" },
+    match = { namespace = "^(quickshell-panel|swaync-control-center|swaync-notification-window)$" },
     blur = true,
     ignore_alpha = 0.2,
 })

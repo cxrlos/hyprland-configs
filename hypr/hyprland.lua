@@ -89,6 +89,9 @@ hl.config({
         no_hardware_cursors = true,
         enable_hyprcursor = true,
         sync_gsettings_theme = true,
+        -- Focus jumps (bar clicks, Join, keyboard focus) leave the pointer where the hand put it;
+        -- with follow_mouse = 2 hovering never steals keyboard focus, so nothing needs the warp.
+        no_warps = true,
     },
 
     misc = {
