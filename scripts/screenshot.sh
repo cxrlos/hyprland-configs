@@ -1,61 +1,50 @@
 #!/usr/bin/env bash
+# Capture an area or the whole screen, copy it straight away, and offer Save / Edit /
+# Open from the notification (macOS-style). Unsaved captures are deleted once it closes.
 set -euo pipefail
 
-SAVE_DIR="$HOME/Pictures/screenshots"
-ROFI_THEME="$HOME/.config/rofi/gruvbox.rasi"
+readonly SAVE_DIR="$HOME/Pictures/screenshots"
 
-_notify() {
-    command -v notify-send &>/dev/null && notify-send "Screenshot" "$1" -i camera-photo -t 3000
-}
-
-TMP="$(mktemp /tmp/screenshot-XXXXX.png)"
-
-_capture() {
-    local mode="$1"
-    if command -v grimblast &>/dev/null; then
-        grimblast save "$mode" "$TMP" || { rm -f "$TMP"; exit 0; }
-    else
-        case "$mode" in
-            area)   grim -g "$(slurp)" "$TMP"  || { rm -f "$TMP"; exit 0; } ;;
-            screen) grim "$TMP"                 || { rm -f "$TMP"; exit 0; } ;;
-        esac
-    fi
-}
-
-case "${1:-area}" in
-    area)   _capture area ;;
-    screen) _capture screen ;;
+mode="${1:-area}"
+case "$mode" in
+    area | screen) ;;
     *)
         printf 'Usage: screenshot [area|screen]\n' >&2
-        rm -f "$TMP"
-        exit 1
+        exit 2
         ;;
 esac
 
-choice=$(printf "  Copy\n  Save\n  Copy+Save" \
-    | rofi -dmenu -p " Screenshot" -theme "$ROFI_THEME" -theme-str 'window { width: 280px; } listview { lines: 3; }') \
-    || choice=""
+tmp="$(mktemp --suffix=.png "${XDG_RUNTIME_DIR:-/tmp}/screenshot-XXXXX")"
+trap 'rm -f "$tmp"' EXIT
 
-mkdir -p "$SAVE_DIR"
-TIMESTAMP="$(date +'%Y-%m-%d_%H-%M-%S')"
-FINAL="$SAVE_DIR/$TIMESTAMP.png"
+if command -v grimblast &>/dev/null; then
+    grimblast save "$mode" "$tmp" >/dev/null || exit 0
+elif [[ $mode == area ]]; then
+    grim -g "$(slurp)" "$tmp" || exit 0
+else
+    grim "$tmp"
+fi
 
-case "$choice" in
-    *Copy+Save)
-        cp "$TMP" "$FINAL"
-        wl-copy < "$TMP"
-        _notify "Saved and copied: $(basename "$FINAL")"
+wl-copy <"$tmp"
+
+# notify-send blocks until the notification closes and prints the chosen action.
+action=$(notify-send -a Screenshot -i camera-photo -h "string:image-path:$tmp" \
+    -A save=Save -A edit=Edit -A open=Open \
+    "Screenshot copied" "Save it to Pictures, mark it up, or open it") || true
+
+case "$action" in
+    edit)
+        # satty saves into Pictures and copies the marked-up version on Ctrl+S / Ctrl+C.
+        mkdir -p "$SAVE_DIR"
+        satty --filename "$tmp" --output-filename "$SAVE_DIR/%Y-%m-%d_%H-%M-%S.png" \
+            --copy-command wl-copy --early-exit all
         ;;
-    *Save)
-        mv "$TMP" "$FINAL"
-        _notify "Saved: $(basename "$FINAL")"
-        ;;
-    *Copy)
-        wl-copy < "$TMP"
-        _notify "Copied to clipboard"
-        ;;
-    *)
+    save | open)
+        mkdir -p "$SAVE_DIR"
+        final="$SAVE_DIR/$(date +'%Y-%m-%d_%H-%M-%S').png"
+        cp "$tmp" "$final"
+        if [[ $action == open ]]; then
+            xdg-open "$final" >/dev/null 2>&1 &
+        fi
         ;;
 esac
-
-rm -f "$TMP"

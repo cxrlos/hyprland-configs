@@ -6,7 +6,7 @@ require("rules")
 
 -- Autostart
 hl.on("hyprland.start", function()
-    hl.exec_cmd("waybar")
+    hl.exec_cmd("qs")
     hl.exec_cmd("~/.config/scripts/wallpaper.sh")
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
@@ -15,8 +15,8 @@ end)
 
 -- Environment
 hl.env("XCURSOR_SIZE", "24")
-hl.env("XCURSOR_THEME", "catppuccin-mocha-dark-cursors")
-hl.env("HYPRCURSOR_THEME", "catppuccin-mocha-dark-cursors")
+hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
+hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Classic")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "1")
@@ -37,7 +37,7 @@ hl.config({
     general = {
         gaps_in = theme.gap_in,
         gaps_out = theme.gap_out,
-        border_size = 2,
+        border_size = theme.border_size,
         col = {
             active_border = theme.border_active,
             inactive_border = theme.border_inactive,
@@ -52,8 +52,23 @@ hl.config({
         active_opacity = 1.0,
         inactive_opacity = 1.0,
         fullscreen_opacity = 1.0,
-        blur = { enabled = false },
-        shadow = { enabled = false },
+        dim_inactive = true,
+        dim_strength = theme.dim_inactive,
+        -- Only layers with a blur rule (rules.lua) and translucent windows get blurred.
+        blur = {
+            enabled = true,
+            size = 8,
+            passes = 3,
+            noise = 0.02,
+            popups = true,
+        },
+        shadow = {
+            enabled = true,
+            range = 24,
+            render_power = 3,
+            offset = "0 6",
+            color = theme.shadow_color,
+        },
     },
 
     input = {
@@ -61,6 +76,13 @@ hl.config({
         follow_mouse = 2,
         repeat_delay = 250,
         repeat_rate = 40,
+        -- Laptop only; mice keep libinput defaults (see AGENTS.md, Mouse).
+        touchpad = {
+            natural_scroll = true,
+            tap_to_click = true,
+            disable_while_typing = true,
+            clickfinger_behavior = true,
+        },
     },
 
     cursor = {
@@ -86,3 +108,6 @@ hl.config({
         force_split = 2,
     },
 })
+
+-- Laptop touchpad: three-finger horizontal swipe moves between workspaces.
+hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })

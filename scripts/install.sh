@@ -21,6 +21,9 @@ case "$(grep -m1 vendor_id /proc/cpuinfo)" in
     *AuthenticAMD*) UCODE=amd-ucode ;;
     *)              UCODE="" ;;
 esac
+# A battery means laptop: backlight, battery and power-profile support get installed.
+IS_LAPTOP=false
+compgen -G "/sys/class/power_supply/BAT*" >/dev/null && IS_LAPTOP=true
 TIMESTAMP="$(date +%Y%m%d%H%M%S)"
 
 # ── Arch-only ──────────────────────────────────────────────────────────────────
@@ -60,25 +63,25 @@ _install_deps() {
     local pacman_deps=(
         hyprland hyprlock hypridle hyprpaper
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
-        waybar swaync
-        rofi-wayland wl-clipboard cliphist
+        quickshell swaync
+        rofi wl-clipboard cliphist
         thunar
-        firefox
         grim slurp
-        bat libnotify
+        libnotify
         pipewire wireplumber
         bluez bluez-utils btop
         networkmanager
-        polkit-gnome greetd playerctl pavucontrol
+        polkit-gnome greetd greetd-regreet cage playerctl pavucontrol
         papirus-icon-theme
         qt5-wayland qt6-wayland
         gamemode lib32-gamemode
-        ttf-mononoki-nerd
-        wf-recorder pacman-contrib jq
-        wiremix
+        inter-font
+        wf-recorder pacman-contrib jq imagemagick
+        nm-connection-editor satty hyprpicker obsidian
     )
 
     [[ -n "$UCODE" ]] && pacman_deps+=("$UCODE")
+    $IS_LAPTOP && pacman_deps+=(brightnessctl upower power-profiles-daemon)
 
     for dep in "${pacman_deps[@]}"; do
         if pacman -Qi "$dep" &>/dev/null; then
@@ -91,15 +94,10 @@ _install_deps() {
 
     local aur_deps=(
         grimblast-git
-        hyprpicker
         waypaper
-        greetd-regreet
-        cage
-        bluetui
-        obsidian
-        catppuccin-cursors-mocha
         bibata-cursor-theme-bin
         ttf-apple-emoji
+        ttf-material-symbols-variable-git
         zen-browser-bin
     )
 
@@ -117,19 +115,6 @@ _install_deps() {
         warn "  Install manually: yay -S ${aur_deps[*]}"
     fi
 }
-
-# ── Font check ─────────────────────────────────────────────────────────────────
-
-_check_font() {
-    fc-list 2>/dev/null | grep -qi "mononoki nerd font" && return 0
-    return 1
-}
-
-if _check_font; then
-    success "Mononoki Nerd Font"
-else
-    warn "Mononoki Nerd Font not found — installing ttf-mononoki-nerd below"
-fi
 
 _install_deps
 
@@ -170,7 +155,7 @@ _link() {
 printf "\n%s\n" "${BOLD}Linking configs...${NC}"
 
 _link "$REPO_DIR/hypr"                         "$HOME/.config/hypr"
-_link "$REPO_DIR/waybar"                       "$HOME/.config/waybar"
+_link "$REPO_DIR/quickshell"                   "$HOME/.config/quickshell"
 _link "$REPO_DIR/rofi"                         "$HOME/.config/rofi"
 _link "$REPO_DIR/swaync"                       "$HOME/.config/swaync"
 _link "$REPO_DIR/waypaper"                     "$HOME/.config/waypaper"
@@ -228,7 +213,7 @@ _install_claude_hooks() {
 
 _install_claude_hooks
 
-# ── Dark-mode preference (so Firefox / GTK / portal apps render dark) ──────────
+# ── Dark-mode preference (so Zen / GTK / portal apps render dark) ──────────────
 
 if command -v gsettings &>/dev/null; then
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null \
@@ -250,8 +235,8 @@ _write_gtk_settings() {
     cat >"$dir/settings.ini" <<EOF
 [Settings]
 gtk-icon-theme-name=Papirus-Dark
-gtk-font-name=Mononoki Nerd Font 11
-gtk-cursor-theme-name=catppuccin-mocha-dark-cursors
+gtk-font-name=Inter 11
+gtk-cursor-theme-name=Bibata-Modern-Classic
 gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=1
 EOF
@@ -260,6 +245,29 @@ EOF
 
 _write_gtk_settings 3
 _write_gtk_settings 4
+
+# Adwaita GTK3 hardcodes its selection colour, so Thunar & co. need selectors, not @define-color.
+cat >"$HOME/.config/gtk-3.0/gtk.css" <<'EOF'
+selection,
+*:selected,
+.view:selected,
+row:selected,
+treeview.view:selected,
+iconview:selected {
+    background-color: #83a598;
+    color: #1d2021;
+}
+EOF
+success "GTK 3 sage selection written"
+
+if command -v gsettings &>/dev/null; then
+    gsettings set org.gnome.desktop.interface font-name 'Inter 11'
+    gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'
+    gsettings set org.gnome.desktop.interface cursor-size 24
+    # libadwaita only offers named accents; slate is the closest to sage #83a598.
+    gsettings set org.gnome.desktop.interface accent-color 'slate'
+    success "GTK font, cursor and accent set via gsettings"
+fi
 
 # XCursor falls back to the "default" theme when the configured one is missing.
 mkdir -p "$HOME/.local/share/icons/default"
@@ -298,7 +306,19 @@ printf "\n%s\n" "${BOLD}Wallpaper setup:${NC}"
 info "waypaper manages wallpaper — run 'waypaper' (or Super+Shift+I) to pick one"
 info "Config: ~/.config/waypaper/config.ini  (default folder: ~/Pictures/backgrounds)"
 
-# ── greetd (optional — requires sudo + systemd) ────────────────────────────────
+# ── Laptop power profiles ─────────────────────────────────────────────────────
+
+if $IS_LAPTOP; then
+    sudo systemctl enable --now power-profiles-daemon && success "power-profiles-daemon enabled"
+fi
+
+# ── Bluetooth (the bar's Bluetooth dropdown talks to bluez) ───────────────────
+
+if systemctl is-enabled bluetooth &>/dev/null; then
+    success "bluetooth enabled"
+else
+    sudo systemctl enable --now bluetooth && success "bluetooth enabled"
+fi
 
 # ── Networking (NetworkManager; keep iwd from fighting over wifi) ──────────────
 
@@ -313,6 +333,8 @@ if systemctl is-active iwd &>/dev/null; then
     sudo systemctl mask iwd 2>/dev/null || true
     success "iwd stopped + masked (NetworkManager now owns wifi)"
 fi
+
+# ── greetd (optional — requires sudo + systemd) ────────────────────────────────
 
 printf "\n%s\n" "${BOLD}greetd / ReGreet setup (optional):${NC}"
 read -r -p "  Configure greetd as boot greeter? Requires sudo. [y/N] " yn
@@ -329,149 +351,162 @@ command = "cage -s -- regreet --style /etc/greetd/regreet.css"
 user = "greeter"
 TOML
 
+    # wallpaper.sh renders a blurred copy of the current wallpaper here; the greeter
+    # user can only read world-readable paths, so the dir lives outside $HOME.
+    sudo install -d -o "$USER" -g "$(id -gn)" -m 755 /usr/local/share/greeter
+    "$REPO_DIR/scripts/wallpaper.sh" || true
+
     _backup_sudo /etc/greetd/regreet.toml
     sudo tee /etc/greetd/regreet.toml >/dev/null <<'TOML'
 [background]
-path = ""
+path = "/usr/local/share/greeter/background.jpg"
 fit = "Cover"
 
 [GTK]
 application_prefer_dark_theme = true
-cursor_theme_name = "catppuccin-mocha-dark-cursors"
-font_name = "Mononoki Nerd Font 11"
+cursor_theme_name = "Bibata-Modern-Classic"
+font_name = "Inter 12"
 icon_theme_name = "Papirus-Dark"
 theme_name = "Adwaita"
 
 [commands]
 reboot = ["systemctl", "reboot"]
 poweroff = ["systemctl", "poweroff"]
+
+[appearance]
+greeting_msg = "Welcome back"
+
+[widget.clock]
+format = "%a %-d %b  %H:%M"
+resolution = "1s"
 TOML
 
-    # Gruvbox, boxy chip style — matches waybar/hyprlock rather than a
-    # third-party GTK theme, since ReGreet loads this CSS directly.
+    # Neutral chrome, same tokens as hyprlock/rofi/swaync; the background image is
+    # already blurred and dimmed, so the translucent card reads as frosted glass.
     _backup_sudo /etc/greetd/regreet.css
     sudo tee /etc/greetd/regreet.css >/dev/null <<'CSS'
-/* Gruvbox — boxy chip style, matches waybar/hyprlock
-   base #282828  surface #3c3836  overlay #504945
-   muted #7c6f64  subtle #a89984  text #ebdbb2  love #fb4934  gold #fabd2f
-*/
-
 window {
-    background-color: #282828;
+    background-color: #1c1c1e;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 frame.background {
-    background-color: rgba(60, 56, 54, 0.85);
-    color: #ebdbb2;
-    border: 1px solid #504945;
-    border-radius: 0px;
-    box-shadow: none;
+    background-color: rgba(30, 30, 33, 0.72);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    padding: 12px;
 }
 
 label {
-    color: #ebdbb2;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-entry {
-    background-color: #282828;
-    color: #ebdbb2;
-    caret-color: #ebdbb2;
-    border: 1px solid #504945;
-    border-radius: 0px;
-}
-
-entry:focus-within {
-    border: 2px solid #8ec07c;
-    outline: 1px solid rgba(142, 192, 124, 0.4);
-    outline-offset: 2px;
-}
-
-/* usernames_box is a GtkComboBoxText; its dropdown popover renders its
-   entries as list rows, so style those flat too. */
-listbox row {
-    background-color: #3c3836;
-    border: 1px solid #504945;
-    border-radius: 0px;
-}
-
-listbox row:selected {
-    background-color: #504945;
-    color: #ebdbb2;
-    border-left: 3px solid #8ec07c;
-}
-
-/* Session/user combobox popovers otherwise fall back to a rounded default
-   GTK popup, breaking the flat look mid-flow. */
-popover,
-popover.background,
-menu {
-    background-color: #282828;
-    border: 1px solid #504945;
-    border-radius: 0px;
-}
-
-menu menuitem:hover,
-popover row:hover {
-    background-color: #504945;
-}
-
-combobox box,
-combobox button {
-    background-color: #282828;
-    color: #ebdbb2;
-    border-radius: 0px;
-}
-
-button {
-    background-color: #504945;
-    color: #ebdbb2;
-    border: none;
-    border-radius: 0px;
-}
-
-button:hover {
-    background-color: #7c6f64;
-}
-
-button.suggested-action {
-    background-color: #ebdbb2;
-    color: #282828;
-    border: 1px solid #8ec07c;
-}
-
-button.suggested-action:hover {
-    background-color: #fabd2f;
-}
-
-button.destructive-action {
-    background-color: #fb4934;
-    color: #282828;
-}
-
-infobar {
-    background-color: #3c3836;
-    color: #ebdbb2;
-    border-radius: 0px;
-}
-
-/* #message_label is ReGreet's top status/greeting label; #clock_frame wraps
-   its clock widget. Sized up so they don't look disconnected from
-   hyprlock's larger clock text. */
 #message_label {
-    font-size: 18px;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+#clock_frame {
+    background: none;
+    border: none;
+    box-shadow: none;
 }
 
 #clock_frame label {
-    font-size: 32px;
+    font-size: 22px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
 }
 
-/* TODO: confirm ReGreet's actual capslock CSS class/selector name — as of
-   the current upstream source (rharish101/ReGreet), there is no capslock
-   indicator widget at all, so this selector is a guess for if/when one is
-   added, following the same naming convention as other GTK greeters. */
-.capslock-warning {
-    color: #fabd2f;
-    font-weight: bold;
+entry,
+combobox button,
+dropdown > button {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.9);
+    caret-color: #83a598;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    min-height: 36px;
+    box-shadow: none;
+}
+
+entry:focus-within {
+    border-color: #83a598;
+    box-shadow: 0 0 0 3px rgba(131, 165, 152, 0.28);
+    outline: none;
+}
+
+/* GTK's built-in theme paints buttons with a background-image gradient, which
+   would cover any background-color set here. */
+button,
+window button.suggested-action,
+window button.destructive-action {
+    background-image: none;
+}
+
+button {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 10px;
+    min-height: 36px;
+    box-shadow: none;
+}
+
+button:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+window button.suggested-action {
+    background-color: #83a598;
+    font-weight: 600;
+}
+
+window button.suggested-action label {
+    color: #1d2021;
+}
+
+window button.suggested-action:hover {
+    background-color: #93b3a6;
+}
+
+window button.destructive-action {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+window button.destructive-action:hover {
+    background-color: rgba(255, 105, 97, 0.85);
+    color: #1d2021;
+}
+
+popover > contents,
+popover.background > contents,
+menu {
+    background-color: rgba(36, 36, 40, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+listbox row,
+popover modelbutton {
+    border-radius: 8px;
+}
+
+listbox row:selected,
+popover modelbutton:hover {
+    background-color: #83a598;
+    color: #1d2021;
+}
+
+infobar,
+infobar > revealer > box {
+    background-color: rgba(255, 105, 97, 0.16);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
 }
 CSS
     success "Wrote greetd config + regreet.toml + regreet.css"
@@ -516,10 +551,5 @@ printf "\n%s\n" "${BOLD}━━━━━━━━━━━━━━━━━━�
 printf "  %s\n\n" "${GREEN}Installation complete!${NC}"
 printf "  To reload configs at any time:\n"
 printf "    %s\n"   "${BOLD}hyprctl reload${NC}"
-printf "    %s\n\n" "${BOLD}killall waybar && waybar &${NC}"
-printf "%s\n" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-
-printf "\n%s  (all should be visible)\n" "${BOLD}Character check:${NC}"
-printf "  UI          ▶  ◀  ▸  …  ●\n"
-printf "  Box         ─  │  ╭  ╮  ╯  ╰\n"
-printf "  Powerline   \ue0b0  \ue0b1  \ue0b2  \ue0b3   %s\n\n" "${DIM}(blank = Nerd Font missing)${NC}"
+printf "    %s\n\n" "${BOLD}pkill -x qs; setsid -f qs${NC}"
+printf "%s\n\n" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
