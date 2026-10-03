@@ -37,6 +37,7 @@ Panel {
         { title: "Capture", binds: [
             ["Super Shift A", "Screenshot an area"],
             ["Super Shift F", "Screenshot the screen"],
+            ["PrtSc / Shift PrtSc", "Same, on the laptop key"],
             ["Super Shift R", "Record an area (again to stop)"],
             ["Super Shift P", "Pick a colour"],
         ] },

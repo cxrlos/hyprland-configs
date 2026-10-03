@@ -1,6 +1,9 @@
 hl.monitor({ output = "HDMI-A-1", mode = "2560x1080@60", position = "0x0", scale = 1, vrr = 0 })
 
--- Any other output (the laptop panel, a projector at a client) uses its preferred mode.
+-- Laptop panel (1920x1200, ~162 DPI): "auto" picks 1.5, which is too large.
+hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = 1.2 })
+
+-- Any other output (a projector at a client) uses its preferred mode.
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
 
 -- If a second monitor is added, pin workspace 1 to this output with:

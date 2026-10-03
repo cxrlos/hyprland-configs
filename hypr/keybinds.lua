@@ -63,9 +63,11 @@ end
 hl.bind(mod .. " + 0", hl.dsp.focus({ workspace = "10" }))
 hl.bind(mod .. " + SHIFT + 0", hl.dsp.window.move({ workspace = "10", follow = true }))
 
--- Screenshots (no Print key)
+-- Screenshots (Print is the laptop's PrtSc key; the desktop keyboard has none)
 hl.bind(mod .. " + SHIFT + A", hl.dsp.exec_cmd("~/.local/bin/screenshot area"))
 hl.bind(mod .. " + SHIFT + F", hl.dsp.exec_cmd("~/.local/bin/screenshot screen"))
+hl.bind("Print", hl.dsp.exec_cmd("~/.local/bin/screenshot area"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("~/.local/bin/screenshot screen"))
 
 -- Screen recording (toggle: start on region select, stop on second press)
 hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd("~/.config/scripts/record.sh"))

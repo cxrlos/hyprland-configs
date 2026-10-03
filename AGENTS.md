@@ -31,9 +31,11 @@ One config for both machines; laptop pieces detect their hardware and stay inert
 - Bar: `BrightnessStatus` shows only when `brightnessctl` finds a backlight; `Battery` only for a UPower laptop battery (its dropdown, with power modes, is created only then).
 - Keys: `XF86MonBrightness*` → `qs ipc call brightness up|down` (+ OSD).
 - Input: `input.touchpad` (natural scroll, tap, disable-while-typing) and a 3-finger workspace swipe; mice keep libinput defaults.
+- Audio: `pipewire/filter-chain.conf.d/speaker-eq.conf` is a WirePlumber smart filter (high-pass, warmth, de-box, presence, air, -3 dB preamp) on the built-in speaker sink only; headphones/HDMI/Bluetooth bypass it. Run by `filter-chain.service`; the Sound dropdown hides its `speaker_eq` node. Bypass to compare: `systemctl --user stop filter-chain`.
 - Idle: extra hypridle listeners gated by `scripts/on-battery.sh` (dim 4 min, lock 5, screen off 7, suspend 15). Lid close is logind's default suspend, locked first by hypridle's `before_sleep_cmd`.
-- Monitors: `HDMI-A-1` is pinned for the desktop; every other output (laptop panel, projector) takes its preferred mode.
-- Install: `install.sh` sets `IS_LAPTOP` from `/sys/class/power_supply/BAT*` and adds `brightnessctl upower power-profiles-daemon` (enabled).
+- Monitors: `HDMI-A-1` is pinned for the desktop, `eDP-1` (the ThinkPad panel) gets scale 1.2 (auto picks 1.5); every other output (projector) takes its preferred mode.
+- Keys: `Print` / `Shift+Print` take an area / screen screenshot (the laptop's PrtSc key).
+- Install: symlinks point at wherever the repo was when `install.sh` ran; moving the repo breaks them all (re-run it from the new place). `install.sh` sets `IS_LAPTOP` from `/sys/class/power_supply/BAT*` and adds `brightnessctl upower power-profiles-daemon` (enabled).
 
 ## Chrome palette
 
@@ -85,9 +87,10 @@ The choices every surface follows; a new one earns its place by fitting all of t
 | `quickshell/osd/` | volume / mic / brightness level pill for the keys (click-through) |
 | `quickshell/widgets/` | shared parts: `Dropdown`, `DropdownState`, `MenuRow`, `Slider`, `Switch`, `PillButton`…; `ScreenShare` (screen-share guard); `Agenda` (today's calendar events, live) |
 | `swaync/style.css` | `@import`s swaync's default theme and overrides its CSS variables |
+| `pipewire/filter-chain.conf.d/` | laptop speaker EQ (linked to `~/.config/pipewire/` and enabled by `install.sh` only on a laptop) |
 | `zen/userChrome.css` / `userContent.css` / `user.js` | Zen's UI / its `about:` pages (new tab, settings, add-ons; never `about:blank`, which sites use) in the chrome tokens, + the prefs they need; `install.sh` links all three into Zen's default profile |
 | `scripts/install.sh` | Arch installer: packages, symlinks, Zen profile links, `calendars.yaml` template, GTK settings + `gtk.css`, gsettings, greetd/ReGreet (config + CSS heredocs), udev, Claude hooks |
-| `scripts/wallpaper.sh` | applies waypaper's pick via hyprpaper IPC; publishes it for the lock (`~/.cache/wallpaper/current`) and a pre-blurred copy for the greeter (`/usr/local/share/greeter/background.jpg`) |
+| `scripts/wallpaper.sh` | applies waypaper's pick (or `waypaper/nasa-wallpaper.png` when the pick is missing on this machine) via hyprpaper IPC; publishes it for the lock (`~/.cache/wallpaper/current`) and a pre-blurred copy for the greeter (`/usr/local/share/greeter/background.jpg`) |
 | `scripts/calendar-feed.py` | `[--offline] [START [DAYS]]` → events from `~/.config/calendars.yaml` (iCal or gcalcli sources) as JSON (default today; cached per calendar, declined/cancelled dropped, failures named on stderr) |
 | `scripts/notes.sh` | note titles from every Obsidian vault (`~/.config/obsidian/obsidian.json`) as JSON for the launcher |
 | `scripts/calendars.example.yaml` | template `install.sh` copies to `~/.config/calendars.yaml` (chmod 600) |
