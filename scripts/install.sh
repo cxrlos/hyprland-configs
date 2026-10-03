@@ -579,5 +579,5 @@ printf "\n%s\n" "${BOLD}━━━━━━━━━━━━━━━━━━�
 printf "  %s\n\n" "${GREEN}Installation complete!${NC}"
 printf "  To reload configs at any time:\n"
 printf "    %s\n"   "${BOLD}hyprctl reload${NC}"
-printf "    %s\n\n" "${BOLD}pkill -x qs; setsid -f qs${NC}"
+printf "    %s\n\n" "${BOLD}pkill -x 'qs|quickshell'; setsid -f qs${NC}"
 printf "%s\n\n" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"

@@ -105,11 +105,11 @@ The choices every surface follows; a new one earns its place by fitting all of t
 - Hyprland config is **Lua**. The `hl` API is typed in `/usr/share/hypr/stubs/hl.meta.lua`; check it instead of guessing. hypridle, hyprlock and hyprpaper stay hyprlang `.conf`.
 - **`hyprctl dispatch` takes Lua** (`hyprctl dispatch 'hl.dsp.focus({ workspace = "2" })'`), so every script and `.conf` that dispatches uses that form. `scratch.sh`/`focus-or-spawn.sh` show the quoting helper. Hyprland's own `/usr/share/hypr/hypridle.conf` is a reference for syntax.
 - Chrome tokens: Hyprland reads `theme.lua`, Quickshell reads `Theme.qml`; swaync, hyprlock, the greeter and Zen (`--hc-*` in `zen/userChrome.css` and `userContent.css`) are separate processes with their own copies. Change a token in all of them together.
-- Quickshell hot-reloads on save; a half-written file pops its error overlay. It misses in-place rewrites (`sed -i`), branch switches and new files in a module dir: restart it (`pkill -x qs; setsid -f qs`) and check `qs log`. Singletons use `pragma Singleton`; modules import as `qs.bar`, `qs.widgets`, etc.
+- Quickshell hot-reloads on save; a half-written file pops its error overlay. It misses in-place rewrites (`sed -i`), branch switches and new files in a module dir: restart it (`pkill -x 'qs|quickshell'; setsid -f qs`) and check `qs log`. Singletons use `pragma Singleton`; modules import as `qs.bar`, `qs.widgets`, etc.
 - Keyboard entry points into Quickshell go through IPC (`qs ipc call dropdown toggle power`, `qs ipc call panel toggle launcher|overview|clipboard|cheatsheet`, `qs ipc call bar toggle`); `qs ipc show` lists targets.
 - Scripts are Bash, `set -euo pipefail`, ShellCheck-clean (`uvx --from shellcheck-py shellcheck -x scripts/*.sh`), except `calendar-feed.py` (Python, Black) because ICS recurrence needs a real parser; a Python script's name must not shadow a stdlib module (`calendar.py` broke `dateutil`). New scripts need `chmod +x` until the next `install.sh` run.
 - Every config must be reproducible from `install.sh`: a new package, a file outside the symlinked dirs or an app pref ships with its install step in the same change.
-- The `hyprland.start` autostart does not re-run on `hyprctl reload`; restart Quickshell with `pkill -x qs; setsid -f qs`.
+- The `hyprland.start` autostart does not re-run on `hyprctl reload`; restart Quickshell with `pkill -x 'qs|quickshell'; setsid -f qs`.
 - GTK settings, `gtk.css` and the greeter config are written by `install.sh`, not symlinked.
 
 ## Workflow
@@ -184,7 +184,7 @@ Full map: `hypr/keybinds.lua`, or **Super+Shift+/** in-session.
 
 ## Debugging
 
-1. **Reload** — `hyprctl reload`; Quickshell reloads itself on save (`pkill -x qs; setsid -f qs` for a clean start).
+1. **Reload** — `hyprctl reload`; Quickshell reloads itself on save (`pkill -x 'qs|quickshell'; setsid -f qs` for a clean start).
 2. **Config errors** — `hyprctl configerrors`; Quickshell: `qs log` (filter out `INFO`).
 3. **Window rules** — `hyprctl clients -j` for the real class/title.
 4. **Layers** — `hyprctl layers` lists namespaces (`quickshell-bar`, `quickshell-panel`, `swaync-*`).
