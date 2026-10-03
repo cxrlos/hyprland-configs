@@ -9,7 +9,7 @@ Dropdown {
     id: root
 
     readonly property PwNode sink: Pipewire.defaultAudioSink
-    readonly property var devices: Pipewire.nodes.values.filter(n => n.audio && !n.isStream)
+    readonly property var devices: Pipewire.nodes.values.filter(n => n.audio && !n.isStream && n.name !== "speaker_eq")
 
     function label(node: PwNode): string {
         return node.nickname || node.description || node.name;

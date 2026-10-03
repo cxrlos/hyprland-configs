@@ -75,7 +75,7 @@ _install_deps() {
         papirus-icon-theme
         qt5-wayland qt6-wayland
         gamemode lib32-gamemode
-        inter-font
+        inter-font noto-fonts
         wf-recorder pacman-contrib jq imagemagick
         nm-connection-editor satty hyprpicker obsidian
         python-yaml python-icalendar python-recurring-ical-events
@@ -147,6 +147,11 @@ _link() {
         return 0
     fi
     mkdir -p "$(dirname "$dst")"
+    # Already linked: re-runs stay quiet instead of piling up .bak copies of the same link.
+    if [[ -L "$dst" && "$(readlink "$dst")" == "$src" ]]; then
+        success "Linked: $dst"
+        return 0
+    fi
     _backup "$dst"
     ln -sf "$src" "$dst"
     success "Symlinked: $dst → $src"
@@ -331,6 +336,9 @@ sudo udevadm control --reload-rules
 # ── Wallpaper ──────────────────────────────────────────────────────────────────
 
 printf "\n%s\n" "${BOLD}Wallpaper setup:${NC}"
+# Seed the picker's folder with the repo wallpaper (wallpaper.sh falls back to it anyway).
+mkdir -p "$HOME/Pictures/backgrounds"
+cp -n "$REPO_DIR/waypaper/nasa-wallpaper.png" "$HOME/Pictures/backgrounds/" 2>/dev/null || true
 info "waypaper manages wallpaper — run 'waypaper' (or Super+Shift+I) to pick one"
 info "Config: ~/.config/waypaper/config.ini  (default folder: ~/Pictures/backgrounds)"
 
@@ -338,6 +346,13 @@ info "Config: ~/.config/waypaper/config.ini  (default folder: ~/Pictures/backgro
 
 if $IS_LAPTOP; then
     sudo systemctl enable --now power-profiles-daemon && success "power-profiles-daemon enabled"
+fi
+
+# ── Laptop speaker EQ (PipeWire smart filter on the built-in speaker sink) ─────
+
+if $IS_LAPTOP; then
+    _link "$REPO_DIR/pipewire/filter-chain.conf.d" "$HOME/.config/pipewire/filter-chain.conf.d"
+    systemctl --user enable --now filter-chain.service && success "filter-chain enabled (speaker EQ)"
 fi
 
 # ── Bluetooth (the bar's Bluetooth dropdown talks to bluez) ───────────────────

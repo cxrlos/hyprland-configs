@@ -13,13 +13,17 @@ set -euo pipefail
 readonly LOCK_LINK="${XDG_CACHE_HOME:-$HOME/.cache}/wallpaper/current"
 readonly GREETER_BG=/usr/local/share/greeter/background.jpg
 
-waypaper_cfg="$HOME/.config/waypaper/config.ini"
-[ -f "$waypaper_cfg" ] || exit 0
+# The repo's wallpaper stands in until waypaper's pick exists on this machine (a fresh install).
+readonly DEFAULT_WALLPAPER="$(dirname "$(readlink -f "$0")")/../waypaper/nasa-wallpaper.png"
 
-wallpaper=$(awk -F'[[:space:]]*=[[:space:]]*' '/^wallpaper[[:space:]]*=/{print $2; exit}' "$waypaper_cfg")
+waypaper_cfg="$HOME/.config/waypaper/config.ini"
+wallpaper=""
+[ -f "$waypaper_cfg" ] &&
+    wallpaper=$(awk -F'[[:space:]]*=[[:space:]]*' '/^wallpaper[[:space:]]*=/{print $2; exit}' "$waypaper_cfg")
 wallpaper="${wallpaper/#\~/$HOME}"
 
-[ -n "$wallpaper" ] && [ -f "$wallpaper" ] || exit 0
+[ -n "$wallpaper" ] && [ -f "$wallpaper" ] || wallpaper="$(readlink -f "$DEFAULT_WALLPAPER")"
+[ -f "$wallpaper" ] || exit 0
 
 mkdir -p "${LOCK_LINK%/*}"
 ln -sfn "$wallpaper" "$LOCK_LINK"
