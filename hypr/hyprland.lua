@@ -11,6 +11,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     hl.exec_cmd("hypridle")
+    -- BlueZ pairing agent: Quickshell has none, so the Bluetooth dropdown's Pair fails without it
+    hl.exec_cmd("blueman-applet")
 end)
 
 -- Environment

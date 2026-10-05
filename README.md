@@ -67,8 +67,9 @@ scripts/     install.sh and the helpers the shell calls
 ```
 10 min → lock (hyprlock)
 15 min → monitor off
-30 min → suspend
-the Idle dropdown's Caffeine modes pause all three
+30 min → suspend (then hibernate where available)
+the Idle dropdown's Caffeine (until off, 30 min / 1 h / 2 h, or while Claude works) pauses all three;
+lid close and suspend still lock, and end it
 ```
 
 ## Customize
