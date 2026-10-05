@@ -32,7 +32,7 @@ One config for both machines; laptop pieces detect their hardware and stay inert
 - Keys: `XF86MonBrightness*` → `qs ipc call brightness up|down` (+ OSD).
 - Input: `input.touchpad` (natural scroll, tap, disable-while-typing) and a 3-finger workspace swipe; mice keep libinput defaults.
 - Audio: `pipewire/filter-chain.conf.d/speaker-eq.conf` is a WirePlumber smart filter (high-pass, warmth, de-box, presence, air, -3 dB preamp) on the built-in speaker sink only; headphones/HDMI/Bluetooth bypass it. Run by `filter-chain.service`; the Sound dropdown hides its `speaker_eq` node. Bypass to compare: `systemctl --user stop filter-chain`.
-- Idle: extra hypridle listeners gated by `scripts/on-battery.sh` (dim 4 min, lock 5, screen off 7, suspend 15). Lid close is logind's default suspend, locked first by hypridle's `before_sleep_cmd`.
+- Idle: extra hypridle listeners gated by `scripts/on-battery.sh` (dim 4 min, lock 5, screen off 7, suspend 15). Idle suspends run `suspend-then-hibernate`, falling back to plain `suspend` where hibernation isn't set up (the desktop). Lid close is logind's (on the laptop a local `logind.conf.d` drop-in makes it `suspend-then-hibernate` on battery; not managed here), locked first by hypridle's `before_sleep_cmd`.
 - Monitors: `HDMI-A-1` is pinned for the desktop, `eDP-1` (the ThinkPad panel) gets scale 1.2 (auto picks 1.5); every other output (projector) takes its preferred mode.
 - Keys: `Print` / `Shift+Print` take an area / screen screenshot (the laptop's PrtSc key).
 - Install: symlinks point at wherever the repo was when `install.sh` ran; moving the repo breaks them all (re-run it from the new place). `install.sh` sets `IS_LAPTOP` from `/sys/class/power_supply/BAT*` and adds `brightnessctl upower power-profiles-daemon` (enabled).
@@ -76,10 +76,10 @@ The choices every surface follows; a new one earns its place by fitting all of t
 
 | Path | Purpose |
 |---|---|
-| `hypr/hyprland.lua` | entry point: `require`s theme, monitors, animations, keybinds, rules; autostart (`qs`, wallpaper, cliphist, polkit, hypridle); env; `hl.config` |
+| `hypr/hyprland.lua` | entry point: `require`s theme, monitors, animations, keybinds, rules; autostart (`qs`, wallpaper, cliphist, polkit, hypridle, blueman-applet); env; `hl.config` |
 | `hypr/theme.lua` | Hyprland-side tokens: borders, shadow, dim, gaps, rounding, `size_*` scratchpad sizes |
 | `hypr/rules.lua` | window rules + the **layer blur rules** (`quickshell-bar`, `quickshell-panel`, `swaync-*`) |
-| `hypr/hyprlock.conf` / `hypridle.conf` | lock screen / idle (10 min lock → 15 min DPMS off → 30 min suspend) |
+| `hypr/hyprlock.conf` / `hypridle.conf` | lock screen / idle (10 min lock → 15 min DPMS off → 30 min suspend, then hibernate where available) |
 | `quickshell/Theme.qml` | chrome tokens for every QML surface (single source inside Quickshell) |
 | `quickshell/bar/` | the menu-bar strip; one file per item, each owning its dropdown |
 | `quickshell/dropdowns/` | Sound, Wi-Fi, Bluetooth, Idle, Power, Calendar, Media, System |
@@ -95,7 +95,7 @@ The choices every surface follows; a new one earns its place by fitting all of t
 | `scripts/notes.sh` | note titles from every Obsidian vault (`~/.config/obsidian/obsidian.json`) as JSON for the launcher |
 | `scripts/calendars.example.yaml` | template `install.sh` copies to `~/.config/calendars.yaml` (chmod 600) |
 | `scripts/system-status.sh` | CPU/RAM/GPU/update-count JSON for the System item |
-| `scripts/caffeine.sh` | idle modes `off|on|claude` + `status`; refreshes the bar via `qs ipc call caffeine refresh` |
+| `scripts/caffeine.sh` | idle modes `off|on [MINUTES]|claude` + `status`, held as a `systemd-inhibit --what=idle` lock (hypridle keeps running); refreshes the bar via `qs ipc call caffeine refresh` |
 | `scripts/claude-busy.sh` | Claude Code hook recording per-session busy state; `count` feeds the Idle dropdown |
 | `scripts/clipboard.sh` | `list` (JSON, image previews cached) / `copy <id>` for the Clipboard panel |
 | `scripts/on-battery.sh` | exits 0 only on a laptop running on battery (gates the battery idle listeners) |
@@ -163,6 +163,7 @@ Full map: `hypr/keybinds.lua`, or **Super+Shift+/** in-session.
 
 ## Known quirks
 
+- **Bluetooth pairing agent** — Quickshell 0.3 has no BlueZ agent, so without one the dropdown's Pair fails (`bluetoothd: No agent available for request type 2`). `blueman-applet` (autostarted) is the agent: it shows the passkey confirm dialog and adds a tray icon.
 - **Dropdown dismissal** — dropdowns are `PopupWindow`s with `grabFocus`; an outside click closes them and then lands on the bar, so `DropdownState` ignores a reopen of the same dropdown within 300 ms. Switching dropdowns closes the old one before mapping the next (two grabs at once confuse Wayland).
 - **Screen-share guard** — Hyprland's `screencast` event fires for screenshots too (grim, for a split second), so `ScreenShare` engages only after 1.5 s of continuous capture; it turns Do Not Disturb on (and back off only if it was the one to turn it on) and hides the bar's now-playing text.
 - **Workspace compaction** — the bar shows unnumbered dots, so gaps are closed: on `destroyworkspacev2` (an empty workspace you just left) later workspaces shift left. Super+1–0 address slots, not fixed contents, and no window rule pins an app to a workspace number. The focused workspace counts as occupied, so nothing slides onto the current screen.
@@ -172,7 +173,7 @@ Full map: `hypr/keybinds.lua`, or **Super+Shift+/** in-session.
 - **QML naming** — a property named `on` + capital (e.g. `onAccent`) is parsed as a signal handler, `escape` is not a valid signal name, and `font.pixelSize` must be an integer.
 - **ReGreet styling** — GTK 4.22's built-in theme paints buttons with a `background-image` gradient, so the greeter CSS sets `background-image: none` before any button colour. Preview it without logging out: `regreet --demo -l /tmp/regreet.log -c <toml> -s <css>`.
 - **Greeter background** — ReGreet can't blur and runs as the `greeter` user, so `wallpaper.sh` renders a blurred, dimmed copy into `/usr/local/share/greeter/` (owned by the user, created by `install.sh`).
-- **Suspend** — idle policy is hypridle-owned (`inhibit_sleep = 3` holds sleep until the lock is confirmed); logind `IdleAction` stays `ignore`. Manual suspend runs `sleep 1 && systemctl suspend` so the click/key release can't wake the PC via USB.
+- **Suspend** — idle policy is hypridle-owned (`inhibit_sleep = 3` holds sleep until the lock is confirmed); logind `IdleAction` stays `ignore`. hypridle's `before_sleep_cmd` is the only lock before a lid-close or menu suspend, so nothing may stop hypridle: Caffeine pauses it with an idle inhibitor instead, which never holds off a lid-close suspend, and the same hook runs `caffeine.sh off` so no mode outlives a sleep. Manual suspend runs `sleep 1 && systemctl suspend` so the click/key release can't wake the PC via USB.
 - **hyprpaper IPC** — preload is broken in 0.8.x; `wallpaper.sh` drives the `wallpaper` IPC verb directly.
 - **Mouse** — libinput defaults only; the kernel `hid-logitech-hidpp` driver owns hi-res scroll (logid raced it and flipped scroll speed ~8x).
 - **Microcode** — `install.sh` installs `intel-ucode`/`amd-ucode` from `/proc/cpuinfo` and warns if no systemd-boot entry loads it; it never edits boot entries.

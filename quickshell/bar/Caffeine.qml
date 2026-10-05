@@ -23,6 +23,7 @@ BarIcon {
 
         anchorItem: root
         mode: root.status.mode ?? "off"
+        ends: root.status.ends ?? 0
     }
 
     Process {

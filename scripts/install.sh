@@ -69,7 +69,7 @@ _install_deps() {
         grim slurp
         libnotify
         pipewire wireplumber
-        bluez bluez-utils btop
+        bluez bluez-utils blueman btop
         networkmanager
         polkit-gnome greetd greetd-regreet cage playerctl pavucontrol
         papirus-icon-theme

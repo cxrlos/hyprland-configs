@@ -9,6 +9,8 @@ Dropdown {
     id: root
 
     required property string mode
+    // Epoch seconds a timed caffeine ends at; 0 when it runs until turned off.
+    property real ends: 0
 
     property int working: 0
     property int sessions: 0
@@ -51,10 +53,34 @@ Dropdown {
     MenuRow {
         glyph: ""
         title: "Caffeine"
-        subtitle: "Stay awake until turned off"
+        subtitle: root.mode === "on" && root.ends > 0
+            ? `Stay awake until ${Qt.formatDateTime(new Date(root.ends * 1000), "HH:mm")}`
+            : "Stay awake until turned off"
         badgeOn: root.mode === "on"
         checked: badgeOn
         onClicked: root.choose("on")
+    }
+
+    // Timed caffeine, under the row titles (10 margin + 26 badge + 10 gap); any one restarts the clock.
+    RowLayout {
+        Layout.leftMargin: 46
+        Layout.bottomMargin: 4
+        spacing: 6
+
+        Repeater {
+            model: [
+                { label: "30 min", minutes: 30 },
+                { label: "1 hour", minutes: 60 },
+                { label: "2 hours", minutes: 120 }
+            ]
+
+            PillButton {
+                required property var modelData
+
+                text: modelData.label
+                onClicked: root.choose("on " + modelData.minutes)
+            }
+        }
     }
 
     MenuRow {
