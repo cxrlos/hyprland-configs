@@ -16,13 +16,21 @@ Singleton {
     property real lastClosedAt: 0
 
     function toggle(name: string): void {
-        if (open === name) {
+        if (open === name)
             open = "";
-        } else if (open !== "") {
+        else if (open !== "" || !(lastClosed === name && Date.now() - lastClosedAt < 300))
+            show(name);
+    }
+
+    // Opens a dropdown unless it already is (a Bluetooth pairing request opens its own).
+    function show(name: string): void {
+        if (open === name)
+            return;
+        if (open !== "") {
             // Unmap the current popup before mapping the next, or Wayland sees two grabs.
             open = "";
             Qt.callLater(() => open = name);
-        } else if (!(lastClosed === name && Date.now() - lastClosedAt < 300)) {
+        } else {
             open = name;
         }
     }

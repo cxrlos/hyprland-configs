@@ -76,7 +76,7 @@ The choices every surface follows; a new one earns its place by fitting all of t
 
 | Path | Purpose |
 |---|---|
-| `hypr/hyprland.lua` | entry point: `require`s theme, monitors, animations, keybinds, rules; autostart (`qs`, wallpaper, cliphist, polkit, hypridle, blueman-applet); env; `hl.config` |
+| `hypr/hyprland.lua` | entry point: `require`s theme, monitors, animations, keybinds, rules; autostart (`qs`, wallpaper, cliphist, polkit, hypridle); env; `hl.config` |
 | `hypr/theme.lua` | Hyprland-side tokens: borders, shadow, dim, gaps, rounding, `size_*` scratchpad sizes |
 | `hypr/rules.lua` | window rules + the **layer blur rules** (`quickshell-bar`, `quickshell-panel`, `swaync-*`) |
 | `hypr/hyprlock.conf` / `hypridle.conf` | lock screen / idle (10 min lock → 15 min DPMS off → 30 min suspend, then hibernate where available) |
@@ -85,13 +85,14 @@ The choices every surface follows; a new one earns its place by fitting all of t
 | `quickshell/dropdowns/` | Sound, Wi-Fi, Bluetooth, Idle, Power, Calendar, Media, System |
 | `quickshell/panels/` | centred Spotlight-style panels: Launcher, Clipboard, Cheatsheet; full-screen Overview |
 | `quickshell/osd/` | volume / mic / brightness level pill for the keys (click-through) |
-| `quickshell/widgets/` | shared parts: `Dropdown`, `DropdownState`, `MenuRow`, `Slider`, `Switch`, `PillButton`…; `ScreenShare` (screen-share guard); `Agenda` (today's calendar events, live) |
+| `quickshell/widgets/` | shared parts: `Dropdown`, `DropdownState`, `MenuRow`, `Slider`, `Switch`, `PillButton`…; `ScreenShare` (screen-share guard); `Agenda` (today's calendar events, live); `BluetoothAgent` (runs the pairing agent, holds its pending request) |
 | `swaync/style.css` | `@import`s swaync's default theme and overrides its CSS variables |
 | `pipewire/filter-chain.conf.d/` | laptop speaker EQ (linked to `~/.config/pipewire/` and enabled by `install.sh` only on a laptop) |
 | `zen/userChrome.css` / `userContent.css` / `user.js` | Zen's UI / its `about:` pages (new tab, settings, add-ons; never `about:blank`, which sites use) in the chrome tokens, + the prefs they need; `install.sh` links all three into Zen's default profile |
 | `scripts/install.sh` | Arch installer: packages, symlinks, Zen profile links, `calendars.yaml` template, GTK settings + `gtk.css`, gsettings, greetd/ReGreet (config + CSS heredocs), udev, Claude hooks |
 | `scripts/wallpaper.sh` | applies waypaper's pick (or `waypaper/nasa-wallpaper.png` when the pick is missing on this machine) via hyprpaper IPC; publishes it for the lock (`~/.cache/wallpaper/current`) and a pre-blurred copy for the greeter (`/usr/local/share/greeter/background.jpg`) |
 | `scripts/calendar-feed.py` | `[--offline] [START [DAYS]]` → events from `~/.config/calendars.yaml` (iCal or gcalcli sources) as JSON (default today; cached per calendar, declined/cancelled dropped, failures named on stderr) |
+| `scripts/bluetooth-agent.py` | BlueZ pairing agent (KeyboardDisplay): requests out as JSON lines on stdout, the user's answers in on stdin; run by `BluetoothAgent`, exits when stdin closes |
 | `scripts/notes.sh` | note titles from every Obsidian vault (`~/.config/obsidian/obsidian.json`) as JSON for the launcher |
 | `scripts/calendars.example.yaml` | template `install.sh` copies to `~/.config/calendars.yaml` (chmod 600) |
 | `scripts/system-status.sh` | CPU/RAM/GPU/update-count JSON for the System item |
@@ -110,7 +111,7 @@ The choices every surface follows; a new one earns its place by fitting all of t
 - Chrome tokens: Hyprland reads `theme.lua`, Quickshell reads `Theme.qml`; swaync, hyprlock, the greeter and Zen (`--hc-*` in `zen/userChrome.css` and `userContent.css`) are separate processes with their own copies. Change a token in all of them together.
 - Quickshell hot-reloads on save; a half-written file pops its error overlay. It misses in-place rewrites (`sed -i`), branch switches and new files in a module dir: restart it (`pkill -x 'qs|quickshell'; setsid -f qs`) and check `qs log`. Singletons use `pragma Singleton`; modules import as `qs.bar`, `qs.widgets`, etc.
 - Keyboard entry points into Quickshell go through IPC (`qs ipc call dropdown toggle power`, `qs ipc call panel toggle launcher|overview|clipboard|cheatsheet`, `qs ipc call bar toggle`); `qs ipc show` lists targets.
-- Scripts are Bash, `set -euo pipefail`, ShellCheck-clean (`uvx --from shellcheck-py shellcheck -x scripts/*.sh`), except `calendar-feed.py` (Python, Black) because ICS recurrence needs a real parser; a Python script's name must not shadow a stdlib module (`calendar.py` broke `dateutil`). New scripts need `chmod +x` until the next `install.sh` run.
+- Scripts are Bash, `set -euo pipefail`, ShellCheck-clean (`uvx --from shellcheck-py shellcheck -x scripts/*.sh`), except `calendar-feed.py` (ICS recurrence needs a real parser) and `bluetooth-agent.py` (exports a D-Bus object), which are Python (Black, stdlib + Arch `python-*` packages); a Python script's name must not shadow a stdlib module (`calendar.py` broke `dateutil`). New scripts need `chmod +x` until the next `install.sh` run.
 - Every config must be reproducible from `install.sh`: a new package, a file outside the symlinked dirs or an app pref ships with its install step in the same change.
 - The `hyprland.start` autostart does not re-run on `hyprctl reload`; restart Quickshell with `pkill -x 'qs|quickshell'; setsid -f qs`.
 - GTK settings, `gtk.css` and the greeter config are written by `install.sh`, not symlinked.
@@ -163,7 +164,7 @@ Full map: `hypr/keybinds.lua`, or **Super+Shift+/** in-session.
 
 ## Known quirks
 
-- **Bluetooth pairing agent** — Quickshell 0.3 has no BlueZ agent, so without one the dropdown's Pair fails (`bluetoothd: No agent available for request type 2`). `blueman-applet` (autostarted) is the agent: it shows the passkey confirm dialog and adds a tray icon.
+- **Bluetooth pairing agent** — Quickshell 0.3 has no BlueZ agent (without one Pair fails: `No agent available for request type 2`), so `BluetoothAgent` runs `scripts/bluetooth-agent.py` (python-gobject) as bluetoothd's default agent; blueman is gone with its tray icon. A request opens the Bluetooth dropdown with an inline prompt (compare a code, type a PIN/passkey, allow a connection; Enter accepts, Esc refuses) and turns the bar icon sage; closing the dropdown leaves it pending until bluetoothd's 60 s timeout, which refuses it. While sharing the screen it only turns the icon sage. Nothing is auto-accepted except service connections from already-bonded devices; calls from anyone but bluetoothd are refused. A fresh `qs` that hasn't had pointer input can't map the grabbing popup, so the first request may only show the sage icon. No OBEX file receiving (blueman's job before).
 - **Dropdown dismissal** — dropdowns are `PopupWindow`s with `grabFocus`; an outside click closes them and then lands on the bar, so `DropdownState` ignores a reopen of the same dropdown within 300 ms. Switching dropdowns closes the old one before mapping the next (two grabs at once confuse Wayland).
 - **Screen-share guard** — Hyprland's `screencast` event fires for screenshots too (grim, for a split second), so `ScreenShare` engages only after 1.5 s of continuous capture; it turns Do Not Disturb on (and back off only if it was the one to turn it on) and hides the bar's now-playing text.
 - **Workspace compaction** — the bar shows unnumbered dots, so gaps are closed: on `destroyworkspacev2` (an empty workspace you just left) later workspaces shift left. Super+1–0 address slots, not fixed contents, and no window rule pins an app to a workspace number. The focused workspace counts as occupied, so nothing slides onto the current screen.

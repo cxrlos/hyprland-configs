@@ -69,7 +69,7 @@ _install_deps() {
         grim slurp
         libnotify
         pipewire wireplumber
-        bluez bluez-utils blueman btop
+        bluez bluez-utils btop
         networkmanager
         polkit-gnome greetd greetd-regreet cage playerctl pavucontrol
         papirus-icon-theme
@@ -78,7 +78,7 @@ _install_deps() {
         inter-font noto-fonts
         wf-recorder pacman-contrib jq imagemagick
         nm-connection-editor satty hyprpicker obsidian
-        python-yaml python-icalendar python-recurring-ical-events
+        python-yaml python-icalendar python-recurring-ical-events python-gobject
     )
 
     [[ -n "$UCODE" ]] && pacman_deps+=("$UCODE")
